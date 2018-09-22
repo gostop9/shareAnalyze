@@ -690,24 +690,6 @@ int shareFuseSelect(int &fileIndex, PROPERTY_t &property, vector<vector<PROPERTY
 	fileIndex++;
 }
 
-void stringSplit(std::string inputStr, std::string splitSymbol, vector<std::string> &outStrVec)
-{
-	outStrVec.clear();
-	int iPos = inputStr.find(splitSymbol, 0);
-	while (string::npos != iPos)
-	{
-		string strTemp = inputStr.substr(0, iPos);
-		if (strTemp.size() > 0)
-		{
-			outStrVec.push_back(strTemp);
-		}
-		inputStr = inputStr.substr(iPos + 1, inputStr.length() - iPos);
-		iPos = inputStr.find(splitSymbol, 0);
-	}
-	// 最后一个字符串
-	outStrVec.push_back(inputStr);
-}
-
 void shareSelectPrint(FILE *fp, PROPERTY_t &property, vector<PROPERTY_t> &propertyPre)
 {
 	if (propertyPre.empty())
@@ -957,7 +939,7 @@ void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPER
 					}
 					//else
 					{
-						if (0 == strcmp(proIter->limitReason, "新股"))
+						if (0 == strcmp(proIter->limitReason, NEW_SHARE.c_str()))
 						{
 							xinGuCount++;
 							break;

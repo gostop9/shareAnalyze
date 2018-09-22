@@ -39,6 +39,12 @@
     <ClInclude Include="..\include\shareDef.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\commonFun.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\getLimitUpInfo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\AnalyzeShare_main.cpp">
@@ -60,6 +66,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\source\readZhangTing.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\commonFun.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\getLimitUpInfo.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

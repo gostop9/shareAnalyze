@@ -127,9 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\commonFun.h" />
     <ClInclude Include="..\include\dataLineProc.h" />
     <ClInclude Include="..\include\dataProc.h" />
     <ClInclude Include="..\include\dataStructure.h" />
+    <ClInclude Include="..\include\getLimitUpInfo.h" />
     <ClInclude Include="..\include\readGuBen.h" />
     <ClInclude Include="..\include\readZhangTing.h" />
     <ClInclude Include="..\include\shareDef.h" />
@@ -138,8 +140,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\AnalyzeShare_main.cpp" />
+    <ClCompile Include="..\source\commonFun.cpp" />
     <ClCompile Include="..\source\dataLineProc.cpp" />
     <ClCompile Include="..\source\dataProc.cpp" />
+    <ClCompile Include="..\source\getLimitUpInfo.cpp" />
     <ClCompile Include="..\source\readGuBen.cpp" />
     <ClCompile Include="..\source\readZhangTing.cpp" />
     <ClCompile Include="..\source\shareRaisingLtdPre.cpp" />

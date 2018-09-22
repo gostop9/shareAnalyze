@@ -19,10 +19,12 @@
 #include "dataLineProc.h"
 #include "readGuBen.h"
 #include "readZhangTing.h"
+#include "getLimitUpInfo.h"
 
 using namespace std;
 using namespace GUBEN;
 using namespace ZHANGTING;
+using namespace getLimitUpInfo;
 
 char nonChar[CHAR_LEN] = "--";
 float divide = 100000000;
@@ -409,78 +411,11 @@ void main()
 				vector<limitUpReason_t> ztrVec;
 				ztrVec.clear();
 				ztrVec.reserve(analyNum);
-				for (int i = 0; i < analyNum; i++)
-				{
-					PROPERTY_t &analyProty = propertyAnalyVec[i];
-					string ztReason = analyProty.limitReason;
-					vector<string> strVec;
-					stringSplit(ztReason, "+", strVec);
-					int strNum = strVec.size();
-					for (int j = 0; j < strNum; j++)
-					{
-						string strTemp = strVec[j];
-						vector<limitUpReason_t>::iterator ztrIter = ztrVec.begin();
-						while (ztrIter != ztrVec.end())
-						{
-							if (ztrIter->reason == strTemp)
-							{
-								ztrIter->ztCount++;
-								ztrIter->zhangFuZong += analyProty.zhangFu;
-								if (ztrIter->zhangFu < analyProty.zhangFu)
-								{
-									ztrIter->code = analyProty.code;
-									ztrIter->name = analyProty.name;
-									ztrIter->zhangFu = analyProty.zhangFu;
-								}
-								break;
-							}
-							++ztrIter;
-						}
-						if (ztrIter == ztrVec.end()) //not found
-						{
-							limitUpReason_t ztrTemp;
-							ztrTemp.ztCount = 1;
-							ztrTemp.reason = strTemp;
-							ztrTemp.code = analyProty.code;
-							ztrTemp.name = analyProty.name;
-							ztrTemp.zhangFu = analyProty.zhangFu;
-							ztrTemp.zhangFuZong = analyProty.zhangFu;
-							ztrVec.push_back(ztrTemp);
-						}
+				getLimitUpReason(propertyAnalyVec, ztrVec, newShareCodeVec);
 
-						//保存新股信息
-						if (strTemp == "新股")
-						{
-							string newCode = analyProty.code;
-							newShareCodeVec.push_back(newCode);
-						}
-					}
-				}
-
+				//排序并打印结果
+				limitShareSort(ztrVec);
 				int ztrNum = ztrVec.size();
-				//按平均涨幅排序，用于查看板块强度
-				{
-					struct zfAvg {
-						bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return ((a.zhangFuZong / a.ztCount) > (b.zhangFuZong / b.ztCount)); }
-					} zfAvg;
-					sort(ztrVec.begin(), ztrVec.end(), zfAvg);
-					int zfAvgOder = 1;
-					for (int i = 0; i < ztrNum; i++)
-					{
-						limitUpReason_t &ztrTemp = ztrVec[i];
-						ztrTemp.zfAvgOder = 0;
-						if ((ztrTemp.ztCount > 1) && (ztrTemp.reason != "新股"))
-						{
-							ztrTemp.zfAvgOder = zfAvgOder++;
-						}
-					}
-				}
-				//按涨停原因出现次数排序
-				struct ztrTime {
-					bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return (a.ztCount > b.ztCount); }
-				} ztrTime;
-				sort(ztrVec.begin(), ztrVec.end(), ztrTime);
-				//fprintf(rstFp, "涨停种类：%d\n\n", ztrNum);
 				for (int i = 0; i < ztrNum; i++)
 				{
 					limitUpReason_t &ztrTemp = ztrVec[i];
@@ -488,7 +423,7 @@ void main()
 					fprintf(rstFp, "%d  %-8s  %-8s  %5.2f  %5.2f : %d  %s: \n", ztrTemp.ztCount, ztrTemp.code.c_str(), ztrTemp.name.c_str(), ztrTemp.zhangFu, zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.reason.c_str());
 				}
 
-				if(0)
+				if (0)
 				{
 					int newCodeNum = newShareCodeVec.size();
 					//提取所属行业
@@ -496,86 +431,14 @@ void main()
 					vector<limitUpReason_t> hyVec;
 					hyVec.clear();
 					hyVec.reserve(analyNum);
-					for (int i = 0; i < analyNum; i++)
-					{
-						PROPERTY_t &analyProty = propertyAnalyVec[i];
-						string suoShuHangYe = analyProty.suoShuHangYe;
-
-						int newCodeFlag = 0;
-						string shareCode = analyProty.code;
-						//不统计新股
-						for (int j = 0; j < newCodeNum; j++)
-						{
-							if (shareCode == newShareCodeVec[j])//新股
-							{
-								newCodeFlag = 1;
-								break;
-							}
-						}
-						if (1 == newCodeFlag)
-						{
-							continue;
-						}
-
-						vector<limitUpReason_t>::iterator ztrIter = hyVec.begin();
-						while (ztrIter != hyVec.end())
-						{
-							if (ztrIter->suoShuHangYe == suoShuHangYe)
-							{
-								ztrIter->hyCount++;
-								ztrIter->zhangFuZong += analyProty.zhangFu;
-								if (ztrIter->zhangFu < analyProty.zhangFu)
-								{
-									ztrIter->code = analyProty.code;
-									ztrIter->name = analyProty.name;
-									ztrIter->zhangFu = analyProty.zhangFu;
-								}
-								break;
-							}
-							++ztrIter;
-						}
-						if (ztrIter == hyVec.end()) //not found
-						{
-							limitUpReason_t ztrTemp;
-							ztrTemp.hyCount = 1;
-							ztrTemp.suoShuHangYe = suoShuHangYe;
-							ztrTemp.code = analyProty.code;
-							ztrTemp.name = analyProty.name;
-							ztrTemp.zhangFu = analyProty.zhangFu;
-							ztrTemp.zhangFuZong = analyProty.zhangFu;
-							hyVec.push_back(ztrTemp);
-						}
-					}
+					getLimitUpHy(propertyAnalyVec, hyVec, newShareCodeVec);
 
 					int ztrNum = hyVec.size();
-					//按平均涨幅排序，用于查看板块强度
-					{
-						struct zfAvg {
-							bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return ((a.zhangFuZong / a.hyCount) > (b.zhangFuZong / b.hyCount)); }
-						} zfAvg;
-						sort(hyVec.begin(), hyVec.end(), zfAvg);
-						int zfAvgOder = 1;
-						for (int i = 0; i < ztrNum; i++)
-						{
-							limitUpReason_t &ztrTemp = hyVec[i];
-							ztrTemp.zfAvgOder = 0;
-							if ((ztrTemp.hyCount > 1) && (ztrTemp.reason != "新股"))
-							{
-								ztrTemp.zfAvgOder = zfAvgOder++;
-							}
-						}
-					}
-					//按行业出现次数排序
-					struct ztrTime {
-						bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return (a.hyCount > b.hyCount); }
-					} ztrTime;
-					sort(hyVec.begin(), hyVec.end(), ztrTime);
-					//fprintf(rstFp, "行业分类：%d\n\n", ztrNum);
 					for (int i = 0; i < ztrNum; i++)
 					{
 						limitUpReason_t &ztrTemp = hyVec[i];
-						float zhangFuAvg = ztrTemp.zhangFuZong / float(ztrTemp.hyCount);
-						fprintf(rstFp, "%d  %-8s  %-8s  %5.2f  %5.2f : %d  %s: \n", ztrTemp.hyCount, ztrTemp.code.c_str(), ztrTemp.name.c_str(), ztrTemp.zhangFu, zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.suoShuHangYe.c_str());
+						float zhangFuAvg = ztrTemp.zhangFuZong / float(ztrTemp.ztCount);
+						fprintf(rstFp, "%d  %-8s  %-8s  %5.2f  %5.2f : %d  %s: \n", ztrTemp.ztCount, ztrTemp.code.c_str(), ztrTemp.name.c_str(), ztrTemp.zhangFu, zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.reason.c_str());
 					}
 				}
 			}

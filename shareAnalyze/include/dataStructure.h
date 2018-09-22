@@ -509,16 +509,4 @@ struct guBen_t
 	float guXingPingFen;
 };
 
-struct limitUpReason_t
-{
-	std::string code;
-	std::string name;
-	float zhangFu;
-	std::string reason;
-	int  ztCount;
-	float zhangFuZong;
-	int zfAvgOder;
-	std::string suoShuHangYe;
-	int  hyCount;
-};
 #endif

@@ -23,8 +23,6 @@ void shareParaFuseWithoutZhuli(vector<ZIJIN_t> &zijin, vector<ZHANGFU_t> &zhangf
 
 int shareFuseSelect(int &fileIndex, PROPERTY_t &property, vector<vector<PROPERTY_t>> &propertyVecV, vector<string> &selectVec);
 
-void stringSplit(std::string inputStr, std::string splitSymbol, vector<std::string> &outStrVec);
-
 void shareSelectPrint(FILE *fp, PROPERTY_t &property, vector<PROPERTY_t> &propertyPre);
 
 void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPERTY_t> &propertyAnalyVec, vector<ZHANGTING::zhangTing_t> &zhangTingVec);
