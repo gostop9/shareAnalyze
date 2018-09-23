@@ -20,11 +20,13 @@
 #include "readGuBen.h"
 #include "readZhangTing.h"
 #include "getLimitUpInfo.h"
+#include "shareDef.h"
 
 using namespace std;
 using namespace GUBEN;
 using namespace ZHANGTING;
-using namespace getLimitUpInfo;
+using namespace GETLIMITUPINFO;
+using namespace SHAREDEF;
 
 char nonChar[CHAR_LEN] = "--";
 float divide = 100000000;
@@ -406,47 +408,38 @@ void main()
 			int analyNum = propertyAnalyVec.size();
 			if (1 >= fileIndex)
 			{
+				limitUpReason_t limitupInfo;
 				//提取涨停原因
 				fprintf(rstFp, "涨停种类------------------------------------------------------------------------------------------------------------------------\n");
 				vector<limitUpReason_t> ztrVec;
 				ztrVec.clear();
 				ztrVec.reserve(analyNum);
-				getLimitUpReason(propertyAnalyVec, ztrVec, newShareCodeVec);
+				limitupInfo.getLimitUpReason(propertyAnalyVec, ztrVec, newShareCodeVec);
 
 				//排序并打印结果
-				limitShareSort(ztrVec);
-				int ztrNum = ztrVec.size();
-				for (int i = 0; i < ztrNum; i++)
-				{
-					limitUpReason_t &ztrTemp = ztrVec[i];
-					float zhangFuAvg = ztrTemp.zhangFuZong / float(ztrTemp.ztCount);
-					fprintf(rstFp, "%d  %-8s  %-8s  %5.2f  %5.2f : %d  %s: \n", ztrTemp.ztCount, ztrTemp.code.c_str(), ztrTemp.name.c_str(), ztrTemp.zhangFu, zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.reason.c_str());
-				}
+				limitupInfo.limitShareSort(rstFp, ztrVec);
 
 				if (0)
 				{
-					int newCodeNum = newShareCodeVec.size();
 					//提取所属行业
 					fprintf(rstFp, "行业分类------------------------------------------------------------------------------------------------------------------------\n");
 					vector<limitUpReason_t> hyVec;
 					hyVec.clear();
 					hyVec.reserve(analyNum);
-					getLimitUpHy(propertyAnalyVec, hyVec, newShareCodeVec);
+					limitupInfo.getLimitUpHy(propertyAnalyVec, hyVec, newShareCodeVec);
 
-					int ztrNum = hyVec.size();
-					for (int i = 0; i < ztrNum; i++)
-					{
-						limitUpReason_t &ztrTemp = hyVec[i];
-						float zhangFuAvg = ztrTemp.zhangFuZong / float(ztrTemp.ztCount);
-						fprintf(rstFp, "%d  %-8s  %-8s  %5.2f  %5.2f : %d  %s: \n", ztrTemp.ztCount, ztrTemp.code.c_str(), ztrTemp.name.c_str(), ztrTemp.zhangFu, zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.reason.c_str());
-					}
+					//排序并打印结果
+					limitupInfo.limitShareSort(rstFp, hyVec);
 				}
 			}
 			fprintf(rstFp, "------------------------------------------------------------------------------------------------------------------------\n");
 			for (int i = 0; i < analyNum; i++)
 			{
 				PROPERTY_t &analyProty = propertyAnalyVec[i];
-				shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+				if (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+				{
+					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+				}
 			}
 			fprintf(rstFp, "\n");
 		}

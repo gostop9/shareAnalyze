@@ -786,10 +786,10 @@ property.sanRiZhangFu, property.wuRiZhangFu, property.shiRiZhangFu);
 				{
 					fprintf(fp, "*");
 				}
-				if ((property.zuoRiZuiGao - property.zuoRiKaiPan) < 0.001)
+				if ((property.zuoRiZuiGao - property.zuoRiKaiPan) < 0.0001)
 				{
 					fprintf(fp, "-"); //T字板
-					if (property.zuoRiZhenFu < 0.001) //昨日一字板
+					if (property.zuoRiZhenFu < 0.0001) //昨日一字板
 					{
 						fprintf(fp, "-");
 						if ((property.waiPan < 0.0001) && (property.weiBi > WEIBI_MAX)) //一字开盘，连续一字板
