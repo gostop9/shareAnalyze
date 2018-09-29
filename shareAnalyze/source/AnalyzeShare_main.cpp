@@ -21,15 +21,17 @@
 #include "readZhangTing.h"
 #include "getLimitUpInfo.h"
 #include "shareDef.h"
+#include "tdxCfgModify.h"
 
 using namespace std;
+using namespace DATAPROC;
 using namespace GUBEN;
 using namespace ZHANGTING;
 using namespace GETLIMITUPINFO;
 using namespace SHAREDEF;
+using namespace TDXCFGMODIFY;
 
 char nonChar[CHAR_LEN] = "--";
-float divide = 100000000;
 
 char configFileName[] = "D:/share/config.txt";
 char resultFileName[30] = "D:/share/result.txt";
@@ -189,7 +191,7 @@ void main()
 	//只进行竞价数据比较
 	if(1 >= fileIndex)
 	{
-		zhuLiJingLiangMin = 1.0;
+		zhuLiJingLiangMin = 2.0;
 
 		memset(ddeFileName, 0, size(date));
 		memset(zijinName, 0, size(date));
@@ -310,7 +312,7 @@ void main()
 		//vector<DDE_t> dde;
 		//readDdeFile(ddeFileName, dde[vecIndex]);
 		//vector<ZIJIN_t> zijin;
-		readZijinFile(zijinName, zijin[vecIndex]);
+		bool zijinFileFlag = readZijinFile(zijinName, zijin[vecIndex]);
 		vector<ZIJIN_t > ziinDaDanJingE = zijin[vecIndex];
 		//sort(ziinDaDanJingE.begin(), ziinDaDanJingE.end(), compZiJin);
 		//vector<ZHULI_t> zhuli;
@@ -378,7 +380,7 @@ void main()
 			char tmp[64];
 			strftime(tmp, sizeof(tmp), "%H%M%S", localtime(&timep));
 			int localTime = atoi(tmp);
-			struct myclass {
+			struct myclass {//zhongXiaoDanJinBiLiuTong
 				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhongXiaoDanJinBiLiuTong > b.zhongXiaoDanJinBiLiuTong); }
 			} cmpMethod;
 
@@ -496,134 +498,15 @@ void main()
 	fprintf(rstFp, "\n");
 	fclose(rstFp);
 
-	//结果code保存
-	FILE *codeFp;
-	codeFp = fopen("D:/share/Analyze/codeResult.txt", "wt");
-	if (NULL == codeFp)
-	{
-		printf("Open codeResult file failed!\n");
-		return;
-	}
-	for (vector<std::string>::const_iterator iter = resultSet.begin(); iter != resultSet.end(); ++iter)
-	{
-		fprintf(codeFp, "%8s\n", iter->c_str());
-	}
-	fclose(codeFp);
+	//保存选股结果到文件
+	codeResultSave(resultSet);
 
-	//保存code结果到通达信文件夹
+	//通达信板块修改
+	string dateStr = dateStr;
+	tdxBlockAdd(dateStr, resultSet);
+	if (1 == fileIndex) // 只在最开始时增加block名称
 	{
-		vector<std::string> strZidingyiVec;
-		FILE *codeTdxFp;
-		std::string pathTdx = "C:/sws2010/T0002/blocknew/";
-		std::string fileNameTdx = date;
-		pathTdx.append(fileNameTdx.substr(0, 8));
-		pathTdx.append(".blk");
-		//首先读取板块文件中的code，避免添加时重复
-		codeTdxFp = fopen(pathTdx.c_str(), "rt");
-		if (NULL == codeTdxFp)
-		{
-			printf("Open codeTdxFp file failed!\n");
-		}
-		else
-		{
-			while (fgets(lineDateBuf, lineDataLen, cfgFp) != NULL)
-			{
-				std::string str = lineDateBuf;
-				if (5 < str.length())
-				{
-					strZidingyiVec.push_back(str.substr(0, 7));
-				}
-				memset(lineDateBuf, 0, lineDataLen);
-			}
-			fclose(codeTdxFp);
-		}
-		codeTdxFp = fopen(pathTdx.c_str(), "a");
-		if (NULL == codeTdxFp)
-		{
-			printf("Open codeTdxFp file failed!\n");
-			return;
-		}
-		for (vector<std::string>::const_iterator iter = resultSet.begin(); iter != resultSet.end(); ++iter)
-		{
-			std::string codeHead = iter->substr(0, 2);
-			int cmpResult = codeHead.compare("SH");
-			if (0 == cmpResult) //上海股票SH开头
-			{
-				std::string resultStr = "1";
-				resultStr.append(iter->substr(2, 20));
-				std::vector<std::string>::iterator it;
-				it = find(strZidingyiVec.begin(), strZidingyiVec.end(), resultStr);
-				if (it != strZidingyiVec.end())
-				{
-				}
-				else
-				{
-					fprintf(codeTdxFp, "%7s\n", resultStr.c_str());
-				}
-			}
-			else
-			{
-				std::string resultStr = "0";
-				resultStr.append(iter->substr(2, 20));
-				std::vector<std::string>::iterator it;
-				it = find(strZidingyiVec.begin(), strZidingyiVec.end(), resultStr);
-				if (it != strZidingyiVec.end())
-				{
-				}
-				else
-				{
-					fprintf(codeTdxFp, "%7s\n", resultStr.c_str());
-				}
-			}
-		}
-		fclose(codeTdxFp);
-
-		//修改配置文件
-		if (1 == fileIndex)
-		{
-			FILE *cfgFp;
-			std::string cfgFileName = "C:/sws2010/T0002/blocknew/blocknew.cfg";
-			// 自定义板块概述文件格式，T0002\blocknew\blocknew.cfg
-			struct TTDXUserBlockRecord
-			{
-				char        szName[50];
-				char        szAbbr[70];        // 也是文件名称前缀 T0002\blocknew\xxxx.blk
-			};
-			TTDXUserBlockRecord cfgStruct;
-			//首先读取板块文件中的板块名称，避免添加时重复
-			cfgFp = fopen(cfgFileName.c_str(), "rb");
-			if (NULL == cfgFp)
-			{
-				printf("Open codeTdxFp file failed!\n");
-			}
-			else
-			{
-				while (!feof(cfgFp))
-				{
-					fread(&cfgStruct, sizeof(cfgStruct), 1, cfgFp);
-					if (0 == strncmp(cfgStruct.szName, fileNameTdx.substr(0, 8).c_str(), 8))
-					{
-						fclose(cfgFp);
-						return;
-					}
-				}
-				fclose(cfgFp);
-			}
-			cfgFp = fopen(cfgFileName.c_str(), "a");
-			if (NULL == cfgFp)
-			{
-				printf("Open cfgFp file failed!\n");
-				return;
-			}
-			memset(cfgStruct.szName, 0, size(cfgStruct.szName));
-			memset(cfgStruct.szAbbr, 0, size(cfgStruct.szAbbr));
-			strncpy(cfgStruct.szName, fileNameTdx.substr(0, 8).c_str(), 8);
-			strncpy(cfgStruct.szAbbr, fileNameTdx.substr(0, 8).c_str(), 8);
-			fwrite(cfgStruct.szName, sizeof(char), sizeof(cfgStruct.szName), cfgFp);
-			fwrite(cfgStruct.szAbbr, sizeof(char), sizeof(cfgStruct.szAbbr), cfgFp);
-
-			fclose(cfgFp);
-		}
+		tdxBlockCfgModify(dateStr);
 	}
 }
 

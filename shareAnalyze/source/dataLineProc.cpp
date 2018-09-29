@@ -6,8 +6,10 @@
 #include "dataStructure.h"
 #include "dataLineProc.h"
 #include "dataProc.h"
+#include "shareDef.h"
 
 using namespace std;
+using namespace SHAREDEF;
 
 bool readDataLineFile(char *fileName, int &lineCountInFile, vector<RIXIAN_t> &riXianVec)
 {

@@ -27,7 +27,6 @@ const int TOTAL_SHARE_NUMBERS = (4000);
 
 const int CHAR_LEN = (30);
 extern char nonChar[];
-extern float divide;
 
 extern float huanShouMax;
 extern float liangBiMin;

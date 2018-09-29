@@ -2,8 +2,10 @@
 #include <cstdio>
 #include "dataStructure.h"
 #include "dataProc.h"
+#include "shareDef.h"
 
 using namespace std;
+using namespace SHAREDEF;
 
 namespace GUBEN
 {

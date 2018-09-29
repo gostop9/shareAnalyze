@@ -5,11 +5,15 @@
 #include <stdio.h>
 #include "dataStructure.h"
 #include "dataProc.h"
+#include "shareDef.h"
 
 using namespace std;
+using namespace SHAREDEF;
 
-char lineDateBuf[lineDataLen];
+//char lineDateBuf[lineDataLen];
 
+namespace DATAPROC
+{
 bool readDdeFile(char *fileName, vector<DDE_t> &ddeVec)
 {
     ddeVec.clear();
@@ -1561,4 +1565,5 @@ bool readZhangfuFile(char *fileName, vector<ZHANGFU_t> &zhangfuVec)
 
 	fclose(fp);
 	return true;
+}
 }

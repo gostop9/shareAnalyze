@@ -7,8 +7,11 @@
 #include "dataStructure.h"
 #include "dataProc.h"
 #include "shareRaisingLtdPre.h"
+#include "shareDef.h"
 
 using namespace std;
+using namespace SHAREDEF;
+using namespace DATAPROC;
 
 void shareRaisingLtdPre(char *preFileName, char *date, char *path, int searhDays)
 {
@@ -105,7 +108,7 @@ void shareRaisingLtdPre(char *preFileName, char *date, char *path, int searhDays
 				{
 					if(!strcmp(ddeFirstIter->name, zijinIter->name))
 					{
-						fprintf(preFp, "%.3f亿, 资金: %2d, ", zijinIter->liuTongShiZhi / divide, zijinIndex);
+						fprintf(preFp, "%.3f亿, 资金: %2d, ", zijinIter->liuTongShiZhi / DIVIDE, zijinIndex);
 						break;
 					}
 					++zijinIter;

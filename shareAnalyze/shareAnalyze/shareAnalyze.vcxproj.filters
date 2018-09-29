@@ -45,6 +45,12 @@
     <ClInclude Include="..\include\getLimitUpInfo.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\getShareFlag.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tdxCfgModify.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\AnalyzeShare_main.cpp">
@@ -72,6 +78,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\source\getLimitUpInfo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\tdxCfgModify.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

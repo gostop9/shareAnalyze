@@ -132,11 +132,13 @@
     <ClInclude Include="..\include\dataProc.h" />
     <ClInclude Include="..\include\dataStructure.h" />
     <ClInclude Include="..\include\getLimitUpInfo.h" />
+    <ClInclude Include="..\include\getShareFlag.h" />
     <ClInclude Include="..\include\readGuBen.h" />
     <ClInclude Include="..\include\readZhangTing.h" />
     <ClInclude Include="..\include\shareDef.h" />
     <ClInclude Include="..\include\shareRaisingLtdPre.h" />
     <ClInclude Include="..\include\shareSelect.h" />
+    <ClInclude Include="..\include\tdxCfgModify.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\AnalyzeShare_main.cpp" />
@@ -148,6 +150,7 @@
     <ClCompile Include="..\source\readZhangTing.cpp" />
     <ClCompile Include="..\source\shareRaisingLtdPre.cpp" />
     <ClCompile Include="..\source\shareSelect.cpp" />
+    <ClCompile Include="..\source\tdxCfgModify.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
