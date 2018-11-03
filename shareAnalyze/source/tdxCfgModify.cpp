@@ -115,8 +115,8 @@ void tdxBlockCfgModify(std::string &date)
 		printf("Open cfgFp file failed!\n");
 		return;
 	}
-	memset(cfgStruct.szName, 0, size(cfgStruct.szName));
-	memset(cfgStruct.szAbbr, 0, size(cfgStruct.szAbbr));
+	memset(cfgStruct.szName, 0, sizeof(cfgStruct.szName));
+	memset(cfgStruct.szAbbr, 0, sizeof(cfgStruct.szAbbr));
 	strncpy(cfgStruct.szName, date.substr(0, 8).c_str(), 8);
 	strncpy(cfgStruct.szAbbr, date.substr(0, 8).c_str(), 8);
 	fwrite(cfgStruct.szName, sizeof(char), sizeof(cfgStruct.szName), cfgFp);

@@ -3,12 +3,15 @@
 #include <vector>
 #include <set>
 #include <cstdio>
+#include "dataStructure.h"
+
 namespace ZHANGTING
 {
 struct zhangTing_t
 {
     char  code[10];
     char  name[10];
+	int   indexLvsC;
     float liangBi;
     float ziYouHuanShouLv;
     float ziYouLiuTongShiZhi;
@@ -39,5 +42,13 @@ struct zhangTing_t
     int   minLen;
     int   dateYMD;
 };
+
+struct limitVsCirculate_t
+{
+	bool operator() (const zhangTing_t &a, const zhangTing_t &b) { return ((a.limitVsCirculate) > (b.limitVsCirculate)); }
+};
+
+void getZhangTingCode(std::vector<zhangTing_t> &zhangTingVec, std::vector<analyseCode_t> &codeVec);
+
 bool readZhangTingFile(char *fileName, std::vector<zhangTing_t> &zhangtingVec);
 }

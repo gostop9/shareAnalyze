@@ -3,8 +3,10 @@
 #include "dataStructure.h"
 #include "dataProc.h"
 #include "shareDef.h"
+#include "commonFun.h"
 
 using namespace std;
+using namespace commonFun;
 using namespace SHAREDEF;
 
 namespace GUBEN
@@ -28,19 +30,8 @@ namespace GUBEN
 			str = str.substr(0, strLen - 1);// remove "\n"
 			vector<string> strVec;
 			strVec.reserve(10);
-			int iPos0 = 0;
-			while (string::npos != str.find(" ", 0))
-			{
-				iPos0 = str.find(" ", 0);
-				string strTemp = str.substr(0, iPos0);
-				if (strTemp.size() > 0)
-				{
-					strVec.push_back(strTemp);
-				}
-				str = str.substr(iPos0 + 1, str.length() - iPos0);
-			}
-			// 最后一个字符串
-			strVec.push_back(str);
+			stringSplit(str, " ", strVec);
+			
 			// move the last empty line
 			if (3 < strVec.size())
 			{
@@ -73,7 +64,7 @@ namespace GUBEN
 				gubenTemp.ziYouLiuTongShiZhi = liuTong;*/
 				// 自由流通股本
 				string str = strVec[2];
-				iPos0 = str.find(",");
+				int iPos0 = str.find(",");
 				while (iPos0 != string::npos)
 				{
 					str = str.erase(iPos0, 1);

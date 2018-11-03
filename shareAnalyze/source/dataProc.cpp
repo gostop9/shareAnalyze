@@ -6,8 +6,10 @@
 #include "dataStructure.h"
 #include "dataProc.h"
 #include "shareDef.h"
+#include "commonFun.h"
 
 using namespace std;
+using namespace commonFun;
 using namespace SHAREDEF;
 
 //char lineDateBuf[lineDataLen];
@@ -38,29 +40,7 @@ bool readDdeFile(char *fileName, vector<DDE_t> &ddeVec)
 		string str = lineDateBuf;
 		vector<string> strVec;
 		strVec.reserve(50);
-		int tableCount = 0;
-		int iPos0 = str.find("\t", 0);
-		while (string::npos != iPos0)
-		{
-			tableCount++;
-			string strTemp = str.substr(0, iPos0);
-			if (strTemp.size() > 0)
-			{
-				strVec.push_back(strTemp);
-				tableCount = 0;
-			}
-			else if (tableCount >= 3)
-			{
-				strTemp = nonChar;
-				strVec.push_back(strTemp);
-				tableCount = 0;
-			}
-			str = str.substr(iPos0 + 1, str.length() - iPos0);
-
-			iPos0 = str.find("\t", 0);
-		}
-		// 最后一个字符串  
-		strVec.push_back(str);
+		stringSplitMultiSymbol(str, "\t", strVec);
 		/*for (const auto &i : strVec)
 		{
 			cout << i << endl;
@@ -237,29 +217,7 @@ bool readZijinFile(char *fileName, vector<ZIJIN_t> &zijinVec)
 		string str = lineDateBuf;
 		vector<string> strVec;
 		strVec.reserve(50);
-		int tableCount = 0;
-		int iPos0 = str.find("\t", 0);
-		while (string::npos != iPos0)
-		{
-			tableCount++;
-			string strTemp = str.substr(0, iPos0);
-			if (strTemp.size() > 0)
-			{
-				strVec.push_back(strTemp);
-				tableCount = 0;
-			}
-			else if (tableCount >= 3)
-			{
-				strTemp = nonChar;
-				strVec.push_back(strTemp);
-				tableCount = 0;
-			}
-			str = str.substr(iPos0 + 1, str.length() - iPos0);
-
-			iPos0 = str.find("\t", 0);
-		}
-		// 最后一个字符串  
-		strVec.push_back(str);
+		stringSplitMultiSymbol(str, "\t", strVec);
 		/*for (const auto &i : strVec)
 		{
 		cout << i << endl;
@@ -876,29 +834,7 @@ bool readZhuliFile(char *fileName, vector<ZHULI_t> &zhuliVec)
 		string str = lineDateBuf;
 		vector<string> strVec;
 		strVec.reserve(50);
-		int tableCount = 0;
-		int iPos0 = str.find("\t", 0);
-		while (string::npos != iPos0)
-		{
-			tableCount++;
-			string strTemp = str.substr(0, iPos0);
-			if (strTemp.size() > 0)
-			{
-				strVec.push_back(strTemp);
-				tableCount = 0;
-			}
-			else if (tableCount >= 3)
-			{
-				strTemp = nonChar;
-				strVec.push_back(strTemp);
-				tableCount = 0;
-			}
-			str = str.substr(iPos0 + 1, str.length() - iPos0);
-
-			iPos0 = str.find("\t", 0);
-		}
-		// 最后一个字符串  
-		strVec.push_back(str);
+		stringSplitMultiSymbol(str, "\t", strVec);
 		/*for (const auto &i : strVec)
 		{
 		cout << i << endl;
@@ -1166,29 +1102,7 @@ bool readZhangfuFile(char *fileName, vector<ZHANGFU_t> &zhangfuVec)
 		string str = lineDateBuf;
 		vector<string> strVec;
 		strVec.reserve(50);
-		int tableCount = 0;
-		int iPos0 = str.find("\t", 0);
-		while (string::npos != iPos0)
-		{
-			tableCount++;
-			string strTemp = str.substr(0, iPos0);
-			if (strTemp.size() > 0)
-			{
-				strVec.push_back(strTemp);
-				tableCount = 0;
-			}
-			else if (tableCount >= 3)
-			{
-				strTemp = nonChar;
-				strVec.push_back(strTemp);
-				tableCount = 0;
-			}
-			str = str.substr(iPos0 + 1, str.length() - iPos0);
-
-			iPos0 = str.find("\t", 0);
-		}
-		// 最后一个字符串  
-		strVec.push_back(str);
+		stringSplitMultiSymbol(str, "\t", strVec);
 		/*for (const auto &i : strVec)
 		{
 		cout << i << endl;
@@ -1565,5 +1479,45 @@ bool readZhangfuFile(char *fileName, vector<ZHANGFU_t> &zhangfuVec)
 
 	fclose(fp);
 	return true;
+}
+
+void fileNameCat(char *ddeFileName, 
+	char *zijinName, 
+	char *zhuliFileName, 
+	char *zhangfuFileName, 
+	char *zhangtingFileName, 
+	char *path, 
+	char *date)
+{
+	memset(ddeFileName, 0, sizeof(ddeFileName));
+	memset(zijinName, 0, sizeof(zijinName));
+	memset(zhuliFileName, 0, sizeof(zhuliFileName));
+	memset(zhangfuFileName, 0, sizeof(zhangfuFileName));
+	memset(zhangtingFileName, 0, sizeof(zhangtingFileName));
+
+	strcpy(ddeFileName, path);
+	strcat(ddeFileName, "DDE_");
+	strcat(ddeFileName, date);
+	strcat(ddeFileName, ".txt");
+
+	strcpy(zijinName, path);
+	strcat(zijinName, "zijin_");
+	strcat(zijinName, date);
+	strcat(zijinName, ".txt");
+
+	strcpy(zhuliFileName, path);
+	strcat(zhuliFileName, "zhuli_");
+	strcat(zhuliFileName, date);
+	strcat(zhuliFileName, ".txt");
+
+	strcpy(zhangfuFileName, path);
+	strcat(zhangfuFileName, "zhangfu_");
+	strcat(zhangfuFileName, date);
+	strcat(zhangfuFileName, ".txt");
+
+	strcpy(zhangtingFileName, path);
+	strcat(zhangtingFileName, "zhangting_");
+	strncat(zhangtingFileName, date, 8);
+	strcat(zhangtingFileName, ".txt");
 }
 }

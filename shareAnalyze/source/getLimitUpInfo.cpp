@@ -9,6 +9,7 @@
 #include "commonFun.h"
 #include "dataStructure.h"
 #include "getShareFlag.h"
+#include "shareSelect.h"
 
 using namespace std;
 using namespace SHAREDEF;
@@ -16,6 +17,87 @@ using namespace commonFun;
 using namespace SHARE_FLAG;
 namespace GETLIMITUPINFO
 {
+	void limitUpReason_t::jingBiConclude(PROPERTY_t &propertyAnaly, std::vector<float> &marginVec, std::vector<float> &jingBi)
+	{
+		int secNum = marginVec.size() + 1;
+		float jingJiaLiangBi = propertyAnaly.jingJiaLiangBi;
+		if (jingJiaLiangBi < marginVec[0])
+		{
+			jingBi[0] += 1.0;
+		}
+		if (jingJiaLiangBi >= marginVec[secNum-2])
+		{
+			jingBi[secNum-1] += 1.0;
+		}
+		for (int i = 1; i < (secNum-1); i++)
+		{
+			if((jingJiaLiangBi >= marginVec[i-1]) && (jingJiaLiangBi < marginVec[i]))
+			{
+				jingBi[i] += 1.0;
+			}
+		}		
+	}
+
+	void limitUpReason_t::continueLimitSave(std::vector<PROPERTY_t > propertyAnalyVec, std::vector<analyseCode_t> limitTodayVec)
+	{
+		vector<float> marginVec = { 7.0, 10.0, 15.0, 20.0, 30.0, 50.0 };
+		int secNum = marginVec.size() + 1;
+		vector<float> jingBi;
+		vector<float> jingBiZt;
+		jingBi.resize(secNum);
+		jingBiZt.resize(secNum);
+		for (int i = 0; i < secNum; i++)
+		{
+			jingBi[i] = 0.0;
+			jingBiZt[i] = 0.0;
+		}
+		//continue limit result file
+		FILE *continueFp;
+		continueFp = fopen(continueLimitFileName.c_str(), "at+");
+		if (NULL == continueFp)
+		{
+			printf("Open continue limit result file failed!\n");
+			return;
+		}
+
+		FILE *ztProportionFp;
+		ztProportionFp = fopen(ztProportionFileName.c_str(), "at+");
+		if (NULL == ztProportionFp)
+		{
+			printf("Open ztProportionFp file failed!\n");
+			return;
+		}
+
+		int analyNum = propertyAnalyVec.size();
+		int limitTodayNum = limitTodayVec.size();
+		PROPERTY_t proTemp;
+		vector<PROPERTY_t > propertyAnalyVecPre;
+		propertyAnalyVecPre.push_back(proTemp);
+		for (int i = 0; i < analyNum; i++)
+		{
+			PROPERTY_t &analyProty = propertyAnalyVec[i];
+			if (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+			{
+				jingBiConclude(analyProty, marginVec, jingBi);
+				for (int j = 0; j < limitTodayNum; j++)
+				{
+					if (0 == strcmp(analyProty.code, limitTodayVec[j].code))
+					{
+						jingBiConclude(analyProty, marginVec, jingBiZt);
+						shareSelectPrint(continueFp, analyProty, propertyAnalyVecPre);
+					}
+				}
+			}
+		}
+
+		
+		for (int i = 0; i < secNum; i++)
+		{
+			fprintf(ztProportionFp, "%f, %f, ", jingBi[i], jingBiZt[i]);
+		}
+		fprintf(ztProportionFp, "\n");
+	}
+
 	void limitUpReason_t::limitShareSummary(std::string &ztStr, PROPERTY_t &analyProty, std::vector<limitUpReason_t> &ztrVec)
 	{
 		vector<limitUpReason_t>::iterator ztrIter = ztrVec.begin();
@@ -33,10 +115,11 @@ namespace GETLIMITUPINFO
 				ztrIter->shiZhiXzhangFuZong += (analyProty.ziYouLiuTongShiZhi/(100 + analyProty.zhangFu) * analyProty.zhangFu);
 				//if (ztrIter->zhangFu < analyProty.zhangFu)
 				{
-					limitUpInfo_t ztSort;
+					//limitUpInfo_t &ztSort = (limitUpInfo_t &)analyProty;
+					limitUpInfo_t ztSort(analyProty);
 					//ztSort.code = analyProty.code;
 					//ztSort.name = analyProty.name;
-					strcpy(ztSort.code, analyProty.code);
+					/*strcpy(ztSort.code, analyProty.code);
 					strcpy(ztSort.name, analyProty.name);
 
 					ztSort.weiBi = analyProty.weiBi;
@@ -60,6 +143,8 @@ namespace GETLIMITUPINFO
 					//ztSort.lastLimitTime = analyProty.lastLimitTime;
 					strcpy(ztSort.lastLimitTime, analyProty.lastLimitTime);
 					ztSort.limitOpenCount = analyProty.limitOpenCount;
+					ztSort.indexLvsC = analyProty.indexLvsC;
+					ztSort.limitUpMoney = analyProty.limitUpMoney;*/
 
 					ztrIter->limitInfo.insert(ztSort);
 				}
@@ -69,10 +154,11 @@ namespace GETLIMITUPINFO
 		}
 		if (ztrIter == ztrVec.end()) //not found
 		{
-			limitUpInfo_t ztSort;
+			//limitUpInfo_t &ztSort = (limitUpInfo_t &)analyProty;
+			limitUpInfo_t ztSort(analyProty);
 			//ztSort.code = analyProty.code;
 			//ztSort.name = analyProty.name;
-			strcpy(ztSort.code, analyProty.code);
+			/*strcpy(ztSort.code, analyProty.code);
 			strcpy(ztSort.name, analyProty.name);
 
 			ztSort.weiBi = analyProty.weiBi;
@@ -96,6 +182,8 @@ namespace GETLIMITUPINFO
 			//ztSort.lastLimitTime = analyProty.lastLimitTime;
 			strcpy(ztSort.lastLimitTime, analyProty.lastLimitTime);
 			ztSort.limitOpenCount = analyProty.limitOpenCount;
+			ztSort.indexLvsC = analyProty.indexLvsC;
+			ztSort.limitUpMoney = analyProty.limitUpMoney;*/
 
 			limitUpReason_t ztrTemp;
 			ztrTemp.limitInfo.insert(ztSort);
@@ -209,44 +297,107 @@ namespace GETLIMITUPINFO
 				int maxDisplay = 5;
 				maxDisplay = shareCount < maxDisplay ? shareCount : maxDisplay;
 
-				/*float maiLiang = (setIter->weiCha * 100 / setIter->weiBi - setIter->weiCha) / 2;
-				float zhangTingBan = setIter->zuoShou * 1.1 * maiLiang / 10000; //千万量级显示
-				if (setIter->weiBi > WEIBI_MAX)
-				{
-					zhangTingBan = (setIter->buyLiang * setIter->xianJia) / 1000000.0;
-				}
-				else if (setIter->weiBi < -100.0) // 委差为无效值时
-				{
-					zhangTingBan = 0.0;
-				}*/
 				float zhanLiuBi = 0;
 				float zhangTingBan = getLimitUpMoney<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter), zhanLiuBi);
 				string printFlag = getShareFlag<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter));				
-				fprintf(fp, "%2d  %-8s  %3s%-8s  %6.2f | %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%8.2f,  %5.2f : %d  %s: \n",
-					ztrTemp.ztCount, setIter->code, printFlag.c_str(), setIter->name, setIter->zhangFu, setIter->ziYouLiuTongShiZhi / DIVIDE, setIter->continueDay, setIter->jingJiaLiangBi, setIter->zuoRiHuanShou, setIter->zuoRiLiangBi, setIter->weiBi, zhangTingBan, zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.reason.c_str());
+				fprintf(fp, "%2d  %-8s  %6.2f, %4s%-8s  %6.2f | 昨停:%5.0f,封:%2d, %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%8.2f,  %5.2f : %d  %s: \n",
+					ztrTemp.ztCount, setIter->code, setIter->xianJia, printFlag.c_str(), setIter->name, setIter->zhangFu, setIter->limitUpMoney/TENTHOUSAND, setIter->indexLvsC, setIter->ziYouLiuTongShiZhi / DIVIDE, setIter->continueDay, setIter->jingJiaLiangBi, setIter->zuoRiHuanShou, setIter->zuoRiLiangBi, setIter->weiBi, zhangTingBan, zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.reason.c_str());
 				for (int j = 1; j < maxDisplay; j++)
 				{
 					++setIter;
 
-					/*float maiLiang = (setIter->weiCha * 100 / setIter->weiBi - setIter->weiCha) / 2;
-					float zhangTingBan = setIter->zuoShou * 1.1 * maiLiang / 10000; //千万量级显示
-					if (setIter->weiBi > WEIBI_MAX)
-					{
-						zhangTingBan = (setIter->buyLiang * setIter->xianJia) / 1000000.0;
-					}
-					else if (setIter->weiBi < -100.0) // 委差为无效值时
-					{
-						zhangTingBan = 0.0;
-					}*/
 					float zhanLiuBi = 0;
 					float zhangTingBan = getLimitUpMoney<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter), zhanLiuBi);
 
 					string printFlag = getShareFlag<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter));					
-					fprintf(fp, "    %-8s  %3s%-8s  %6.2f | %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%8.2f\n",
-						setIter->code, printFlag.c_str(), setIter->name, setIter->zhangFu, setIter->ziYouLiuTongShiZhi / DIVIDE, setIter->continueDay, setIter->jingJiaLiangBi, setIter->zuoRiHuanShou, setIter->zuoRiLiangBi, setIter->weiBi, zhangTingBan);
+					fprintf(fp, "    %-8s  %6.2f, %4s%-8s  %6.2f | 昨停:%5.0f,封:%2d, %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%8.2f\n",
+						setIter->code, setIter->xianJia, printFlag.c_str(), setIter->name, setIter->zhangFu, setIter->limitUpMoney/TENTHOUSAND, setIter->indexLvsC, setIter->ziYouLiuTongShiZhi / DIVIDE, setIter->continueDay, setIter->jingJiaLiangBi, setIter->zuoRiHuanShou, setIter->zuoRiLiangBi, setIter->weiBi, zhangTingBan);
 				}
 			}
 		}
 	}
 
+	void limitUpReason_t::limitShareOrdering(std::vector<PROPERTY_t> &propertyAnalyVec)
+	{
+	{
+		// sort for jingLiuRuBiLiuTongIndex
+		struct jingLiuRuBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.jingLiuRuBiLiuTong < b.jingLiuRuBiLiuTong); }
+		} cmpMethod_jingLiuRuBiLiuTongIndex;
+		sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_jingLiuRuBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->jingLiuRuBiLiuTongIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for zongLiuRuBiLiuTongIndex
+		struct zongLiuRuBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zongLiuRuBiLiuTong > b.zongLiuRuBiLiuTong); }
+		} cmpMethod_zongLiuRuBiLiuTongIndex;
+		sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zongLiuRuBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->zongLiuRuBiLiuTongIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for zongLiuChuBiLiuTongIndex
+		struct zongLiuChuBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zongLiuChuBiLiuTong > b.zongLiuChuBiLiuTong); }
+		} cmpMethod_zongLiuChuBiLiuTongIndex;
+		sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zongLiuChuBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->zongLiuChuBiLiuTongIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for chengJiaoBiLiuTongIndex
+		struct chengJiaoBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.chengJiaoBiLiuTong > b.chengJiaoBiLiuTong); }
+		} cmpMethod_chengJiaoBiLiuTongIndex;
+		sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_chengJiaoBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->chengJiaoBiLiuTongIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for ddeIndex
+		struct ddeIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhuLiJingLiang < b.zhuLiJingLiang); }
+		} cmpMethodDde;
+		sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethodDde);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->ddeIdx = index++;
+			++proIter;
+		}
+	}
+
+	{
+		// sort for total Index
+		struct totalIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return ((a.ddeIdx + a.jingLiuRuBiLiuTongIndex + a.chengJiaoBiLiuTongIndex + a.zongLiuRuBiLiuTongIndex + a.zongLiuChuBiLiuTongIndex) < (b.ddeIdx + b.jingLiuRuBiLiuTong + b.chengJiaoBiLiuTongIndex + b.zongLiuRuBiLiuTongIndex + b.zongLiuChuBiLiuTongIndex)); }
+			//bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return ((a.ddeIdx + a.jingLiuRuBiLiuTongIndex + a.chengJiaoBiLiuTongIndex + a.zongLiuRuBiLiuTongIndex) < (b.ddeIdx + b.jingLiuRuBiLiuTong + b.chengJiaoBiLiuTongIndex + b.zongLiuRuBiLiuTongIndex)); }
+		} cmpMethodTotal;
+		sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethodTotal);
+	}
+
+	}
 }

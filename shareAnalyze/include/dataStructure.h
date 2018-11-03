@@ -25,9 +25,6 @@ typedef long long int64;
 const int TOTAL_NUMBER = (4000);
 const int TOTAL_SHARE_NUMBERS = (4000);
 
-const int CHAR_LEN = (30);
-extern char nonChar[];
-
 extern float huanShouMax;
 extern float liangBiMin;
 extern float liangBiMax;
@@ -242,7 +239,7 @@ struct RIXIAN_t
 struct PROPERTY_t
 {
 	//DDE
-	float ddeIdx;
+	int   ddeIdx;
 	char  code[10];
 	char  name[10];
 	float zhuLiJingLiang;
@@ -394,6 +391,7 @@ struct PROPERTY_t
 	float zhongDanLiuRuBiLiuTong;
 	float daZhongLiuRuBiLiuTong;
 	float zongLiuRuBiLiuTong;
+	float zongLiuChuBiLiuTong;
 	float chengJiaoBiLiuTong;
 	float chengJiaoJinE;
 	float jingJiaLiangBi;
@@ -405,6 +403,11 @@ struct PROPERTY_t
 	float zuoRiZhenFu;
 
 	//zhang ting
+	int   jingLiuRuBiLiuTongIndex;
+	int   zongLiuRuBiLiuTongIndex;
+	int   zongLiuChuBiLiuTongIndex;
+	int   chengJiaoBiLiuTongIndex;
+	int   indexLvsC;
 	int   continueDay;
 	char  firstLimitTime[10];
 	char  lastLimitTime[10];

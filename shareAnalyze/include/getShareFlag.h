@@ -14,7 +14,7 @@ namespace SHARE_FLAG
 	std::string getShareFlag(T &shareProperty)
 	{
 		string shareFlag;
-		if (
+		/*if (
 			(
 			(shareProperty.zhongXiaoDanJinBiLiuTong > 0.0)
 				&& (shareProperty.zhongDanJinBiLiuTong > 0.0)
@@ -37,25 +37,149 @@ namespace SHARE_FLAG
 		if (
 			(shareProperty.weiBi > 30)
 			&& (shareProperty.zhangFu > 5.0)
-			&& (shareProperty.zuoRiZhenFu > 0.0001)
+			&& (shareProperty.zuoRiZhenFu > FLT_MIN)
 			&& ((shareProperty.zuoRiLiangBi < 4.1) && ((shareProperty.jingJiaLiangBi / shareProperty.zuoRiHuanShou) < 5.9))
 			)
 		{
 			shareFlag.append("*");
 		}
-		if ((shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < 0.0001)
+		if ((shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)
 		{
 			shareFlag.append("-"); //T字板
-			if (shareProperty.zuoRiZhenFu < 0.0001) //昨日一字板
+			if (shareProperty.zuoRiZhenFu < FLT_MIN) //昨日一字板
 			{
 				shareFlag.append("-");
-				if ((shareProperty.waiPan < 0.0001) && (shareProperty.weiBi > WEIBI_MAX)) //一字开盘，连续一字板
+				//if ((shareProperty.waiPan < FLT_MIN) && (shareProperty.weiBi > WEIBI_MAX)) //一字开盘，连续一字板
+				if ((shareProperty.weiBi > WEIBI_MAX)) //一字开盘，连续一字板
 				{
 					shareFlag.append("-");
 				}
 			}
+		}*/
+		if (
+			(shareProperty.zhongDanJinBiLiuTong * BI_LIUTONG > 0.9)
+			&& (shareProperty.zhongXiaoDanJinBiLiuTong * BI_LIUTONG > 0.9)
+			&& (shareProperty.jingJiaLiangBi > 9.5)
+			&& (shareProperty.zuoRiHuanShou < 15.9)
+			)
+		{
+			shareFlag.append("=");
 		}
-		int ztTime = atoi(shareProperty.lastLimitTime);
+		if (
+			((shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)
+			&& (shareProperty.zuoRiZhenFu > FLT_MIN)
+			)
+		{
+			shareFlag.append("T"); //昨日T字板
+		}
+		if (
+			((shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)
+			&& (shareProperty.zuoRiZhenFu < FLT_MIN)
+			)
+		{
+			shareFlag.append("~"); //昨日一字板
+		}
+		if ((shareProperty.weiBi > WEIBI_MAX)) //一字开盘
+		{
+			shareFlag.append("-");
+		}
+
+		if (
+			(shareProperty.weiBi > -83.0)
+			&& (shareProperty.jingJiaLiangBi > 9.1)
+			&& (shareProperty.zuoRiLiangBi < 4.67)
+			//&& (shareProperty.zuoRiHuanShou < 15.9)
+			&& (shareProperty.ddeIdx < 18)
+			&& (shareProperty.zijinIdx < 46)
+			&& (shareProperty.jingLiuRuBiLiuTongIndex < 21)
+			&& (shareProperty.zongLiuRuBiLiuTongIndex < 15)
+			&& (shareProperty.chengJiaoBiLiuTongIndex < 15)
+			&& (shareProperty.indexLvsC < 21)
+			&& (shareProperty.limitUpMoney >(900 * TENTHOUSAND))
+			)
+		{
+			if (//昨日一字板
+				((shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)
+				&& (shareProperty.zuoRiZhenFu < FLT_MIN)
+				&& (shareProperty.zuoRiHuanShou > 5.9)
+				)
+			{				
+			}
+			else
+			{
+				float zhanLiuBi = 0;
+				float zhangTingBan = getLimitUpMoney<T>(shareProperty, zhanLiuBi);
+				if (
+					(shareProperty.weiBi > WEIBI_MAX) //一字开盘
+					)
+				{
+					if (
+						((shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)//昨日一字板
+						&& (shareProperty.zuoRiZhenFu < FLT_MIN)
+						)
+					{
+						if ((shareProperty.zuoRiHuanShou < 2.9))
+						{
+							shareFlag.append("#");
+						}
+					}
+					else
+					{
+						shareFlag.append("#");
+					}
+				}
+				else if (zhangTingBan < (4900.0))//3800
+				{
+					shareFlag.append("#");
+				}
+			}
+		}
+		/*if (
+			(shareProperty.weiBi > -83.0)
+			&& ( 
+				(
+					(shareProperty.zhongDanJinBiLiuTong * BI_LIUTONG > -70.0) 
+					&& (shareProperty.xiaoDanJinBiLiuTong * BI_LIUTONG > -70.0)
+					&& (shareProperty.zijinIdx < 169)
+				) 
+				|| (shareProperty.zijinIdx < 29) 
+				|| (shareProperty.limitUpMoney >(10000 * TENTHOUSAND))
+				)
+			&& (shareProperty.jingJiaLiangBi > 9.5)
+			&& (
+				(shareProperty.zuoRiHuanShou < 10.0)
+				|| (
+					(shareProperty.jingJiaLiangBi > ((shareProperty.zuoRiHuanShou) * 4.0))
+					&& (shareProperty.zuoRiHuanShou < 15.0)
+					)
+				|| (
+					(shareProperty.zijinIdx < 47)
+					&& ((shareProperty.indexLvsC < 15))
+					&& (shareProperty.zuoRiHuanShou < 15.0)
+					)
+				)
+			&& (shareProperty.zuoRiLiangBi < 6.1)
+			&& (shareProperty.indexLvsC < 20)
+			&& (shareProperty.limitOpenCount < 5)
+			&& (shareProperty.zhangFu > -2.0)
+			&& (shareProperty.huanShou < 6.0)
+			//&& (shareProperty.limitUpMoney > (1000 * TENTHOUSAND))
+			)
+		{
+			shareFlag.append("#");
+		}*/
+		/*if (
+			(shareProperty.jingJiaLiangBi > 20.0)
+			&& (shareProperty.jingJiaLiangBi < 74.0)
+			&& (shareProperty.huanShou > 0.3)
+			&& (shareProperty.huanShou < 2.0)
+			&& (shareProperty.liangBi > 36.0)
+			&& (shareProperty.liangBi < 155.0)
+			)
+		{
+			shareFlag.append("#");
+		}*/
+		/*int ztTime = atoi(shareProperty.lastLimitTime);
 		if (
 			(ztTime < 103001)
 			&& (shareProperty.limitOpenCount < 2)
@@ -76,7 +200,7 @@ namespace SHARE_FLAG
 			)
 		{
 			shareFlag.append("^");
-		}
+		}*/
 
 		return shareFlag;
 	}
