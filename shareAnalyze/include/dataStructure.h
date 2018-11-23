@@ -385,6 +385,7 @@ struct PROPERTY_t
 	float zhongXiaoDanJinBiLiuTong;
 	float zhongXiaoDanZongBiLiuTong;
 	float daDanLiuRuBiLiuTong;
+	float daDanLiuChuBiLiuTong;
 	float zhongXiaoLiuRuBiLiuTong;
 	float daXiaoLiuRuBiLiuTong;
 	float xiaoDanLiuRuBiLiuTong;
@@ -396,11 +397,15 @@ struct PROPERTY_t
 	float chengJiaoJinE;
 	float jingJiaLiangBi;
 	float zhongXiaoBiJingLiuRu;
+	float zhangTingBan;
 	float zuoRiHuanShou;
 	float zuoRiKaiPan;
 	float zuoRiZuiGao;
 	float zuoRiLiangBi;
 	float zuoRiZhenFu;
+	float zuoRiZhuLiJingLiang;
+	float zuoRiDaDanJingEB;
+	float zuoJingLiuRuBiLiuTong;
 
 	//zhang ting
 	int   jingLiuRuBiLiuTongIndex;
@@ -416,6 +421,28 @@ struct PROPERTY_t
 	float limitVsCirculate;
 	float limitUpMoney;
 	char  limitReason[50];
+
+	int   jingJiaLiangBiIndex;
+	int   weiBiIndex;
+	int   zhangFuIndex;
+	int   ziYouLiuTongShiZhiIndex;
+	int   zuoRiZhuLiJingLiangIndex;
+	int   zhangTingBanIndex;
+	int   xianJiaIndex;
+	int   zuoRiDaDanJingEBIndex;
+	//int   limitVsCirculateIndex;
+	int   zuoRiHuanShouIndex;
+	int   guXingPingFenIndex;
+	int   firstLimitTimeIndex;
+	int   lastLimitTimeIndex;
+	int   zuoJingLiuRuBiLiuTongIndex;
+	int   limitUpMoneyIndex;
+	int   zhongXiaoLiuRuBiLiuTongIndex;
+	int   liangBiIndex;
+	int   zhongDanJinBiLiuTongIndex;
+	int   zhongXiaoDanJinBiLiuTongIndex;
+	int   daDanLiuChuBiLiuTongIndex;
+	int   totalIndex;
 };
 
 /*

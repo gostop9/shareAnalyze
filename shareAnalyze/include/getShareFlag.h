@@ -57,10 +57,23 @@ namespace SHARE_FLAG
 			}
 		}*/
 		if (
-			(shareProperty.zhongDanJinBiLiuTong * BI_LIUTONG > 0.9)
-			&& (shareProperty.zhongXiaoDanJinBiLiuTong * BI_LIUTONG > 0.9)
-			&& (shareProperty.jingJiaLiangBi > 9.5)
-			&& (shareProperty.zuoRiHuanShou < 15.9)
+			(shareProperty.zijinIdx > 299)
+			)
+		{
+			shareFlag.append("!");
+		}
+		if (
+			((shareProperty.zhangFu > ((round)(shareProperty.zuoShou * 110.0 - 0.5)) / 100.0)) //一字开盘
+			&& (shareProperty.zuoRiHuanShou > 5.9)
+			)
+		{
+			shareFlag.append("X");
+		}
+		if (
+			(shareProperty.zhongDanJinBiLiuTong * BI_LIUTONG > 10.0)//0.9
+			&& (shareProperty.zhongXiaoDanJinBiLiuTong * BI_LIUTONG > 10.0)
+			//&& (shareProperty.jingJiaLiangBi > 9.5)
+			//&& (shareProperty.zuoRiHuanShou < 15.9)
 			)
 		{
 			shareFlag.append("=");
@@ -107,8 +120,8 @@ namespace SHARE_FLAG
 			}
 			else
 			{
-				float zhanLiuBi = 0;
-				float zhangTingBan = getLimitUpMoney<T>(shareProperty, zhanLiuBi);
+				//float zhanLiuBi = 0;
+				//float zhangTingBan = getLimitUpMoney<T>(shareProperty, zhanLiuBi);
 				if (
 					(shareProperty.weiBi > WEIBI_MAX) //一字开盘
 					)
@@ -128,7 +141,7 @@ namespace SHARE_FLAG
 						shareFlag.append("#");
 					}
 				}
-				else if (zhangTingBan < (4900.0))//3800
+				else if (shareProperty.zhangTingBan > (-4900.0))//3800
 				{
 					shareFlag.append("#");
 				}
@@ -209,7 +222,7 @@ namespace SHARE_FLAG
 	float getLimitUpMoney(T &shareProperty, float &zhanLiuBi)
 	{
 		float maiLiang = (shareProperty.weiCha * 100.0 / shareProperty.weiBi - shareProperty.weiCha) / 2.0;
-		float zhangTingBan = shareProperty.zuoShou * 1.1 * maiLiang / 10000.0; //千万量级显示
+		float zhangTingBan = shareProperty.zuoShou * (-1.1) * maiLiang / 10000.0; //千万量级显示
 
 		zhanLiuBi = zhangTingBan * 1000000 / shareProperty.ziYouLiuTongShiZhi;
 		if (shareProperty.weiBi > WEIBI_MAX)

@@ -938,12 +938,12 @@ property.sanRiZhangFu, property.wuRiZhangFu, property.shiRiZhangFu);
 				float zhongDanJinBiLiuTong = property.zhongDanJinBiLiuTong * BI_LIUTONG;
 				float zhongXiaoDanJinBiLiuTong = property.zhongXiaoDanJinBiLiuTong * BI_LIUTONG;
 				fprintf(fp, "%-8s, %6.2f, %4s%-8s,涨:%6.2f, 昨停:%5.0f,封:%2d, | %7.3f亿,连:%2d,  竞比:%6.2f,昨换:%5.2f,昨量:%5.2f,委:%6.2f,涨停:%8.2f,原:%-16s,HY:%-14s,主净:%5.2f, | \
-中:%8.2f,中小:%8.2f, | 资:%4d,净流:%4d,总入:%4d,总出:%4d,成交:%4d,主:%3d,换:%5.2f,量:%5.2f,\
+中:%8.2f,中小:%8.2f, | 全:%2d,资:%4d,净流:%4d,总入:%4d,总出:%4d,成交:%4d,主:%3d,换:%5.2f,量:%5.2f,\
 股:%5.2f,始:%6s,末:%6s,开:%2d,机:%6.2f,盘比:%5.2f,主总:%5.2f,净增:%7.2f,净利:%7.4f,\
 净流:%7.4f,大:%7.4f,比:%5.2f,中:%7.4f,比:%5.2f,小:%7.4f,比:%5.2f,\
 三:%5.2f,五:%5.2f,十:%5.2f\n",
 property.code, property.xianJia, printFlag.c_str(), property.name, property.zhangFu, property.limitUpMoney/TENTHOUSAND, property.indexLvsC, property.ziYouLiuTongShiZhi / DIVIDE, property.continueDay, jingJiaLiangBi, zuoRiHuanShou, zuoRiLiangBi, property.weiBi, zhangTingBan, property.limitReason, property.suoShuHangYe,property.zhuLiJingLiang,
-zhongDanJinBiLiuTong, zhongXiaoDanJinBiLiuTong, property.zijinIdx, property.jingLiuRuBiLiuTongIndex, property.zongLiuRuBiLiuTongIndex, property.zongLiuChuBiLiuTongIndex, property.chengJiaoBiLiuTongIndex, property.ddeIdx, property.huanShou, property.liangBi,
+zhongDanJinBiLiuTong, zhongXiaoDanJinBiLiuTong, property.totalIndex, property.zijinIdx, property.jingLiuRuBiLiuTongIndex, property.zongLiuRuBiLiuTongIndex, property.zongLiuChuBiLiuTongIndex, property.chengJiaoBiLiuTongIndex, property.ddeIdx, property.huanShou, property.liangBi,
 property.guXingPingFen, property.firstLimitTime, property.lastLimitTime, property.limitOpenCount, property.jiGouDongXiang, neiWaiPanBi, zhuLiJingBi, property.jingLiZengLv, property.jingLiRun / DIVIDE,
 property.jingLiuRu / DIVIDE, property.daDanJinE / DIVIDE, property.daDanJingEB, property.zhongDanJinE / DIVIDE, property.zhongDanJingEB, property.xiaoDanJinE / DIVIDE, property.xiaoDanJingEB,
 property.sanRiZhangFu, property.wuRiZhangFu, property.shiRiZhangFu);
@@ -1006,6 +1006,7 @@ void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPER
 		proIter->zhuLiJingBiLiuTong = proIter->zhuLiJingE / zuiXinLiuTongShiZhi;
 
 		proIter->daDanLiuRuBiLiuTong = (proIter->daDanLiuRu) / zuiXinLiuTongShiZhi;
+		proIter->daDanLiuChuBiLiuTong = (proIter->daDanLiuChu) / zuiXinLiuTongShiZhi;
 		proIter->zhongXiaoLiuRuBiLiuTong = (proIter->zhongDanLiuRu + proIter->xiaoDanLiuRu) / zuiXinLiuTongShiZhi;
 		proIter->daXiaoLiuRuBiLiuTong = (proIter->daDanLiuRu + proIter->xiaoDanLiuRu) / zuiXinLiuTongShiZhi;
 		proIter->xiaoDanLiuRuBiLiuTong = (proIter->xiaoDanLiuRu) / zuiXinLiuTongShiZhi;
@@ -1026,6 +1027,10 @@ void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPER
 		proIter->zhongXiaoDanJinBiLiuTong = (proIter->zhongDanJinE + proIter->xiaoDanJinE) / zuiXinLiuTongShiZhi;
 		proIter->zhongXiaoDanZongBiLiuTong = (proIter->zhongDanZongE + proIter->xiaoDanZongE) / zuiXinLiuTongShiZhi;
 
+		float zhanLiuBi = 0;
+		float zhangTingBan = getLimitUpMoney<PROPERTY_t>((*proIter), zhanLiuBi);
+		proIter->zhangTingBan = zhangTingBan;
+
 		vector<PROPERTY_t>::iterator proPreIter = propertyAnalyVec.begin();
 		while (proPreIter != propertyAnalyVec.end())
 		{
@@ -1043,6 +1048,10 @@ void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPER
 				proIter->zuoRiZuiGao = proPreIter->zuiGao;
 				proIter->zuoRiLiangBi = proPreIter->liangBi;
 				proIter->zuoRiZhenFu = proPreIter->zhenFu;
+				proIter->zuoRiZhuLiJingLiang = proPreIter->zhuLiJingLiang;
+				proIter->zuoRiDaDanJingEB = proPreIter->daDanJingEB;
+
+				proIter->zuoJingLiuRuBiLiuTong = (proPreIter->jingLiuRu) / (proIter->ziYouLiuTongGu * proIter->zuoShou);
 
 				//计算平均涨幅
 				{

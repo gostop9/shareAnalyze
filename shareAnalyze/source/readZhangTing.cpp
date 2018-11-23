@@ -273,7 +273,7 @@ bool readZhangTingFile(char *fileName, vector<zhangTing_t> &zhangTingVec)
                 }
                 zhangTingTemp.limitUpMoney = liuTong;
             }
-            //limitUpMoney
+            //limitReason
 			memset(zhangTingTemp.limitReason, 0, sizeof(zhangTingTemp.limitReason));
             strcpy(zhangTingTemp.limitReason, strVec[i++].c_str());
             //guXingPingFen

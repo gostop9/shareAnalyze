@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <time.h>
 //#include <wchar.h>
-#include <math.h>
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -385,8 +385,38 @@ void main()
 		for (int i = 0; i < analyNum; i++)
 		{
 			PROPERTY_t &analyProty = propertyAnalyVec[i];
-			if (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+			if (
+				(0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+				&& (analyProty.weiBi > -83.9)//83.0
+				//&& (analyProty.zhangTingBan > -3800.0)
+				//&& (analyProty.zuoRiHuanShou < 29.9)
+				//&& (analyProty.zijinIdx < 499)
+				//&& ((analyProty.jingJiaLiangBi / analyProty.zuoRiHuanShou) < 300.0)
+				)
 			{
+				if (
+					(analyProty.weiBi > WEIBI_MAX) //一字开盘
+					)
+				{
+					if (
+						((analyProty.zuoRiZuiGao - analyProty.zuoRiKaiPan) < FLT_MIN)//昨日一字板
+						&& (analyProty.zuoRiZhenFu < FLT_MIN)
+						)
+					{
+						if ((analyProty.zuoRiHuanShou > 4.9))
+						{
+							continue;
+						}
+					}
+				}
+				if (
+					(analyProty.weiBi < WEIBI_MAX) //一字开盘
+					&& (analyProty.jingJiaLiangBi > 300.0)
+					&& ((analyProty.zhangFu > ((round)(analyProty.zuoShou * 110.0-0.5)) / 100.0))
+					)
+				{
+					continue;
+				}
 				shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 			}
 		}

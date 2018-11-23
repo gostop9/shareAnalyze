@@ -129,6 +129,7 @@ namespace GETLIMITUPINFO
 				zhongXiaoDanJinBiLiuTong = p.zhongXiaoDanJinBiLiuTong;
 				zhongXiaoDanZongBiLiuTong = p.zhongXiaoDanZongBiLiuTong;
 				daDanLiuRuBiLiuTong = p.daDanLiuRuBiLiuTong;
+				daDanLiuChuBiLiuTong = p.daDanLiuChuBiLiuTong;
 				zhongXiaoLiuRuBiLiuTong = p.zhongXiaoLiuRuBiLiuTong;
 				daXiaoLiuRuBiLiuTong = p.daXiaoLiuRuBiLiuTong;
 				xiaoDanLiuRuBiLiuTong = p.xiaoDanLiuRuBiLiuTong;
@@ -140,11 +141,15 @@ namespace GETLIMITUPINFO
 				chengJiaoJinE = p.chengJiaoJinE;
 				jingJiaLiangBi = p.jingJiaLiangBi;
 				zhongXiaoBiJingLiuRu = p.zhongXiaoBiJingLiuRu;
+				zhangTingBan = p.zhangTingBan;
 				zuoRiHuanShou = p.zuoRiHuanShou;
 				zuoRiKaiPan = p.zuoRiKaiPan;
 				zuoRiZuiGao = p.zuoRiZuiGao;
 				zuoRiLiangBi = p.zuoRiLiangBi;
 				zuoRiZhenFu = p.zuoRiZhenFu;
+				zuoRiZhuLiJingLiang = p.zuoRiZhuLiJingLiang;
+				zuoRiDaDanJingEB = p.zuoRiDaDanJingEB;
+				zuoJingLiuRuBiLiuTong = p.zuoJingLiuRuBiLiuTong;
 
 				jingLiuRuBiLiuTongIndex = p.jingLiuRuBiLiuTongIndex;
 				zongLiuRuBiLiuTongIndex = p.zongLiuRuBiLiuTongIndex;
@@ -162,6 +167,28 @@ namespace GETLIMITUPINFO
 				limitUpMoney = p.limitUpMoney;
 				strcpy(limitReason, p.limitReason);
 				//limitReason[50] = limitReason[50];
+
+				jingJiaLiangBiIndex = p.jingJiaLiangBiIndex;
+				weiBiIndex = p.weiBiIndex;
+				zhangFuIndex = p.zhangFuIndex;
+				ziYouLiuTongShiZhiIndex = p.ziYouLiuTongShiZhiIndex;
+				zuoRiZhuLiJingLiangIndex = p.zuoRiZhuLiJingLiangIndex;
+				zhangTingBanIndex = p.zhangTingBanIndex;
+				xianJiaIndex = p.xianJiaIndex;
+				zuoRiDaDanJingEBIndex = p.zuoRiDaDanJingEBIndex;
+				//limitVsCirculateIndex = p.limitVsCirculateIndex;
+				zuoRiHuanShouIndex = p.zuoRiHuanShouIndex;
+				guXingPingFenIndex = p.guXingPingFenIndex;
+				firstLimitTimeIndex = p.firstLimitTimeIndex;
+				lastLimitTimeIndex = p.lastLimitTimeIndex;
+				zuoJingLiuRuBiLiuTongIndex = p.zuoJingLiuRuBiLiuTongIndex;
+				limitUpMoneyIndex = p.limitUpMoneyIndex;
+				zhongXiaoLiuRuBiLiuTongIndex = p.zhongXiaoLiuRuBiLiuTongIndex;
+				liangBiIndex = p.liangBiIndex;
+				zhongDanJinBiLiuTongIndex = p.zhongDanJinBiLiuTongIndex;
+				zhongXiaoDanJinBiLiuTongIndex = p.zhongXiaoDanJinBiLiuTongIndex;
+				daDanLiuChuBiLiuTongIndex = p.daDanLiuChuBiLiuTongIndex;
+				totalIndex = p.totalIndex;
 			}
 		/*public:
 			std::string code;
