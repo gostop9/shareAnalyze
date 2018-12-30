@@ -22,6 +22,7 @@
 #include "getLimitUpInfo.h"
 #include "shareDef.h"
 #include "tdxCfgModify.h"
+#include "autoShareBuy.h"
 
 using namespace std;
 using namespace DATAPROC;
@@ -30,10 +31,12 @@ using namespace ZHANGTING;
 using namespace GETLIMITUPINFO;
 using namespace SHAREDEF;
 using namespace TDXCFGMODIFY;
+using namespace AUTOSHAREBUY;
 
 char configFileName[] = "D:/share/config.txt";
 char resultFileName[30] = "D:/share/result.txt";
-char preFileName[] = "D/share/searchPre.txt";
+char preFileName[] = "D:/share/searchPre.txt";
+char buyFileName[] = "D:/share/buyShare.txt";
 
 bool compZiJin(const ZIJIN_t &a, const ZIJIN_t &b) {
 	     return a.jingLiuRu > b.jingLiuRu;
@@ -219,7 +222,8 @@ void main()
 		getZhangTingCode(zhangTingVecToday, limitTodayVec);
 
 		shareParaFuse(dde[0], zijin[0], zhuli[0], zhangfu[0], guBenVec, propertyV[0], analyseVec, propertyAnalyVecPre);
-		chooseAnalyzeProperty(propertyV[0], analyseVec, propertyAnalyVecPre);
+		//chooseAnalyzeProperty(propertyV[0], analyseVec, propertyAnalyVecPre);
+		propertyAnalyVecPre = propertyV[0];
 	}
 
 	//用于zhuLiJingLiangMin，不用每次进行修改
@@ -262,7 +266,7 @@ void main()
 			readZhangfuFile(zhangfuFileName, zhangfu[vecIndex]);
 		}
 
-		vector<PROPERTY_t > propertyAnalyVec;
+		vector<PROPERTY_t> propertyAnalyVec;
 		if (true == zhuliFileFlag)
 		{
 			shareParaFuse(dde[vecIndex], ziinDaDanJingE, zhuli[vecIndex], zhangfu[vecIndex], guBenVec, propertyV[vecIndex], analyseVec, propertyAnalyVec);
@@ -291,7 +295,7 @@ void main()
 			}
 			//shareSelectPrint(rstFp, propertyV[vecIndex][0], propertyAnalyVecPre);
 		}
-		
+
 		//print 最新
 		if (i == fileIndex)
 		{
@@ -330,15 +334,24 @@ void main()
 			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.jingJiaLiangBi > b.jingJiaLiangBi); }
 		} cmpMethodJingJia;
 
-		vector<PROPERTY_t> propertyAnalyVecSort = propertyV[vecIndex];
-		if ((localTime < 92500) && (localTime > 91500)) //  befor time 9:25
+		vector<PROPERTY_t> &propertyAnalyVecSort = propertyV[vecIndex];
+		//if ((localTime < 92500) && (localTime > 91500)) //  befor time 9:25
+		if(0 == fileIndex)
 		{
 			sort(propertyAnalyVecSort.begin(), propertyAnalyVecSort.end(), cmpMethodJingJia);
 		}
 		else
 		{
-			sort(propertyAnalyVecSort.begin(), propertyAnalyVecSort.end(), cmpMethod);
+			//sort(propertyAnalyVecSort.begin(), propertyAnalyVecSort.end(), cmpMethod);
 		}
+
+		// sort all item
+		/*limitUpReason_t limitupInfo;
+		if (1 == fileIndex)
+		{
+			limitupInfo.limitShareOrdering(propertyAnalyVecSort);
+		}*/
+
 		chooseAnalyzeProperty(propertyAnalyVecSort, analyseVec, propertyAnalyVec);
 		//sort(propertyAnalyVecSort.begin(), propertyAnalyVecSort.end(), compZiJinFuseDaDanJingE);
 
@@ -349,11 +362,27 @@ void main()
 		sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpZtTime);*/
 					
 		vector<string> newShareCodeVec;
+		PROPERTY_t programBuyProty;
+		int programFindFlag = 0;
+		FILE *buyFp;
+		buyFp = fopen(buyFileName, "at+");
+		if (NULL == buyFp)
+		{
+			printf("Open buy file failed!\n");
+			return;
+		}
 		int analyNum = propertyAnalyVec.size();
 		if (1 >= fileIndex)
 		{
+			// sort all item
 			limitUpReason_t limitupInfo;
-			limitupInfo.limitShareOrdering(propertyAnalyVec);
+			if (1 == fileIndex)
+			{
+				limitupInfo.limitShareOrdering(propertyAnalyVec);
+
+				//程序下单
+				autoShareBuy(buyFp, propertyAnalyVec, programBuyProty, programFindFlag);
+			}
 
 			//提取涨停原因
 			fprintf(rstFp, "涨停种类------------------------------------------------------------------------------------------------------------------------\n");
@@ -382,12 +411,59 @@ void main()
 			limitupInfo.continueLimitSave(propertyAnalyVec, limitTodayVec);
 		}
 		fprintf(rstFp, "------------------------------------------------------------------------------------------------------------------------\n");
+		//打印排第一的票
+		selectFirstShare(rstFp,
+			buyFp,
+			programBuyProty,
+			programFindFlag,
+			propertyAnalyVec,
+			propertyAnalyVecSort,
+			propertyAnalyVecPre);
+		
+		fclose(buyFp);
+
+		fprintf(rstFp, "------------------------------------------------------------------------------------------------------------------------\n");
+		analyNum = propertyAnalyVec.size();
+		int count = 0;
 		for (int i = 0; i < analyNum; i++)
 		{
 			PROPERTY_t &analyProty = propertyAnalyVec[i];
+			shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 			if (
 				(0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
-				&& (analyProty.weiBi > -83.9)//83.0
+				&& (analyProty.weiBi > -88.9)
+				&& (analyProty.zhangTingBan > -7000.0)
+				&& (analyProty.zuoRiLiangBi < 4.67)
+				//&& (analyProty.daDanJinBiLiuTong < 0)
+				//&& (analyProty.jingJiaLiangBi > 9.90)
+				&& (
+				(analyProty.zijinIdx <= 1500)
+					|| (
+					(analyProty.zijinIdx > 1500) 
+						&& (analyProty.weiBi > WEIBI_MAX)
+						)
+					)
+				&& (analyProty.limitUpMoney > 980)
+				//&& (analyProty.zijinIdx < 20)
+				//&& (analyProty.zongJinE > (800 * TENTHOUSAND))
+				)
+			{
+				if ((analyProty.zhangFu < 7.0)
+					&& (analyProty.zhangTingBan > -900.0)
+					)
+				{
+					//continue;
+				}
+				count++;
+				//shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+			}
+			if (10 < count)
+			{
+				//break;
+			}
+			if (
+				(0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+				&& (analyProty.weiBi > -85.9)//83.0
 				//&& (analyProty.zhangTingBan > -3800.0)
 				//&& (analyProty.zuoRiHuanShou < 29.9)
 				//&& (analyProty.zijinIdx < 499)
@@ -403,21 +479,52 @@ void main()
 						&& (analyProty.zuoRiZhenFu < FLT_MIN)
 						)
 					{
-						if ((analyProty.zuoRiHuanShou > 4.9))
+						if (
+							(analyProty.zuoRiHuanShou > 2.99)
+							|| (analyProty.jingJiaLiangBi > 200.0)
+							)
 						{
 							continue;
 						}
 					}
+					if (
+						(analyProty.zuoRiHuanShou > 7.9)
+						&& (analyProty.zhangTingBan < 1000.0)
+						)
+					{
+						continue;
+					}
 				}
-				if (
-					(analyProty.weiBi < WEIBI_MAX) //一字开盘
+				/*if (
+					(analyProty.weiBi < WEIBI_MAX) //基本一字开盘
 					&& (analyProty.jingJiaLiangBi > 300.0)
 					&& ((analyProty.zhangFu > ((round)(analyProty.zuoShou * 110.0-0.5)) / 100.0))
 					)
 				{
 					continue;
+				}*/
+				if (
+					((analyProty.zuoRiZuiGao - analyProty.zuoRiKaiPan) < FLT_MIN)//昨日一字板
+					&& (analyProty.zuoRiZhenFu < FLT_MIN)
+					)
+				{
+					if (
+						(analyProty.zuoRiHuanShou > 6.99)
+						|| (analyProty.jingJiaLiangBi > 400.0)
+						|| (analyProty.zhangTingBan < -7000.0)
+						)
+					{
+						continue;
+					}
+					if (
+						(analyProty.zuoRiHuanShou > 1.99)
+						&& (analyProty.jingJiaLiangBi > 80.0)
+						)
+					{
+						continue;
+					}
 				}
-				shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+				//shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 			}
 		}
 		fprintf(rstFp, "\n");

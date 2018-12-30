@@ -138,7 +138,7 @@ namespace GETLIMITUPINFO
 				zongLiuRuBiLiuTong = p.zongLiuRuBiLiuTong;
 				zongLiuChuBiLiuTong = p.zongLiuChuBiLiuTong;
 				chengJiaoBiLiuTong = p.chengJiaoBiLiuTong;
-				chengJiaoJinE = p.chengJiaoJinE;
+				//chengJiaoJinE = p.chengJiaoJinE;
 				jingJiaLiangBi = p.jingJiaLiangBi;
 				zhongXiaoBiJingLiuRu = p.zhongXiaoBiJingLiuRu;
 				zhangTingBan = p.zhangTingBan;
@@ -149,7 +149,14 @@ namespace GETLIMITUPINFO
 				zuoRiZhenFu = p.zuoRiZhenFu;
 				zuoRiZhuLiJingLiang = p.zuoRiZhuLiJingLiang;
 				zuoRiDaDanJingEB = p.zuoRiDaDanJingEB;
-				zuoJingLiuRuBiLiuTong = p.zuoJingLiuRuBiLiuTong;
+				zuoRiJingLiuRuBiLiuTong = p.zuoRiJingLiuRuBiLiuTong;
+				zuoRidaDanJinBiLiuTong = p.zuoRidaDanJinBiLiuTong;
+				zuoRidaDanLiuRuBiLiuTong = p.zuoRidaDanLiuRuBiLiuTong;
+				zuoRiDaDanLiuChuBiLiuTong = p.zuoRiDaDanLiuChuBiLiuTong;
+				zuoRiChengJiaoBiLiuTong = p.zuoRiChengJiaoBiLiuTong;
+				zuoRiJiGouDongXiang = p.zuoRiJiGouDongXiang;
+				zuoRiSanHuShuLiang = p.zuoRiSanHuShuLiang;
+				zuoRiZongJinE = p.zuoRiZongJinE;
 
 				jingLiuRuBiLiuTongIndex = p.jingLiuRuBiLiuTongIndex;
 				zongLiuRuBiLiuTongIndex = p.zongLiuRuBiLiuTongIndex;
@@ -181,13 +188,27 @@ namespace GETLIMITUPINFO
 				guXingPingFenIndex = p.guXingPingFenIndex;
 				firstLimitTimeIndex = p.firstLimitTimeIndex;
 				lastLimitTimeIndex = p.lastLimitTimeIndex;
-				zuoJingLiuRuBiLiuTongIndex = p.zuoJingLiuRuBiLiuTongIndex;
+				zuoRiJingLiuRuBiLiuTongIndex = p.zuoRiJingLiuRuBiLiuTongIndex;
 				limitUpMoneyIndex = p.limitUpMoneyIndex;
 				zhongXiaoLiuRuBiLiuTongIndex = p.zhongXiaoLiuRuBiLiuTongIndex;
 				liangBiIndex = p.liangBiIndex;
 				zhongDanJinBiLiuTongIndex = p.zhongDanJinBiLiuTongIndex;
 				zhongXiaoDanJinBiLiuTongIndex = p.zhongXiaoDanJinBiLiuTongIndex;
 				daDanLiuChuBiLiuTongIndex = p.daDanLiuChuBiLiuTongIndex;
+				continueDayIndex = p.continueDayIndex;
+				xiaoDanJinBiLiuTongIndex = p.xiaoDanJinBiLiuTongIndex;
+				xiaoDanLiuRuBiLiuTongIndex = p.xiaoDanLiuRuBiLiuTongIndex;
+				zhongDanLiuRuBiLiuTongIndex = p.zhongDanLiuRuBiLiuTongIndex;
+				zhongDanLiuChuBiLiuTongIndex = p.zhongDanLiuChuBiLiuTongIndex;
+				limitVsDealIndex = p.limitVsDealIndex;
+				zuoRidaDanJinBiLiuTongIndex = p.zuoRidaDanJinBiLiuTongIndex;
+				zuoRidaDanLiuRuBiLiuTongIndex = p.zuoRidaDanLiuRuBiLiuTongIndex;
+				zuoRiDaDanLiuChuBiLiuTongIndex = p.zuoRiDaDanLiuChuBiLiuTongIndex;
+				daDanLiuRuBiLiuTongIndex = p.daDanLiuRuBiLiuTongIndex;
+				zuoRiChengJiaoBiLiuTongIndex = p.zuoRiChengJiaoBiLiuTongIndex;
+				zuoRiJiGouDongXiangIndex = p.zuoRiJiGouDongXiangIndex;
+				zuoRiSanHuShuLiangIndex = p.zuoRiSanHuShuLiangIndex;
+				sanHuShuLiangIndex = p.sanHuShuLiangIndex;
 				totalIndex = p.totalIndex;
 			}
 		/*public:

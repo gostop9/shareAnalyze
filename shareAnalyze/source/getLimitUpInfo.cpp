@@ -300,8 +300,8 @@ namespace GETLIMITUPINFO
 				//float zhanLiuBi = 0;
 				//float zhangTingBan = getLimitUpMoney<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter), zhanLiuBi);
 				string printFlag = getShareFlag<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter));				
-				fprintf(fp, "%2d  %-8s  %6.2f, %4s%-8s  %6.2f | 昨停:%5.0f,封:%2d, %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%8.2f,  %5.2f : %d  %s: \n",
-					ztrTemp.ztCount, setIter->code, setIter->xianJia, printFlag.c_str(), setIter->name, setIter->zhangFu, setIter->limitUpMoney/TENTHOUSAND, setIter->indexLvsC, setIter->ziYouLiuTongShiZhi / DIVIDE, setIter->continueDay, setIter->jingJiaLiangBi, setIter->zuoRiHuanShou, setIter->zuoRiLiangBi, setIter->weiBi, setIter->zhangTingBan, zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.reason.c_str());
+				fprintf(fp, "%2d  %-8s  %6.2f, %4s%-8s  %6.2f | 昨停:%5.0f,封:%2d, %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%8.2f, 资金:%4d,  | %5.2f : %d  %s: \n",
+					ztrTemp.ztCount, setIter->code, setIter->xianJia, printFlag.c_str(), setIter->name, setIter->zhangFu, setIter->limitUpMoney/TENTHOUSAND, setIter->indexLvsC, setIter->ziYouLiuTongShiZhi / DIVIDE, setIter->continueDay, setIter->jingJiaLiangBi, setIter->zuoRiHuanShou, setIter->zuoRiLiangBi, setIter->weiBi, setIter->zhangTingBan, setIter->zijinIdx, zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.reason.c_str());
 				for (int j = 1; j < maxDisplay; j++)
 				{
 					++setIter;
@@ -310,8 +310,8 @@ namespace GETLIMITUPINFO
 					//float zhangTingBan = getLimitUpMoney<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter), zhanLiuBi);
 
 					string printFlag = getShareFlag<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter));					
-					fprintf(fp, "    %-8s  %6.2f, %4s%-8s  %6.2f | 昨停:%5.0f,封:%2d, %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%8.2f\n",
-						setIter->code, setIter->xianJia, printFlag.c_str(), setIter->name, setIter->zhangFu, setIter->limitUpMoney/TENTHOUSAND, setIter->indexLvsC, setIter->ziYouLiuTongShiZhi / DIVIDE, setIter->continueDay, setIter->jingJiaLiangBi, setIter->zuoRiHuanShou, setIter->zuoRiLiangBi, setIter->weiBi, setIter->zhangTingBan);
+					fprintf(fp, "    %-8s  %6.2f, %4s%-8s  %6.2f | 昨停:%5.0f,封:%2d, %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%8.2f, 资金:%4d\n",
+						setIter->code, setIter->xianJia, printFlag.c_str(), setIter->name, setIter->zhangFu, setIter->limitUpMoney/TENTHOUSAND, setIter->indexLvsC, setIter->ziYouLiuTongShiZhi / DIVIDE, setIter->continueDay, setIter->jingJiaLiangBi, setIter->zuoRiHuanShou, setIter->zuoRiLiangBi, setIter->weiBi, setIter->zhangTingBan, setIter->zijinIdx);
 				}
 			}
 		}
@@ -333,6 +333,20 @@ namespace GETLIMITUPINFO
 			++proIter;
 		}
 	}*/
+	/*{
+		// sort for continueDayIndex
+		struct continueDayIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.continueDay < b.continueDay); }
+		} cmpMethod_continueDayIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_continueDayIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->continueDayIndex = index++;
+			++proIter;
+		}
+	}*/
 	{
 		// sort for limitUpMoneyIndex
 		struct limitUpMoneyIndex {
@@ -344,6 +358,48 @@ namespace GETLIMITUPINFO
 		while (proIter != propertyAnalyVec.end())
 		{
 			proIter->limitUpMoneyIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for xiaoDanLiuRuBiLiuTongIndex
+		struct xiaoDanLiuRuBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.xiaoDanLiuRuBiLiuTong > b.xiaoDanLiuRuBiLiuTong); }
+		} cmpMethod_xiaoDanLiuRuBiLiuTongIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_xiaoDanLiuRuBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->xiaoDanLiuRuBiLiuTongIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for zhongDanLiuRuBiLiuTongIndex
+		struct zhongDanLiuRuBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhongDanLiuRuBiLiuTong > b.zhongDanLiuRuBiLiuTong); }
+		} cmpMethod_zhongDanLiuRuBiLiuTongIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zhongDanLiuRuBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->zhongDanLiuRuBiLiuTongIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for zhongDanLiuChuBiLiuTongIndex
+		struct zhongDanLiuChuBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhongDanLiuChuBiLiuTong > b.zhongDanLiuChuBiLiuTong); }
+		} cmpMethod_zhongDanLiuChuBiLiuTongIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zhongDanLiuChuBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->zhongDanLiuChuBiLiuTongIndex = index++;
 			++proIter;
 		}
 	}
@@ -362,9 +418,23 @@ namespace GETLIMITUPINFO
 		}
 	}
 	{
+		// sort for xiaoDanJinBiLiuTongIndex
+		struct xiaoDanJinBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.xiaoDanJinBiLiuTong < b.xiaoDanJinBiLiuTong); }
+		} cmpMethod_xiaoDanJinBiLiuTongIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_xiaoDanJinBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->xiaoDanJinBiLiuTongIndex = index++;
+			++proIter;
+		}
+	}
+	{
 		// sort for zhongDanJinBiLiuTongIndex
 		struct zhongDanJinBiLiuTongIndex {
-			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhongDanJinBiLiuTong > b.zhongDanJinBiLiuTong); }
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhongDanJinBiLiuTong < b.zhongDanJinBiLiuTong); }
 		} cmpMethod_zhongDanJinBiLiuTongIndex;
 		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zhongDanJinBiLiuTongIndex);
 		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
@@ -378,7 +448,7 @@ namespace GETLIMITUPINFO
 	{
 		// sort for zhongXiaoDanJinBiLiuTongIndex
 		struct zhongXiaoDanJinBiLiuTongIndex {
-			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhongXiaoDanJinBiLiuTong > b.zhongXiaoDanJinBiLiuTong); }
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhongXiaoDanJinBiLiuTong < b.zhongXiaoDanJinBiLiuTong); }
 		} cmpMethod_zhongXiaoDanJinBiLiuTongIndex;
 		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zhongXiaoDanJinBiLiuTongIndex);
 		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
@@ -386,6 +456,20 @@ namespace GETLIMITUPINFO
 		while (proIter != propertyAnalyVec.end())
 		{
 			proIter->zhongXiaoDanJinBiLiuTongIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for daDanLiuRuBiLiuTongIndex
+		struct daDanLiuRuBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.daDanLiuRuBiLiuTong < b.daDanLiuRuBiLiuTong); }
+		} cmpMethod_daDanLiuRuBiLiuTongIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_daDanLiuRuBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->daDanLiuRuBiLiuTongIndex = index++;
 			++proIter;
 		}
 	}
@@ -407,6 +491,7 @@ namespace GETLIMITUPINFO
 		// sort for zhangTingBanIndex
 		struct zhangTingBanIndex {
 			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return ((a.zhangTingBan / a.ziYouLiuTongShiZhi) > (b.zhangTingBan / b.ziYouLiuTongShiZhi)); }
+			//bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return ((a.zhangTingBan) > (b.zhangTingBan)); }
 		} cmpMethod_zhangTingBanIndex;
 		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zhangTingBanIndex);
 		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
@@ -546,7 +631,7 @@ namespace GETLIMITUPINFO
 	{
 		// sort for zuoRiZhuLiJingLiangIndex
 		struct zuoRiZhuLiJingLiangIndex {
-			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zuoRiZhuLiJingLiang > b.zuoRiZhuLiJingLiang); }
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zuoRiZhuLiJingLiang < b.zuoRiZhuLiJingLiang); }
 		} cmpMethod_zuoRiZhuLiJingLiangIndex;
 		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zuoRiZhuLiJingLiangIndex);
 		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
@@ -572,16 +657,16 @@ namespace GETLIMITUPINFO
 		}
 	}*/
 	{
-		// sort for zuoJingLiuRuBiLiuTongIndex
-		struct zuoJingLiuRuBiLiuTongIndex {
-			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zuoJingLiuRuBiLiuTong < b.zuoJingLiuRuBiLiuTong); }
-		} cmpMethod_zuoJingLiuRuBiLiuTongIndex;
-		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zuoJingLiuRuBiLiuTongIndex);
+		// sort for zuoRiJingLiuRuBiLiuTongIndex
+		struct zuoRiJingLiuRuBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zuoRiJingLiuRuBiLiuTong < b.zuoRiJingLiuRuBiLiuTong); }
+		} cmpMethod_zuoRiJingLiuRuBiLiuTongIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zuoRiJingLiuRuBiLiuTongIndex);
 		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
 		int index = 1;
 		while (proIter != propertyAnalyVec.end())
 		{
-			proIter->zuoJingLiuRuBiLiuTongIndex = index++;
+			proIter->zuoRiJingLiuRuBiLiuTongIndex = index++;
 			++proIter;
 		}
 	}
@@ -596,6 +681,104 @@ namespace GETLIMITUPINFO
 		while (proIter != propertyAnalyVec.end())
 		{
 			proIter->zuoRiDaDanJingEBIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for zuoRidaDanJinBiLiuTongIndex
+		struct zuoRidaDanJinBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zuoRidaDanJinBiLiuTong > b.zuoRidaDanJinBiLiuTong); }
+		} cmpMethod_zuoRidaDanJinBiLiuTongIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zuoRidaDanJinBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->zuoRidaDanJinBiLiuTongIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for zuoRidaDanLiuRuBiLiuTongIndex
+		struct zuoRidaDanLiuRuBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zuoRidaDanLiuRuBiLiuTong > b.zuoRidaDanLiuRuBiLiuTong); }
+		} cmpMethod_zuoRidaDanLiuRuBiLiuTongIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zuoRidaDanLiuRuBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->zuoRidaDanLiuRuBiLiuTongIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for zuoRiDaDanLiuChuBiLiuTongIndex
+		struct zuoRiDaDanLiuChuBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zuoRiDaDanLiuChuBiLiuTong > b.zuoRiDaDanLiuChuBiLiuTong); }
+		} cmpMethod_zuoRiDaDanLiuChuBiLiuTongIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zuoRiDaDanLiuChuBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->zuoRiDaDanLiuChuBiLiuTongIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for zuoRiChengJiaoBiLiuTongIndex
+		struct zuoRiChengJiaoBiLiuTongIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zuoRiChengJiaoBiLiuTong < b.zuoRiChengJiaoBiLiuTong); }
+		} cmpMethod_zuoRiChengJiaoBiLiuTongIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zuoRiChengJiaoBiLiuTongIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->zuoRiChengJiaoBiLiuTongIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for zuoRiJiGouDongXiangIndex
+		struct zuoRiJiGouDongXiangIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zuoRiJiGouDongXiang > b.zuoRiJiGouDongXiang); }
+		} cmpMethod_zuoRiJiGouDongXiangIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zuoRiJiGouDongXiangIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->zuoRiJiGouDongXiangIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for zuoRiSanHuShuLiangIndex
+		struct zuoRiSanHuShuLiangIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zuoRiSanHuShuLiang > b.zuoRiSanHuShuLiang); }
+		} cmpMethod_zuoRiSanHuShuLiangIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zuoRiSanHuShuLiangIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->zuoRiSanHuShuLiangIndex = index++;
+			++proIter;
+		}
+	}
+	{
+		// sort for limitVsDealIndex
+		struct limitVsDealIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.limitVsDeal > b.limitVsDeal); }
+		} cmpMethod_limitVsDealIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_limitVsDealIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->limitVsDealIndex = index++;
 			++proIter;
 		}
 	}
@@ -614,6 +797,20 @@ namespace GETLIMITUPINFO
 		}
 	}*/
 	{
+		// sort for indexLvsC
+		struct indexLvsC {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.limitVsCirculate > b.limitVsCirculate); }
+		} cmpMethod_indexLvsC;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_indexLvsC);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->indexLvsC = index++;
+			++proIter;
+		}
+	}
+	{
 		// sort for guXingPingFenIndex
 		struct guXingPingFenIndex {
 			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.guXingPingFen > b.guXingPingFen); }
@@ -627,13 +824,26 @@ namespace GETLIMITUPINFO
 			++proIter;
 		}
 	}
-	/*{
+	{
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		while (proIter != propertyAnalyVec.end())
+		{
+			if (
+				((proIter->zuoRiZuiGao - proIter->zuoRiKaiPan) < FLT_MIN)//昨日一字板
+				&& (proIter->zuoRiZhenFu < FLT_MIN)
+				)
+			{
+				//proIter->firstLimitTime = "150000";
+				strcpy(proIter->firstLimitTime, "150000");
+			}
+			++proIter;
+		}
 		// sort for firstLimitTimeIndex
 		struct firstLimitTimeIndex {
 			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (atoi(a.firstLimitTime) < atoi(b.firstLimitTime)); }
 		} cmpMethod_firstLimitTimeIndex;
 		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_firstLimitTimeIndex);
-		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		//vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
 		int index = 1;
 		while (proIter != propertyAnalyVec.end())
 		{
@@ -654,7 +864,21 @@ namespace GETLIMITUPINFO
 			proIter->lastLimitTimeIndex = index++;
 			++proIter;
 		}
-	}*/
+	}
+	{
+		// sort for sanHuShuLiangIndex
+		struct sanHuShuLiangIndex {
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.sanHuShuLiang > b.sanHuShuLiang); }
+		} cmpMethod_sanHuShuLiangIndex;
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_sanHuShuLiangIndex);
+		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+		int index = 1;
+		while (proIter != propertyAnalyVec.end())
+		{
+			proIter->sanHuShuLiangIndex = index++;
+			++proIter;
+		}
+	}
 	{
 		// sort for ddeIndex
 		struct ddeIndex {
@@ -673,72 +897,101 @@ namespace GETLIMITUPINFO
 	{
 		// sort for total Index
 		struct totalIndex {
-			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) 
-			/*{ return (
-				(a.ddeIdx 
-				+ a.jingLiuRuBiLiuTongIndex 
-				+ a.chengJiaoBiLiuTongIndex 
-				+ a.zongLiuRuBiLiuTongIndex 
-				+ a.zongLiuChuBiLiuTongIndex) < 
-				(b.ddeIdx 
-				+ b.jingLiuRuBiLiuTong 
-				+ b.chengJiaoBiLiuTongIndex 
-				+ b.zongLiuRuBiLiuTongIndex 
-				+ b.zongLiuChuBiLiuTongIndex)
-				); 
-			}*/
-			{ return (
-				(a.ddeIdx
+			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b)
+				/*{ return (
+					(a.ddeIdx
 					+ a.jingLiuRuBiLiuTongIndex
 					+ a.chengJiaoBiLiuTongIndex
 					+ a.zongLiuRuBiLiuTongIndex
-					+ a.zongLiuChuBiLiuTongIndex
-					+ a.jingJiaLiangBiIndex
-					+ a.liangBiIndex
-					+ a.zhangTingBanIndex
-					+ a.zhongXiaoLiuRuBiLiuTongIndex
-					+ a.zhongDanJinBiLiuTongIndex
-					+ a.daDanLiuChuBiLiuTongIndex
-					//+ a.zhongXiaoDanJinBiLiuTongIndex
-					//+ a.xianJiaIndex
-					//+ a.zuoRiZhuLiJingLiangIndex
-					//+ a.zuoRiDaDanJingEBIndex
-					//+ a.zuoJingLiuRuBiLiuTongIndex
-					//+ a.zuoRiHuanShouIndex
-					//+ a.weiBiIndex
-					+ a.zhangFuIndex
-					+ a.indexLvsC
-					//+ a.limitUpMoneyIndex
-					//+ a.firstLimitTimeIndex
-					//+ a.lastLimitTimeIndex
-					+ a.guXingPingFenIndex
-					+ a.ziYouLiuTongShiZhiIndex
+					+ a.zongLiuChuBiLiuTongIndex) <
+					(b.ddeIdx
+					+ b.jingLiuRuBiLiuTong
+					+ b.chengJiaoBiLiuTongIndex
+					+ b.zongLiuRuBiLiuTongIndex
+					+ b.zongLiuChuBiLiuTongIndex)
+					);
+				}*/
+			{
+				return (
+					(a.ddeIdx
+						//+ a.sanHuShuLiangIndex
+						+ a.jingLiuRuBiLiuTongIndex
+						+ a.chengJiaoBiLiuTongIndex
+						+ a.zongLiuRuBiLiuTongIndex
+						+ a.zongLiuChuBiLiuTongIndex
+						+ a.jingJiaLiangBiIndex
+						//+ a.liangBiIndex
+						+ a.zhangTingBanIndex
+						//+ a.zhongDanLiuRuBiLiuTongIndex
+						//+ a.zhongDanLiuChuBiLiuTongIndex
+						//+ a.xiaoDanLiuRuBiLiuTongIndex
+						//+ a.zhongXiaoLiuRuBiLiuTongIndex
+						//+ a.xiaoDanJinBiLiuTongIndex
+						//+ a.zhongDanJinBiLiuTongIndex
+						//+ a.daDanLiuRuBiLiuTongIndex
+						+ a.daDanLiuChuBiLiuTongIndex
+						//+ a.zhongXiaoDanJinBiLiuTongIndex
+						//+ a.xianJiaIndex
+						+ a.zuoRiZhuLiJingLiangIndex
+						+ a.zuoRiDaDanJingEBIndex
+						+ a.zuoRiDaDanLiuChuBiLiuTongIndex
+						//+ a.zuoRiChengJiaoBiLiuTongIndex
+						//+ a.zuoRiJiGouDongXiangIndex
+						//+ a.zuoRiSanHuShuLiangIndex
+						//+ a.zuoRiJingLiuRuBiLiuTongIndex
+						//+ a.zuoRidaDanJinBiLiuTong
+						//+ a.zuoRidaDanLiuRuBiLiuTongIndex
+						//+ a.zuoRiHuanShouIndex
+						//+ a.weiBiIndex
+						+ a.zhangFuIndex
+						+ a.limitVsDealIndex
+						+ a.indexLvsC
+						//+ a.limitUpMoneyIndex
+						//+ a.firstLimitTimeIndex
+						//+ a.lastLimitTimeIndex
+						+ a.guXingPingFenIndex
+						//+ a.continueDayIndex
+						//+ a.ziYouLiuTongShiZhiIndex
 					) <
 					(b.ddeIdx
-						+ b.jingLiuRuBiLiuTong
+						//+ b.sanHuShuLiangIndex
+						+ b.jingLiuRuBiLiuTongIndex
 						+ b.chengJiaoBiLiuTongIndex
 						+ b.zongLiuRuBiLiuTongIndex
 						+ b.zongLiuChuBiLiuTongIndex 
 						+ b.jingJiaLiangBiIndex
-						+ b.liangBiIndex
-						+ b.zhangTingBanIndex
-						+ b.zhongXiaoLiuRuBiLiuTongIndex
-						+ b.zhongDanJinBiLiuTongIndex
+						//+ b.liangBiIndex
+						+ b.zhangTingBanIndex 
+						//+ b.zhongDanLiuRuBiLiuTongIndex
+						//+ b.zhongDanLiuChuBiLiuTongIndex
+						//+ b.xiaoDanLiuRuBiLiuTongIndex
+						//+ b.zhongXiaoLiuRuBiLiuTongIndex
+						//+ b.xiaoDanJinBiLiuTongIndex
+						//+ b.zhongDanJinBiLiuTongIndex
+						//+ b.daDanLiuRuBiLiuTongIndex
 						+ b.daDanLiuChuBiLiuTongIndex
 						//+ b.zhongXiaoDanJinBiLiuTongIndex
 						//+ b.xianJiaIndex
-						//+ b.zuoRiZhuLiJingLiangIndex
-						//+ b.zuoRiDaDanJingEBIndex
-						//+ b.zuoJingLiuRuBiLiuTongIndex
+						+ b.zuoRiZhuLiJingLiangIndex
+						+ b.zuoRiDaDanJingEBIndex
+						+ b.zuoRiDaDanLiuChuBiLiuTongIndex
+						//+ b.zuoRiChengJiaoBiLiuTongIndex
+						//+ b.zuoRiJiGouDongXiangIndex
+						//+ b.zuoRiSanHuShuLiangIndex
+						//+ b.zuoRiJingLiuRuBiLiuTongIndex
+						//+ b.zuoRidaDanJinBiLiuTong
+						//+ b.zuoRidaDanLiuRuBiLiuTongIndex
 						//+ b.zuoRiHuanShouIndex
 						//+ b.weiBiIndex
 						+ b.zhangFuIndex
+						+ b.limitVsDealIndex
 						+ b.indexLvsC
 						//+ b.limitUpMoneyIndex
 						//+ b.firstLimitTimeIndex
 						//+ b.lastLimitTimeIndex
 						+ b.guXingPingFenIndex
-						+ b.ziYouLiuTongShiZhiIndex
+						//+ b.continueDayIndex
+						//+ b.ziYouLiuTongShiZhiIndex
 						)
 				);
 			}
@@ -746,11 +999,97 @@ namespace GETLIMITUPINFO
 		} cmpMethodTotal;
 		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethodTotal);
 
+		/*{
+			vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+			vector<PROPERTY_t> propertyAnalySelectVec;
+			propertyAnalySelectVec.clear();
+			int count = 0;
+			while (proIter != propertyAnalyVec.end())
+			{
+				if (proIter->zijinIdx < 1500)
+				{
+					count++;
+					propertyAnalySelectVec.push_back(*proIter);
+				}
+				if (10 < count)
+				{
+					break;
+				}
+				++proIter;
+			}
+			{
+				// sort for ddeIndex
+				struct totalIndex {
+					bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) {
+						return (
+							a.ddeIdx
+							+ a.chengJiaoBiLiuTongIndex
+							+ a.zongLiuChuBiLiuTongIndex
+							+ a.jingJiaLiangBiIndex
+							+ a.daDanLiuChuBiLiuTongIndex
+							+ a.zhangFuIndex
+							)
+							<
+							(
+								b.ddeIdx
+								+ b.chengJiaoBiLiuTongIndex
+								+ b.zongLiuChuBiLiuTongIndex
+								+ b.jingJiaLiangBiIndex
+								+ b.daDanLiuChuBiLiuTongIndex
+								+ b.zhangFuIndex
+								);
+					}
+				} cmpMethodTotal;
+				std::sort(propertyAnalySelectVec.begin(), propertyAnalySelectVec.end(), cmpMethodTotal);
+				propertyAnalyVec = propertyAnalySelectVec;
+			}
+		}*/
+
 		vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
 		int index = 1;
 		while (proIter != propertyAnalyVec.end())
 		{
-			proIter->totalIndex = index++;
+			PROPERTY_t &a = (*proIter);
+			//proIter->totalIndex = index++;
+			proIter->totalIndex = a.ddeIdx
+				+ a.jingLiuRuBiLiuTongIndex
+				+ a.chengJiaoBiLiuTongIndex
+				+ a.zongLiuRuBiLiuTongIndex
+				+ a.zongLiuChuBiLiuTongIndex
+				+ a.jingJiaLiangBiIndex
+				//+ a.liangBiIndex
+				+ a.zhangTingBanIndex
+				//+ a.zhongDanLiuRuBiLiuTongIndex
+				//+ a.zhongDanLiuChuBiLiuTongIndex
+				//+ a.xiaoDanLiuRuBiLiuTongIndex
+				//+ a.zhongXiaoLiuRuBiLiuTongIndex
+				//+ a.xiaoDanJinBiLiuTongIndex
+				//+ a.zhongDanJinBiLiuTongIndex
+				//+ a.daDanLiuRuBiLiuTongIndex
+				+a.daDanLiuChuBiLiuTongIndex
+				//+ a.zhongXiaoDanJinBiLiuTongIndex
+				//+ a.xianJiaIndex
+				+ a.zuoRiZhuLiJingLiangIndex
+				+ a.zuoRiDaDanJingEBIndex
+				+ a.zuoRiDaDanLiuChuBiLiuTongIndex
+				+ a.zuoRiChengJiaoBiLiuTongIndex
+				//+ a.zuoRiJiGouDongXiangIndex
+				+ a.zuoRiSanHuShuLiangIndex
+				//+ a.zuoRiJingLiuRuBiLiuTongIndex
+				//+ a.zuoRidaDanJinBiLiuTong
+				//+ a.zuoRidaDanLiuRuBiLiuTongIndex
+				//+ a.zuoRiHuanShouIndex
+				//+ a.weiBiIndex
+				+a.zhangFuIndex
+				+ a.limitVsDealIndex
+				+ a.indexLvsC
+				//+ a.limitUpMoneyIndex
+				//+ a.firstLimitTimeIndex
+				//+ a.lastLimitTimeIndex
+				+a.guXingPingFenIndex
+				//+ a.continueDayIndex
+				//+ a.ziYouLiuTongShiZhiIndex
+				;
 			++proIter;
 		}
 	}

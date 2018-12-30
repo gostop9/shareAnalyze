@@ -57,11 +57,12 @@ namespace SHARE_FLAG
 			}
 		}*/
 		if (
-			(shareProperty.zijinIdx > 299)
+			(shareProperty.zijinIdx > 1500)
+			&& (shareProperty.weiBi > WEIBI_MAX)
 			)
 		{
 			shareFlag.append("!");
-		}
+		}		
 		if (
 			((shareProperty.zhangFu > ((round)(shareProperty.zuoShou * 110.0 - 0.5)) / 100.0)) //Ò»×Ö¿ªÅÌ
 			&& (shareProperty.zuoRiHuanShou > 5.9)

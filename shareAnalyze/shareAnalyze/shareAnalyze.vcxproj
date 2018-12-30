@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\autoShareBuy.h" />
     <ClInclude Include="..\include\commonFun.h" />
     <ClInclude Include="..\include\dataLineProc.h" />
     <ClInclude Include="..\include\dataProc.h" />
@@ -142,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\AnalyzeShare_main.cpp" />
+    <ClCompile Include="..\source\autoShareBuy.cpp" />
     <ClCompile Include="..\source\commonFun.cpp" />
     <ClCompile Include="..\source\dataLineProc.cpp" />
     <ClCompile Include="..\source\dataProc.cpp" />

@@ -584,6 +584,26 @@ bool readZhangTingFile(char *fileName, vector<zhangTing_t> &zhangTingVec)
 		}
 		++ztIter;
 	}
+
+	// 只保留封单大于900万的
+	/*{
+		vector<zhangTing_t> zhangTingSelectVec;
+		zhangTingSelectVec.reserve(zhangTingVec.size());
+		vector<zhangTing_t>::iterator ztIter = zhangTingVec.begin();
+		int index = 1;
+		while (ztIter != zhangTingVec.end())
+		{
+			if (
+				(0 != strcmp(ztIter->limitReason, NEW_SHARE.c_str()))
+				&& (ztIter->limitUpMoney > 899)
+				)
+			{
+				zhangTingSelectVec.push_back(*ztIter);
+			}
+			++ztIter;
+		}
+		zhangTingVec = zhangTingSelectVec;
+	}*/
 	return true;
 }
 }

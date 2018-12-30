@@ -390,11 +390,12 @@ struct PROPERTY_t
 	float daXiaoLiuRuBiLiuTong;
 	float xiaoDanLiuRuBiLiuTong;
 	float zhongDanLiuRuBiLiuTong;
+	float zhongDanLiuChuBiLiuTong;
 	float daZhongLiuRuBiLiuTong;
 	float zongLiuRuBiLiuTong;
 	float zongLiuChuBiLiuTong;
 	float chengJiaoBiLiuTong;
-	float chengJiaoJinE;
+	//float chengJiaoJinE;
 	float jingJiaLiangBi;
 	float zhongXiaoBiJingLiuRu;
 	float zhangTingBan;
@@ -405,7 +406,14 @@ struct PROPERTY_t
 	float zuoRiZhenFu;
 	float zuoRiZhuLiJingLiang;
 	float zuoRiDaDanJingEB;
-	float zuoJingLiuRuBiLiuTong;
+	float zuoRiJingLiuRuBiLiuTong;
+	float zuoRidaDanJinBiLiuTong;
+	float zuoRidaDanLiuRuBiLiuTong;
+	float zuoRiDaDanLiuChuBiLiuTong;
+	float zuoRiChengJiaoBiLiuTong;
+	float zuoRiJiGouDongXiang;
+	float zuoRiSanHuShuLiang;
+	float zuoRiZongJinE;
 
 	//zhang ting
 	int   jingLiuRuBiLiuTongIndex;
@@ -435,14 +443,76 @@ struct PROPERTY_t
 	int   guXingPingFenIndex;
 	int   firstLimitTimeIndex;
 	int   lastLimitTimeIndex;
-	int   zuoJingLiuRuBiLiuTongIndex;
+	int   zuoRiJingLiuRuBiLiuTongIndex;
 	int   limitUpMoneyIndex;
 	int   zhongXiaoLiuRuBiLiuTongIndex;
 	int   liangBiIndex;
 	int   zhongDanJinBiLiuTongIndex;
 	int   zhongXiaoDanJinBiLiuTongIndex;
 	int   daDanLiuChuBiLiuTongIndex;
+	int   continueDayIndex;
+	int   xiaoDanJinBiLiuTongIndex;
+	int   xiaoDanLiuRuBiLiuTongIndex;
+	int   zhongDanLiuRuBiLiuTongIndex;
+	int   zhongDanLiuChuBiLiuTongIndex;
+	int   limitVsDealIndex;
+	int   zuoRidaDanJinBiLiuTongIndex;
+	int   zuoRidaDanLiuRuBiLiuTongIndex;
+	int   zuoRiDaDanLiuChuBiLiuTongIndex;
+	int   daDanLiuRuBiLiuTongIndex;
+	int   zuoRiChengJiaoBiLiuTongIndex;
+	int   zuoRiJiGouDongXiangIndex;
+	int   zuoRiSanHuShuLiangIndex;
+	int   sanHuShuLiangIndex;
 	int   totalIndex;
+
+	//构造函数初始化
+	PROPERTY_t()
+	{
+		ddeIdx = 0;
+		jingLiuRuBiLiuTongIndex = 0;
+		zongLiuRuBiLiuTongIndex = 0;
+		zongLiuChuBiLiuTongIndex = 0;
+		chengJiaoBiLiuTongIndex = 0;
+		indexLvsC = 0;
+		jingJiaLiangBiIndex = 0;
+		weiBiIndex = 0;
+		zhangFuIndex = 0;
+		ziYouLiuTongShiZhiIndex = 0;
+		zuoRiZhuLiJingLiangIndex = 0;
+		zhangTingBanIndex = 0;
+		xianJiaIndex = 0;
+		zuoRiDaDanJingEBIndex = 0;
+		zuoRiHuanShouIndex = 0;
+		guXingPingFenIndex = 0;
+		firstLimitTimeIndex = 0;
+		lastLimitTimeIndex = 0;
+		zuoRiJingLiuRuBiLiuTongIndex = 0;
+		limitUpMoneyIndex = 0;
+		zhongXiaoLiuRuBiLiuTongIndex = 0;
+		liangBiIndex = 0;
+		zhongDanJinBiLiuTongIndex = 0;
+		zhongXiaoDanJinBiLiuTongIndex = 0;
+		daDanLiuChuBiLiuTongIndex = 0;
+		continueDayIndex = 0;
+		xiaoDanJinBiLiuTongIndex = 0;
+		xiaoDanLiuRuBiLiuTongIndex = 0;
+		zhongDanLiuRuBiLiuTongIndex = 0;
+		zhongDanLiuChuBiLiuTongIndex = 0;
+		limitVsDealIndex = 0;
+		zuoRidaDanJinBiLiuTongIndex = 0;
+		zuoRidaDanLiuRuBiLiuTongIndex = 0;
+		zuoRiDaDanLiuChuBiLiuTongIndex = 0;
+		daDanLiuRuBiLiuTongIndex = 0;
+		zuoRiChengJiaoBiLiuTongIndex = 0;
+		zuoRiJiGouDongXiangIndex = 0;
+		zuoRiSanHuShuLiangIndex = 0;
+		sanHuShuLiangIndex = 0;
+		totalIndex = 0;
+		//memset(this, 0, sizeof(PROPERTY_t));
+		//或者是下面的格式 
+		//memset(&nNum,0,sizeof(Stu));
+	}
 };
 
 /*
