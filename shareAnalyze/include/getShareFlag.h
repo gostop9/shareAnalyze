@@ -50,7 +50,7 @@ namespace SHARE_FLAG
 			{
 				shareFlag.append("-");
 				//if ((shareProperty.waiPan < FLT_MIN) && (shareProperty.weiBi > WEIBI_MAX)) //一字开盘，连续一字板
-				if ((shareProperty.weiBi > WEIBI_MAX)) //一字开盘，连续一字板
+				if (true == yiZiBanJudge(shareProperty))// 一字开盘，连续一字板
 				{
 					shareFlag.append("-");
 				}
@@ -93,7 +93,7 @@ namespace SHARE_FLAG
 		{
 			shareFlag.append("~"); //昨日一字板
 		}
-		if ((shareProperty.weiBi > WEIBI_MAX)) //一字开盘
+		if (true == yiZiBanJudge(shareProperty))// 一字开盘
 		{
 			shareFlag.append("-");
 		}
@@ -123,9 +123,7 @@ namespace SHARE_FLAG
 			{
 				//float zhanLiuBi = 0;
 				//float zhangTingBan = getLimitUpMoney<T>(shareProperty, zhanLiuBi);
-				if (
-					(shareProperty.weiBi > WEIBI_MAX) //一字开盘
-					)
+				if (true == yiZiBanJudge(shareProperty))// 一字开盘
 				{
 					if (
 						((shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)//昨日一字板
@@ -226,7 +224,7 @@ namespace SHARE_FLAG
 		float zhangTingBan = shareProperty.zuoShou * (-1.1) * maiLiang / 10000.0; //千万量级显示
 
 		zhanLiuBi = zhangTingBan * 1000000 / shareProperty.ziYouLiuTongShiZhi;
-		if (shareProperty.weiBi > WEIBI_MAX)
+		if (true == yiZiBanJudge(shareProperty))// 一字开盘			
 		{
 			zhangTingBan = (shareProperty.buyLiang * shareProperty.xianJia) / 1000000.0;
 			zhanLiuBi = zhangTingBan * 100000000.0 / shareProperty.ziYouLiuTongShiZhi;

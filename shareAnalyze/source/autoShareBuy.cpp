@@ -35,7 +35,10 @@ void autoShareBuy(FILE *buyFp, std::vector<PROPERTY_t> &propertyAnalyVec, PROPER
         PROPERTY_t &buyProty = buyProtyVec[j];
         string name = buyProty.name;
         std::size_t found = name.find("ST");
-        if (found != std::string::npos)//剔除ST股
+        if (
+			(found != std::string::npos)//剔除ST股
+			//|| (0 == strcmp(buyProty.limitReason, NEW_SHARE.c_str()))//剔除新股
+			)
         {
             continue;
         }
@@ -60,6 +63,7 @@ void autoShareBuy(FILE *buyFp, std::vector<PROPERTY_t> &propertyAnalyVec, PROPER
             && (buyProty.zhangTingBan > -4900.0)//4000.0
             && (buyProty.zuoRiLiangBi < 4.2)//4.0
             && (buyProty.zhangFu > 1.0)
+			&& (buyProty.zhuLiJingLiang > -0.95)
             && (buyProty.zuoRiHuanShou < 21.0)
             && (buyProty.zongJinE > (999.0 * TENTHOUSAND))
             && (buyProty.zuoRiZongJinE < (70000.0 * TENTHOUSAND))
@@ -98,6 +102,24 @@ void selectFirstShare(FILE *rstFp,
 		int analyNum = propertyAnalyVecSort.size();
 		int findFlag = 0;
 		int ztFindFlag = 0;
+		for (int i = 0; i < 15; i++)
+		{
+			PROPERTY_t &analyProty = propertyAnalyVecSort[i];
+			if (1
+				//&& (analyProty.jingLiuRu < (analyProty.daDanJinE))
+				//&& (analyProty.zhangFu > -2.0)
+				//&& (analyProty.zhangTingBan > -6900.0)
+				//&& (analyProty.weiBi > 0.0)
+				)
+			{
+
+				if (analyProty.zhangFu > 4.0)
+				{
+					fprintf(rstFp, "\n");
+				}
+				shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+			}
+		}
 		for (int i = 0; i < analyNum; i++)
 		{
 			PROPERTY_t &analyProty = propertyAnalyVecSort[i];
@@ -108,6 +130,7 @@ void selectFirstShare(FILE *rstFp,
 				&& (analyProty.zhangFu > 0.8)
 				&& (analyProty.xianJia > 1.2)
 				//&& (analyProty.zuoRiLiangBi < 4.9)
+				//&& (analyProty.jingLiuRu > (analyProty.daDanJinE))
 				&& (analyProty.zhangTingBan > -6900.0)
 				)
 			{

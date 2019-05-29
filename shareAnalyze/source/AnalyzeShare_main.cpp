@@ -50,6 +50,40 @@ bool compZiJinFuseDaDanJingE(const PROPERTY_t &a, const PROPERTY_t &b) {
 	return a.zhuLiJingE > b.zhuLiJingE;
 }
 
+/*void propertyVecChuBubbleSort(vector<PROPERTY_t> &propertyVec)
+{
+	int n = propertyVec.size();
+	for (int i = 0; i < n - 1; i++)
+	{
+		for (int j = n - 1; j >= i + 1; j--)
+		{
+			if (propertyVec[j - 1].zongLiuChuBiLiuTong < propertyVec[j].zongLiuChuBiLiuTong)
+			{
+				PROPERTY_t temp = propertyVec[j - 1];
+				propertyVec[j - 1] = propertyVec[j];
+				propertyVec[j] = temp;
+			}
+		}
+	}
+}
+void propertyVecRuBubbleSort(vector<PROPERTY_t> &propertyVec)
+{
+	int n = propertyVec.size();
+	for (int i = 0; i < n - 1; i++)
+	{
+		for (int j = n - 1; j >= i + 1; j--)
+		{
+			if (propertyVec[j - 1].zongLiuRuBiLiuTong < propertyVec[j].zongLiuRuBiLiuTong)
+			{
+				PROPERTY_t temp = propertyVec[j - 1];
+				propertyVec[j - 1] = propertyVec[j];
+				propertyVec[j] = temp;
+			}
+		}
+	}
+}*/
+
+
 float huanShouMax = 25.0F;
 float liangBiMin = 1.2F;
 float liangBiMax = 6.0F;
@@ -232,10 +266,10 @@ void main()
 		zhuLiJingLiangMin = float(fileIndex)/ float(10.0);
 	}
 
-	for (int i = fileIndex; i >= 0; i--)
+	for (int iFile = fileIndex; iFile >= 0; iFile--)
 	{
 		char indexString[5];
-		_itoa(i, indexString, 10);
+		_itoa(iFile, indexString, 10);
 
 		char dateNow[15];
 		strcpy(dateNow, date);
@@ -249,13 +283,13 @@ void main()
 			path,
 			dateNow);
 
-		int vecIndex = fileIndex - i;
+		int vecIndex = fileIndex - iFile;
 		//vector<DDE_t> dde;
 		//readDdeFile(ddeFileName, dde[vecIndex]);
 		//vector<ZIJIN_t> zijin;
 		bool zijinFileFlag = readZijinFile(zijinName, zijin[vecIndex]);
 		vector<ZIJIN_t > ziinDaDanJingE = zijin[vecIndex];
-		//sort(ziinDaDanJingE.begin(), ziinDaDanJingE.end(), compZiJin);
+		//std::sort(ziinDaDanJingE.begin(), ziinDaDanJingE.end(), compZiJin);
 		//vector<ZHULI_t> zhuli;
 		bool zhuliFileFlag = readZhuliFile(zhuliFileName, zhuli[vecIndex]);
 
@@ -279,42 +313,39 @@ void main()
 		//根据实际流通计算其他参数
 		calculateOtherPara(rstFp, propertyV[vecIndex], propertyAnalyVecPre, zhangTingVecPre);
 
+		vector<PROPERTY_t> &propertyAnalyVecForSort = propertyV[vecIndex];
+		// sort for zijinChuIdx
+		{
+			struct zongLiuChuBiLiuTong_t {
+				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zongLiuChuBiLiuTong > b.zongLiuChuBiLiuTong); }
+			} zongLiuChuBiLiuTong_c;
+
+			std::sort(propertyAnalyVecForSort.begin(), propertyAnalyVecForSort.end(), zongLiuChuBiLiuTong_c);
+			//propertyVecChuBubbleSort(propertyAnalyVecForSort);
+			vector<PROPERTY_t>::iterator proIter = propertyAnalyVecForSort.begin();
+			int ziJinIndex = 1;
+			while (proIter != propertyAnalyVecForSort.end())
+			{
+				proIter->zijinChuIdx = ziJinIndex++;
+				++proIter;
+			}
+		}
 		// sort for zijinIndex
 		{
 			struct myclass {
 				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zongLiuRuBiLiuTong > b.zongLiuRuBiLiuTong); }
 			} neiWaiPanBiLiuTongGu;
 
-			sort(propertyV[vecIndex].begin(), propertyV[vecIndex].end(), neiWaiPanBiLiuTongGu);
-			vector<PROPERTY_t>::iterator proIter = propertyV[vecIndex].begin();
+			std::sort(propertyAnalyVecForSort.begin(), propertyAnalyVecForSort.end(), neiWaiPanBiLiuTongGu);
+			//propertyVecRuBubbleSort(propertyAnalyVecForSort);
+			vector<PROPERTY_t>::iterator proIter = propertyAnalyVecForSort.begin();
 			int ziJinIndex = 1;
-			while (proIter != propertyV[vecIndex].end())
+			while (proIter != propertyAnalyVecForSort.end())
 			{
 				proIter->zijinIdx = ziJinIndex++;
 				++proIter;
 			}
-			//shareSelectPrint(rstFp, propertyV[vecIndex][0], propertyAnalyVecPre);
 		}
-
-		//print 最新
-		if (i == fileIndex)
-		{
-
-			resultSet.clear();
-
-			fprintf(rstFp, "按大单净额排序\n");
-			propertyVecJingLiuRu[vecIndex] = propertyV[vecIndex];
-			sort(propertyVecJingLiuRu[vecIndex].begin(), propertyVecJingLiuRu[vecIndex].end(), compZiJinFuseDaDanJingE);			
-			shareSelectZDZ(rstFp, propertyVecJingLiuRu[vecIndex], ddeSelectCount, zijinSelectCount, zhuliSelectCount, resultSet);
-			//按净流入排序
-			fprintf(rstFp, "按净流入排序\n");
-			propertyVecJingLiuRu[vecIndex] = propertyV[vecIndex];
-			sort(propertyVecJingLiuRu[vecIndex].begin(), propertyVecJingLiuRu[vecIndex].end(), compZiJinFuseJingLiuRu);
-			shareSelectZDZ(rstFp, propertyVecJingLiuRu[vecIndex], ddeSelectCount, zijinSelectCount, zhuliSelectCount, resultSet);
-		}
-
-		//只处理当前最新的一组数据
-		i = 0;
 
 		time_t timep;
 		time(&timep);
@@ -336,13 +367,13 @@ void main()
 
 		vector<PROPERTY_t> &propertyAnalyVecSort = propertyV[vecIndex];
 		//if ((localTime < 92500) && (localTime > 91500)) //  befor time 9:25
-		if(0 == fileIndex)
+		if (0 == fileIndex)
 		{
-			sort(propertyAnalyVecSort.begin(), propertyAnalyVecSort.end(), cmpMethodJingJia);
+			std::sort(propertyAnalyVecSort.begin(), propertyAnalyVecSort.end(), cmpMethodJingJia);
 		}
 		else
 		{
-			//sort(propertyAnalyVecSort.begin(), propertyAnalyVecSort.end(), cmpMethod);
+			//std::sort(propertyAnalyVecSort.begin(), propertyAnalyVecSort.end(), cmpMethod);
 		}
 
 		// sort all item
@@ -353,14 +384,14 @@ void main()
 		}*/
 
 		chooseAnalyzeProperty(propertyAnalyVecSort, analyseVec, propertyAnalyVec);
-		//sort(propertyAnalyVecSort.begin(), propertyAnalyVecSort.end(), compZiJinFuseDaDanJingE);
+		//std::sort(propertyAnalyVecSort.begin(), propertyAnalyVecSort.end(), compZiJinFuseDaDanJingE);
 
 		//按涨停时间排序
 		/*struct ztTime{
 			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (atoi(a.firstLimitTime) < atoi(b.firstLimitTime)); }
 		} cmpZtTime;
-		sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpZtTime);*/
-					
+		std::sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpZtTime);*/
+
 		vector<string> newShareCodeVec;
 		PROPERTY_t programBuyProty;
 		int programFindFlag = 0;
@@ -411,24 +442,164 @@ void main()
 			limitupInfo.continueLimitSave(propertyAnalyVec, limitTodayVec);
 		}
 		fprintf(rstFp, "------------------------------------------------------------------------------------------------------------------------\n");
-		//打印排第一的票
-		selectFirstShare(rstFp,
-			buyFp,
-			programBuyProty,
-			programFindFlag,
-			propertyAnalyVec,
-			propertyAnalyVecSort,
-			propertyAnalyVecPre);
-		
-		fclose(buyFp);
+		//print 最新
+		if (iFile == fileIndex)
+		{
 
+			resultSet.clear();
+
+			fprintf(rstFp, "%s 按大单净额排序\n", outFile);
+			propertyVecJingLiuRu[vecIndex] = propertyV[vecIndex];
+			//std::sort(propertyVecJingLiuRu[vecIndex].begin(), propertyVecJingLiuRu[vecIndex].end(), compZiJinFuseDaDanJingE);	
+			//shareSelectZDZ(rstFp, propertyVecJingLiuRu[vecIndex], ddeSelectCount, zijinSelectCount, zhuliSelectCount, resultSet);
+
+			//shareSelectFinal(rstFp, propertyVecJingLiuRu[vecIndex]);
+			//按净流入排序
+			/*fprintf(rstFp, "按净流入排序\n");
+			propertyVecJingLiuRu[vecIndex] = propertyV[vecIndex];
+			std::sort(propertyVecJingLiuRu[vecIndex].begin(), propertyVecJingLiuRu[vecIndex].end(), compZiJinFuseJingLiuRu);
+			shareSelectZDZ(rstFp, propertyVecJingLiuRu[vecIndex], ddeSelectCount, zijinSelectCount, zhuliSelectCount, resultSet);*/
+		}
+
+		{
+			fprintf(rstFp, "总流出排序------------------------------------------------------------------------------------------------------------------------\n");
+
+			struct jingJiaLiuChu {
+				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zongLiuChuBiLiuTong > b.zongLiuChuBiLiuTong); }
+			} compZiJinFuseDaDanJingE;
+			std::sort(propertyVecJingLiuRu[vecIndex].begin(), propertyVecJingLiuRu[vecIndex].end(), compZiJinFuseDaDanJingE);
+			//propertyVecChuBubbleSort(propertyVecJingLiuRu[vecIndex]);
+			for (int i = 0; i < 15; i++)
+			{
+				PROPERTY_t &analyProty = propertyVecJingLiuRu[vecIndex][i];
+				shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+			}
+			//shareSelectFinal(rstFp, propertyVecJingLiuRu[vecIndex]);
+
+			fprintf(rstFp, "总流入排序-----------------\n");
+			//打印排第一的票
+			selectFirstShare(rstFp,
+				buyFp,
+				programBuyProty,
+				programFindFlag,
+				propertyAnalyVec,
+				propertyAnalyVecSort,
+				propertyAnalyVecPre);
+
+			fclose(buyFp);
+		}
+		{
+			//昨日涨停统计
+			fprintf(rstFp, "\n%s 昨日涨停开盘统计----------------------------------------------------------\n", outFile);
+			vector<PROPERTY_t> propertyAnalyVecTongJi = propertyAnalyVec;
+			struct fengBanJinE {
+				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhangTingBan > b.zhangTingBan); }
+			} cmpMethodFengBanJinE;
+			stable_sort(propertyAnalyVecTongJi.begin(), propertyAnalyVecTongJi.end(), cmpMethodFengBanJinE);
+			int num = propertyAnalyVecTongJi.size();
+			float averageIncrease = 0.0;
+			int   codeCount = 0;
+			int   zhangCount = 0;
+			int   dieCount = 0;
+			int   zuoRiYiZiCount = 0;
+			int   stCount = 0;
+			int   yiZiBanCount = 0;
+			int   xinGuCount = 0;
+			for (int i = 0; i < num; i++)
+			{
+				PROPERTY_t &analyProty = propertyAnalyVecTongJi[i];
+				if (
+					(true == yiZiBanJudge(analyProty))
+					&& (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+					&& ((yiZiBanCount - xinGuCount) < 6)
+					)
+				{
+					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+				}
+				zhangFuSummarize(analyProty, zhangCount, dieCount, yiZiBanCount, xinGuCount, stCount, averageIncrease, codeCount);
+			}
+			float shangZhangLv = (float)zhangCount / (float)(zhangCount + dieCount);
+			float avgZhang = averageIncrease / (float)codeCount;
+			fprintf(rstFp, "\n今日一字开盘:%d, 上涨率:%5.2f, 平均涨幅:%5.2f, 上涨数:%d, 下跌数:%d, 新股:%d, 连续一字板:%d, ST股数:%d\n",
+				yiZiBanCount, shangZhangLv, avgZhang, zhangCount, dieCount, xinGuCount, zuoRiYiZiCount, stCount);
+		}
+		{
+			//内外盘差比流通
+			fprintf(rstFp, "\n%s 内外盘差比流通----------------------------------------------------------\n", outFile);
+			struct neiWaiPanBiLiuTongGu {
+				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.neiWaiPanBiLiuTongGu > b.neiWaiPanBiLiuTongGu); }
+			} compNeiWaiPanBiLiuTongGu;
+			std::sort(propertyVecJingLiuRu[vecIndex].begin(), propertyVecJingLiuRu[vecIndex].end(), compNeiWaiPanBiLiuTongGu);
+			int codeCount = 0;
+			int num = propertyVecJingLiuRu[vecIndex].size();
+			for (int i = 0; i < num; i++)
+			{
+				PROPERTY_t &analyProty = propertyVecJingLiuRu[vecIndex][i];
+				if (
+					(analyProty.zhangFu > 0)
+					&& (analyProty.zijinIdx < 30)
+					&& (analyProty.neiWaiPanBiLiuTongGu > 0.3)
+					//&& (analyProty.zongLiuRuBiLiuTong > 0.002)
+					)
+				{
+					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+					if (codeCount > 10)
+					{
+						break;
+					}
+					++codeCount;
+				}
+			}
+		}
+		{
+			fprintf(rstFp, "高度板排序------------------------------------------------------------------------------------------------------------------------\n");
+			vector<PROPERTY_t> propertyAnalyVecJingJia = propertyAnalyVec;
+			struct lastLimitTimeIndex {
+				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (atoi(a.lastLimitTime) <atoi(b.lastLimitTime)); }
+			} cmpMethod_lastLimitTimeIndex;
+			std::stable_sort(propertyAnalyVecJingJia.begin(), propertyAnalyVecJingJia.end(), cmpMethod_lastLimitTimeIndex);
+			struct gaoDu {
+				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhangFu > b.zhangFu); }
+			} cmpMethodGaoDu;
+			stable_sort(propertyAnalyVecJingJia.begin(), propertyAnalyVecJingJia.end(), cmpMethodGaoDu);
+			struct continueDay {
+				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.continueDay > b.continueDay); }
+			} cmpMethodContinueDay;
+			stable_sort(propertyAnalyVecJingJia.begin(), propertyAnalyVecJingJia.end(), cmpMethodContinueDay);
+			int num = propertyAnalyVecJingJia.size();
+			int countOne = 0;
+			for (int i = 0; i < num; i++)
+			{
+				PROPERTY_t &analyProty = propertyAnalyVecJingJia[i];
+				//不同梯队打印换行符
+				if ((i > 1) && (propertyAnalyVecJingJia[i - 1].continueDay != propertyAnalyVecJingJia[i].continueDay))
+				{
+					fprintf(rstFp, "\n");
+				}
+				if (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+				{
+					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+				}
+				if(1 == analyProty.continueDay)
+				{
+					countOne++;
+				}
+				//if ((analyProty.continueDay < 2) && (i>20))
+				if (20 < countOne)
+				{
+					//break;
+				}
+			}
+		}
+		//只处理当前最新的一组数据
+		iFile = 0;
 		fprintf(rstFp, "------------------------------------------------------------------------------------------------------------------------\n");
 		analyNum = propertyAnalyVec.size();
 		int count = 0;
 		for (int i = 0; i < analyNum; i++)
 		{
 			PROPERTY_t &analyProty = propertyAnalyVec[i];
-			shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+			//shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 			if (
 				(0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
 				&& (analyProty.weiBi > -88.9)
@@ -470,9 +641,7 @@ void main()
 				//&& ((analyProty.jingJiaLiangBi / analyProty.zuoRiHuanShou) < 300.0)
 				)
 			{
-				if (
-					(analyProty.weiBi > WEIBI_MAX) //一字开盘
-					)
+				if (true == yiZiBanJudge(analyProty))// 一字开盘
 				{
 					if (
 						((analyProty.zuoRiZuiGao - analyProty.zuoRiKaiPan) < FLT_MIN)//昨日一字板

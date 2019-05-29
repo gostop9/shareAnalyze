@@ -21,6 +21,8 @@ namespace SHAREDEF
 
 	const float TENTHOUSAND = 10000; //“万”为单位
 
+	const int MAX_SHARE_NUM = 4000;
+
 	const std::string codeResult = "D:/share/shareAnalyze/codeResult.txt";
 
 	const std::string continueLimitFileName = "D:/share/continueLimit.txt";

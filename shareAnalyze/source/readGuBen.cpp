@@ -14,7 +14,7 @@ namespace GUBEN
 	bool readGuBenFile(char *fileName, vector<guBen_t> &gubenVec)
 	{
 		gubenVec.clear();
-		gubenVec.reserve(TOTAL_SHARE_NUMBERS);
+		gubenVec.reserve(MAX_SHARE_NUM);
 
 		FILE *fp = fopen(fileName, "rt");
 		if (NULL == fp)

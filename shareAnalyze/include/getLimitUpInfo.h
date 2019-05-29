@@ -34,6 +34,7 @@ namespace GETLIMITUPINFO
 				zongJinE = p.zongJinE;
 
 				zijinIdx = p.zijinIdx;
+				zijinChuIdx = p.zijinChuIdx;
 				liuTongShiZhi = p.liuTongShiZhi;
 				jingLiuRu = p.jingLiuRu;
 				daDanLiuRu = p.daDanLiuRu;

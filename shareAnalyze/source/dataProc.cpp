@@ -19,6 +19,7 @@ namespace DATAPROC
 bool readDdeFile(char *fileName, vector<DDE_t> &ddeVec)
 {
     ddeVec.clear();
+	ddeVec.reserve(MAX_SHARE_NUM);
 	FILE *fp = fopen(fileName, "rt");
 	if (NULL == fp)
 	{
@@ -165,6 +166,7 @@ bool readDdeFile(char *fileName, vector<DDE_t> &ddeVec)
 bool readZijinFile(char *fileName, vector<ZIJIN_t> &zijinVec)
 {
     zijinVec.clear();
+	zijinVec.reserve(MAX_SHARE_NUM);
 	int cnt_index = 0, cnt_int = 0, cnt_num = 0;
 	//cnt_int 用于存放字符串中的数字.
 	//cnt_index 作为字符串b的下标.
@@ -814,6 +816,7 @@ bool readZijinFile(char *fileName, vector<ZIJIN_t> &zijinVec)
 bool readZhuliFile(char *fileName, vector<ZHULI_t> &zhuliVec)
 {
     zhuliVec.clear();
+	zhuliVec.reserve(MAX_SHARE_NUM);
 	FILE *fp = fopen(fileName, "rt");
 	if (NULL == fp)
 	{
@@ -1059,10 +1062,12 @@ bool readZhuliFile(char *fileName, vector<ZHULI_t> &zhuliVec)
 bool readZhangfuFile(char *fileName, vector<ZHANGFU_t> &zhangfuVec)
 {
     zhangfuVec.clear();
+	zhangfuVec.reserve(MAX_SHARE_NUM);
 	int cnt_index = 0, cnt_int = 0, cnt_num = 0;
 	//cnt_int 用于存放字符串中的数字.
 	//cnt_index 作为字符串b的下标.
 	int flag_20180901 = 0;
+	int flag_20190120 = 0;
 	for (int i = 0;fileName[i] != '\0';++i) //当a数组元素不为结束符时.遍历字符串a.
 	{
 		if (fileName[i] >= '0'&& fileName[i] <= '9') //如果是数字.
@@ -1079,6 +1084,10 @@ bool readZhangfuFile(char *fileName, vector<ZHANGFU_t> &zhangfuVec)
 	if (cnt_int > 20180901)
 	{
 		flag_20180901 = 1;
+	}
+	if (cnt_int > 20190120)
+	{
+		flag_20190120 = 1;
 	}
 
 	FILE *fp = fopen(fileName, "rt");
@@ -1171,6 +1180,66 @@ bool readZhangfuFile(char *fileName, vector<ZHANGFU_t> &zhangfuVec)
 			tempZhangfu.zhangFu = FLT_MIN;
 		}
 		else tempZhangfu.zhangFu = atof(zhangFu);
+
+		if (1 == flag_20190120)
+		{
+			//liuRuBiZiYouLiuTong
+			char liuRuBiZiYouLiuTong[CHAR_LEN];
+			strcpy(liuRuBiZiYouLiuTong, strVec[i++].c_str());
+			if (0 == strcmp(liuRuBiZiYouLiuTong, nonChar))
+			{
+				tempZhangfu.liuRuBiZiYouLiuTong = FLT_MIN;
+			}
+			else tempZhangfu.liuRuBiZiYouLiuTong = atof(liuRuBiZiYouLiuTong);
+			//liuChuBiZiYouLiuTong
+			char liuChuBiZiYouLiuTong[CHAR_LEN];
+			strcpy(liuChuBiZiYouLiuTong, strVec[i++].c_str());
+			if (0 == strcmp(liuChuBiZiYouLiuTong, nonChar))
+			{
+				tempZhangfu.liuChuBiZiYouLiuTong = FLT_MIN;
+			}
+			else tempZhangfu.liuChuBiZiYouLiuTong = atof(liuChuBiZiYouLiuTong);
+			//ziJinLiuXiang
+			string ziJinLiuXiang = strVec[i++];
+			if (0 == strcmp(ziJinLiuXiang.c_str(), nonChar))
+			{
+				tempZhangfu.ziJinLiuXiang = FLT_MIN;
+			}
+			else
+			{
+				int iPos = ziJinLiuXiang.find(",");
+				while (iPos != string::npos)
+				{
+					ziJinLiuXiang = ziJinLiuXiang.erase(iPos, 1);
+					iPos = ziJinLiuXiang.find(",");
+				}
+				float liuTong = atof(ziJinLiuXiang.c_str());
+				int strLen = ziJinLiuXiang.length();
+				string danWei = ziJinLiuXiang.substr(strLen - 2, strLen);
+				if (0 == strcmp("万", danWei.c_str()))
+				{
+					liuTong = liuTong * DANWEI_WAN;
+				}
+				if (0 == strcmp("亿", danWei.c_str()))
+				{
+					liuTong = liuTong * DANWEI_YI;
+				}
+				else
+				{
+					liuTong = liuTong;
+				}
+				tempZhangfu.ziJinLiuXiang = liuTong;
+			}
+			//zhuLiJingE
+			char zhuLiJingE[CHAR_LEN];
+			strcpy(zhuLiJingE, strVec[i++].c_str());
+			if (0 == strcmp(zhuLiJingE, nonChar))
+			{
+				tempZhangfu.zhuLiJingE = FLT_MIN;
+			}
+			else tempZhangfu.zhuLiJingE = atof(zhuLiJingE);
+		}
+
 		//zhangDie
 		char zhangDie[CHAR_LEN];
 		strcpy(zhangDie, strVec[i++].c_str());
@@ -1195,22 +1264,25 @@ bool readZhangfuFile(char *fileName, vector<ZHANGFU_t> &zhangfuVec)
 			tempZhangfu.sanHuShuLiang = FLT_MIN;
 		}
 		else tempZhangfu.sanHuShuLiang = atof(sanHuShuLiang);
-		//zhuLiJingE
-		char zhuLiJingE[CHAR_LEN];
-		strcpy(zhuLiJingE, strVec[i++].c_str());
-		if (0 == strcmp(zhuLiJingE, nonChar))
+		if (0 == flag_20190120)
 		{
-			tempZhangfu.zhuLiJingE = FLT_MIN;
+			//zhuLiJingE
+			char zhuLiJingE[CHAR_LEN];
+			strcpy(zhuLiJingE, strVec[i++].c_str());
+			if (0 == strcmp(zhuLiJingE, nonChar))
+			{
+				tempZhangfu.zhuLiJingE = FLT_MIN;
+			}
+			else tempZhangfu.zhuLiJingE = atof(zhuLiJingE);		
+			//guXingPingFen
+			char guXingPingFen[CHAR_LEN];
+			strcpy(guXingPingFen, strVec[i++].c_str());
+			if (0 == strcmp(guXingPingFen, nonChar))
+			{
+				tempZhangfu.guXingPingFen = FLT_MIN;
+			}
+			else tempZhangfu.guXingPingFen = atof(guXingPingFen);
 		}
-		else tempZhangfu.zhuLiJingE = atof(zhuLiJingE);
-		//guXingPingFen
-		char guXingPingFen[CHAR_LEN];
-		strcpy(guXingPingFen, strVec[i++].c_str());
-		if (0 == strcmp(guXingPingFen, nonChar))
-		{
-			tempZhangfu.guXingPingFen = FLT_MIN;
-		}
-		else tempZhangfu.guXingPingFen = atof(guXingPingFen);
 		//liangBi
 		char liangBi[CHAR_LEN];
 		strcpy(liangBi, strVec[i++].c_str());
@@ -1218,7 +1290,7 @@ bool readZhangfuFile(char *fileName, vector<ZHANGFU_t> &zhangfuVec)
 		{
 			tempZhangfu.liangBi = FLT_MIN;
 		}
-		else tempZhangfu.liangBi = atof(guXingPingFen);
+		else tempZhangfu.liangBi = atof(liangBi);
 		//weiBi
 		char weiBi[CHAR_LEN];
 		strcpy(weiBi, strVec[i++].c_str());
@@ -1235,6 +1307,18 @@ bool readZhangfuFile(char *fileName, vector<ZHANGFU_t> &zhangfuVec)
 			tempZhangfu.jiGouDongXiang = FLT_MIN;
 		}
 		else tempZhangfu.jiGouDongXiang = atof(jiGouDongXiang);
+
+		if (1 == flag_20190120)
+		{
+			//guXingPingFen
+			char guXingPingFen[CHAR_LEN];
+			strcpy(guXingPingFen, strVec[i++].c_str());
+			if (0 == strcmp(guXingPingFen, nonChar))
+			{
+				tempZhangfu.guXingPingFen = FLT_MIN;
+			}
+			else tempZhangfu.guXingPingFen = atof(guXingPingFen);
+		}
 		//jingLiZengLv
 		char jingLiZengLv[CHAR_LEN];
 		strcpy(jingLiZengLv, strVec[i++].c_str());

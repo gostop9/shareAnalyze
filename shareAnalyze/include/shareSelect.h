@@ -7,27 +7,32 @@
 
 #include "readZhangTing.h"
 
-using namespace std;
 using namespace ZHANGTING;
 
-void shareSelect(FILE *fp, vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &zhuli, 
+void shareSelect(FILE *fp, std::vector<DDE_t> &dde, std::vector<ZIJIN_t> &zijin, std::vector<ZHULI_t> &zhuli, 
 	int ddeSelectCount, int zijinSelectCount, int zhuliSelectCount, std::unordered_set<string> &resultSet);
 
-void shareSelectZiJin(FILE *fp, vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &zhuli, int ddeSelectCount, int zijinSelectCount, int zhuliSelectCount, std::unordered_set<string> &resultSet);
+void shareSelectZiJin(FILE *fp, std::vector<DDE_t> &dde, std::vector<ZIJIN_t> &zijin, std::vector<ZHULI_t> &zhuli, int ddeSelectCount, int zijinSelectCount, int zhuliSelectCount, std::unordered_set<string> &resultSet);
 
-void shareSelectZDZ(FILE *fp, vector<PROPERTY_t> &propertyAnalyVec, int ddeSelectCount, int zijinSelectCount, int zhuliSelectCount, std::vector<string> &resultSet);
+void shareSelectZDZ(FILE *fp, std::vector<PROPERTY_t> &propertyAnalyVec, int ddeSelectCount, int zijinSelectCount, int zhuliSelectCount, std::vector<string> &resultSet);
 
-void shareParaFuse(vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &zhuli, vector<ZHANGFU_t> &zhangfu, vector<guBen_t> &gubenVec, vector<PROPERTY_t> &propertyVec, vector<analyseCode_t> &analyVec, vector<PROPERTY_t> &propertyAnalyVec);
+void shareSelectFinal(FILE *fp, std::vector<PROPERTY_t> &propertyVec);
 
-void shareParaFuseWithoutZhuli(vector<ZIJIN_t> &zijin, vector<ZHANGFU_t> &zhangfu, vector<guBen_t> &gubenVec, vector<PROPERTY_t> &propertyVec, vector<analyseCode_t> &analyVec, vector<PROPERTY_t> &propertyAnalyVec);
+void shareParaFuse(std::vector<DDE_t> &dde, std::vector<ZIJIN_t> &zijin, std::vector<ZHULI_t> &zhuli, std::vector<ZHANGFU_t> &zhangfu, std::vector<guBen_t> &gubenVec, std::vector<PROPERTY_t> &propertyVec, std::vector<analyseCode_t> &analyVec, std::vector<PROPERTY_t> &propertyAnalyVec);
 
-int shareFuseSelect(int &fileIndex, PROPERTY_t &property, vector<vector<PROPERTY_t>> &propertyVecV, vector<string> &selectVec);
+void shareParaFuseWithoutZhuli(std::vector<ZIJIN_t> &zijin, std::vector<ZHANGFU_t> &zhangfu, std::vector<guBen_t> &gubenVec, std::vector<PROPERTY_t> &propertyVec, std::vector<analyseCode_t> &analyVec, std::vector<PROPERTY_t> &propertyAnalyVec);
 
-void shareSelectPrint(FILE *fp, PROPERTY_t &property, vector<PROPERTY_t> &propertyPre);
+int shareFuseSelect(int &fileIndex, PROPERTY_t &property, std::vector<std::vector<PROPERTY_t>> &propertyVecV, std::vector<string> &selectVec);
 
-void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPERTY_t> &propertyAnalyVec, vector<ZHANGTING::zhangTing_t> &zhangTingVec);
+void shareSelectPrint(FILE *fp, PROPERTY_t &property, std::vector<PROPERTY_t> &propertyPre);
 
-void chooseAnalyzeProperty(vector<PROPERTY_t> &propertyVec, vector<analyseCode_t> &analyVec, vector<PROPERTY_t> &propertyAnalyVec);
+void calculateOtherPara(FILE *fp, std::vector<PROPERTY_t> &propertyVec, std::vector<PROPERTY_t> &propertyAnalyVec, std::vector<ZHANGTING::zhangTing_t> &zhangTingVec);
+
+void chooseAnalyzeProperty(std::vector<PROPERTY_t> &propertyVec, std::vector<analyseCode_t> &analyVec, std::vector<PROPERTY_t> &propertyAnalyVec);
+
+bool yiZiBanJudge(PROPERTY_t &property);
+
+void zhangFuSummarize(PROPERTY_t &property, int &zhangCount, int &dieCount, int &yiZiBanCount, int &xinGuCount, int &stCount, float &averageIncrease, int &codeCount);
 
 #endif
 

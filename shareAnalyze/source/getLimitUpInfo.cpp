@@ -300,7 +300,7 @@ namespace GETLIMITUPINFO
 				//float zhanLiuBi = 0;
 				//float zhangTingBan = getLimitUpMoney<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter), zhanLiuBi);
 				string printFlag = getShareFlag<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter));				
-				fprintf(fp, "%2d  %-8s  %6.2f, %4s%-8s  %6.2f | 昨停:%5.0f,封:%2d, %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%8.2f, 资金:%4d,  | %5.2f : %d  %s: \n",
+				fprintf(fp, "%2d  %-8s  %6.2f, %4s%-8s  %6.2f | 昨停:%5.0f,封:%3d, %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%9.2f, 资金:%4d,  | %5.2f : %d  %s: \n",
 					ztrTemp.ztCount, setIter->code, setIter->xianJia, printFlag.c_str(), setIter->name, setIter->zhangFu, setIter->limitUpMoney/TENTHOUSAND, setIter->indexLvsC, setIter->ziYouLiuTongShiZhi / DIVIDE, setIter->continueDay, setIter->jingJiaLiangBi, setIter->zuoRiHuanShou, setIter->zuoRiLiangBi, setIter->weiBi, setIter->zhangTingBan, setIter->zijinIdx, zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.reason.c_str());
 				for (int j = 1; j < maxDisplay; j++)
 				{
@@ -310,7 +310,7 @@ namespace GETLIMITUPINFO
 					//float zhangTingBan = getLimitUpMoney<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter), zhanLiuBi);
 
 					string printFlag = getShareFlag<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter));					
-					fprintf(fp, "    %-8s  %6.2f, %4s%-8s  %6.2f | 昨停:%5.0f,封:%2d, %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%8.2f, 资金:%4d\n",
+					fprintf(fp, "    %-8s  %6.2f, %4s%-8s  %6.2f | 昨停:%5.0f,封:%3d, %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%9.2f, 资金:%4d\n",
 						setIter->code, setIter->xianJia, printFlag.c_str(), setIter->name, setIter->zhangFu, setIter->limitUpMoney/TENTHOUSAND, setIter->indexLvsC, setIter->ziYouLiuTongShiZhi / DIVIDE, setIter->continueDay, setIter->jingJiaLiangBi, setIter->zuoRiHuanShou, setIter->zuoRiLiangBi, setIter->weiBi, setIter->zhangTingBan, setIter->zijinIdx);
 				}
 			}

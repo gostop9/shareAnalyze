@@ -9,6 +9,8 @@ change log
 20180828 去除DDE页面数据。增加资金页面“委差”数据用于估算竞价后的涨停资金数据。
 
 20180921 增加涨幅排名标签-自由流通市值，总股本，流通股本，流通A股。
+
+20190120 增加涨幅排名标签-资金流入/自由流通市值，资金流出/自由流通市值，资金流向；调整股性评分的位置。
 */
 
 #ifndef _DATA_STRUCTURE_H_
@@ -222,6 +224,11 @@ struct ZHANGFU_t
 	float zongGuBen;
 	float liuTongGuBen;
 	float liuTongAGu;
+
+	//20190120 add
+	float liuRuBiZiYouLiuTong;
+	float liuChuBiZiYouLiuTong;
+	float ziJinLiuXiang;
 	//
 };
 
@@ -257,6 +264,7 @@ struct PROPERTY_t
 
 	//zijin
 	int   zijinIdx;
+	int   zijinChuIdx;
 	float liuTongShiZhi;
 	//float huanShou;
 	//float zhangFu;
@@ -469,7 +477,45 @@ struct PROPERTY_t
 	//构造函数初始化
 	PROPERTY_t()
 	{
+		limitUpMoney = 0;
 		ddeIdx = 0;
+		zhuLiJingBiLiuTong = 0.0;
+		neiWaiPanBiLiuTongGu = 0.0;
+		jingLiuRuBiLiuTong = 0.0;
+		daDanJinBiLiuTong = 0.0;
+		zhongDanJinBiLiuTong = 0.0;
+		xiaoDanJinBiLiuTong = 0.0;
+		zhongXiaoDanJinBiLiuTong = 0.0;
+		zhongXiaoDanZongBiLiuTong = 0.0;
+		daDanLiuRuBiLiuTong = 0.0;
+		daDanLiuChuBiLiuTong = 0.0;
+		zhongXiaoLiuRuBiLiuTong = 0.0;
+		daXiaoLiuRuBiLiuTong = 0.0;
+		xiaoDanLiuRuBiLiuTong = 0.0;
+		zhongDanLiuRuBiLiuTong = 0.0;
+		zhongDanLiuChuBiLiuTong = 0.0;
+		daZhongLiuRuBiLiuTong = 0.0;
+		zongLiuRuBiLiuTong = 0.0;
+		zongLiuChuBiLiuTong = 0.0;
+		chengJiaoBiLiuTong = 0.0;
+		jingJiaLiangBi = 0.0;
+
+		zuoRiHuanShou = 0.0;
+		zuoRiKaiPan = 0.0;
+		zuoRiZuiGao = 0.0;
+		zuoRiLiangBi = 0.0;
+		zuoRiZhenFu = 0.0;
+		zuoRiZhuLiJingLiang = 0.0;
+		zuoRiZongJinE = 0.0;
+
+		//zhang ting
+		indexLvsC = 0;
+		continueDay = 0;
+		limitOpenCount = 0;
+		limitVsDeal = 0.0;
+		limitVsCirculate = 0.0;
+		limitUpMoney = 0.0;
+
 		jingLiuRuBiLiuTongIndex = 0;
 		zongLiuRuBiLiuTongIndex = 0;
 		zongLiuChuBiLiuTongIndex = 0;
