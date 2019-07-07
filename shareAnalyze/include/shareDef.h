@@ -16,6 +16,8 @@ namespace SHAREDEF
 	const float BI_LIUTONG = 100000.0;
 
 	const std::string NEW_SHARE = "新股";
+	const std::string PRE_NEW_SHARE = "次新";
+	const std::string PRO_NEW_SHARE = "次新股";
 
 	const float DIVIDE = 100000000; //“亿”为单位
 
@@ -28,6 +30,11 @@ namespace SHAREDEF
 	const std::string continueLimitFileName = "D:/share/continueLimit.txt";
 
 	const std::string ztProportionFileName = "D:/share/ztProportion.txt";
+
+	const float kaiPanZfMax = 1.2;
+	const float kaiPanZfMin = -6.9;
+	const float zhangFuRoundMin = 0.019;
+	const int MAX_ZIJIN_IDX = 16;
 
 	const int CHAR_LEN = (30);
 	static char nonChar[CHAR_LEN];

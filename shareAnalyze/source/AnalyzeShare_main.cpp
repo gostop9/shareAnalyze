@@ -330,6 +330,21 @@ void main()
 				++proIter;
 			}
 		}
+		// sort for liuRuBiZuoRiChengJiaoIdx
+		{
+			struct myclass {
+				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zongLiuRuBiZuoRiZongJinE > b.zongLiuRuBiZuoRiZongJinE); }
+			} liuRuBiZuoRiChengJiao;
+
+			std::sort(propertyAnalyVecForSort.begin(), propertyAnalyVecForSort.end(), liuRuBiZuoRiChengJiao);
+			vector<PROPERTY_t>::iterator proIter = propertyAnalyVecForSort.begin();
+			int ziJinIndex = 1;
+			while (proIter != propertyAnalyVecForSort.end())
+			{
+				proIter->liuRuBiZuoRiChengJiaoIdx = ziJinIndex++;
+				++proIter;
+			}
+		}
 		// sort for zijinIndex
 		{
 			struct myclass {
@@ -412,7 +427,7 @@ void main()
 				limitupInfo.limitShareOrdering(propertyAnalyVec);
 
 				//程序下单
-				autoShareBuy(buyFp, propertyAnalyVec, programBuyProty, programFindFlag);
+				//autoShareBuy(buyFp, propertyAnalyVec, programBuyProty, programFindFlag);
 			}
 
 			//提取涨停原因
@@ -462,33 +477,6 @@ void main()
 		}
 
 		{
-			fprintf(rstFp, "总流出排序------------------------------------------------------------------------------------------------------------------------\n");
-
-			struct jingJiaLiuChu {
-				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zongLiuChuBiLiuTong > b.zongLiuChuBiLiuTong); }
-			} compZiJinFuseDaDanJingE;
-			std::sort(propertyVecJingLiuRu[vecIndex].begin(), propertyVecJingLiuRu[vecIndex].end(), compZiJinFuseDaDanJingE);
-			//propertyVecChuBubbleSort(propertyVecJingLiuRu[vecIndex]);
-			for (int i = 0; i < 15; i++)
-			{
-				PROPERTY_t &analyProty = propertyVecJingLiuRu[vecIndex][i];
-				shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
-			}
-			//shareSelectFinal(rstFp, propertyVecJingLiuRu[vecIndex]);
-
-			fprintf(rstFp, "总流入排序-----------------\n");
-			//打印排第一的票
-			selectFirstShare(rstFp,
-				buyFp,
-				programBuyProty,
-				programFindFlag,
-				propertyAnalyVec,
-				propertyAnalyVecSort,
-				propertyAnalyVecPre);
-
-			fclose(buyFp);
-		}
-		{
 			//昨日涨停统计
 			fprintf(rstFp, "\n%s 昨日涨停开盘统计----------------------------------------------------------\n", outFile);
 			vector<PROPERTY_t> propertyAnalyVecTongJi = propertyAnalyVec;
@@ -505,9 +493,26 @@ void main()
 			int   stCount = 0;
 			int   yiZiBanCount = 0;
 			int   xinGuCount = 0;
+
+			//连板统计
+			float conAvgIncrease = 0.0;
+			int   conZhangCount = 0;
 			for (int i = 0; i < num; i++)
 			{
 				PROPERTY_t &analyProty = propertyAnalyVecTongJi[i];
+				if (analyProty.continueDay > 1
+					&& (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+					)
+				{
+					string name = analyProty.name;
+					std::size_t found = name.find("ST");
+					if (found != std::string::npos) {}//剔除ST股的统计
+					else
+					{
+						conAvgIncrease += analyProty.zhangFu;
+						++conZhangCount;
+					}
+				}
 				if (
 					(true == yiZiBanJudge(analyProty))
 					&& (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
@@ -520,8 +525,44 @@ void main()
 			}
 			float shangZhangLv = (float)zhangCount / (float)(zhangCount + dieCount);
 			float avgZhang = averageIncrease / (float)codeCount;
-			fprintf(rstFp, "\n今日一字开盘:%d, 上涨率:%5.2f, 平均涨幅:%5.2f, 上涨数:%d, 下跌数:%d, 新股:%d, 连续一字板:%d, ST股数:%d\n",
+			fprintf(rstFp, "\n今日一字开盘:%d, 上涨率:%5.2f, 平均涨幅:%5.2f, 上涨数:%d, 下跌数:%d, 新股:%d, 连续一字板:%d, ST股数:%d\n\n",
 				yiZiBanCount, shangZhangLv, avgZhang, zhangCount, dieCount, xinGuCount, zuoRiYiZiCount, stCount);
+
+			fprintf(rstFp, "连板涨幅::%5.2f, 昨日连板个数:%d\n", conAvgIncrease / float(conZhangCount), conZhangCount);
+		}
+
+		{
+			/*fprintf(rstFp, "总流出排序------------------------------------------------------------------------------------------------------------------------\n");
+
+			struct jingJiaLiuChu {
+				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zongLiuChuBiLiuTong > b.zongLiuChuBiLiuTong); }
+			} compZiJinFuseDaDanJingE;
+			std::sort(propertyVecJingLiuRu[vecIndex].begin(), propertyVecJingLiuRu[vecIndex].end(), compZiJinFuseDaDanJingE);
+			//propertyVecChuBubbleSort(propertyVecJingLiuRu[vecIndex]);
+			for (int i = 0; i < 15; i++)
+			{
+				PROPERTY_t &analyProty = propertyVecJingLiuRu[vecIndex][i];
+				if (
+					(analyProty.zhangFu > 0)
+					&& (analyProty.zijinIdx < 30)
+					)
+				{
+					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+				}
+			}*/
+			//shareSelectFinal(rstFp, propertyVecJingLiuRu[vecIndex]);
+			
+			fprintf(rstFp, "总流入排序-----------------\n");
+			//打印排第一的票
+			selectFirstShare(rstFp,
+				buyFp,
+				programBuyProty,
+				programFindFlag,
+				propertyAnalyVec,
+				propertyAnalyVecSort,
+				propertyAnalyVecPre);
+
+			fclose(buyFp);
 		}
 		{
 			//内外盘差比流通
@@ -554,18 +595,7 @@ void main()
 		{
 			fprintf(rstFp, "高度板排序------------------------------------------------------------------------------------------------------------------------\n");
 			vector<PROPERTY_t> propertyAnalyVecJingJia = propertyAnalyVec;
-			struct lastLimitTimeIndex {
-				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (atoi(a.lastLimitTime) <atoi(b.lastLimitTime)); }
-			} cmpMethod_lastLimitTimeIndex;
-			std::stable_sort(propertyAnalyVecJingJia.begin(), propertyAnalyVecJingJia.end(), cmpMethod_lastLimitTimeIndex);
-			struct gaoDu {
-				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhangFu > b.zhangFu); }
-			} cmpMethodGaoDu;
-			stable_sort(propertyAnalyVecJingJia.begin(), propertyAnalyVecJingJia.end(), cmpMethodGaoDu);
-			struct continueDay {
-				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.continueDay > b.continueDay); }
-			} cmpMethodContinueDay;
-			stable_sort(propertyAnalyVecJingJia.begin(), propertyAnalyVecJingJia.end(), cmpMethodContinueDay);
+			sortByTimeZhangfuGaodu(propertyAnalyVecJingJia);
 			int num = propertyAnalyVecJingJia.size();
 			int countOne = 0;
 			for (int i = 0; i < num; i++)
@@ -576,7 +606,8 @@ void main()
 				{
 					fprintf(rstFp, "\n");
 				}
-				if (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+				if ((0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+					)
 				{
 					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 				}

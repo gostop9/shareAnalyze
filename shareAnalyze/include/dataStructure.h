@@ -265,6 +265,7 @@ struct PROPERTY_t
 	//zijin
 	int   zijinIdx;
 	int   zijinChuIdx;
+	int   liuRuBiZuoRiChengJiaoIdx;
 	float liuTongShiZhi;
 	//float huanShou;
 	//float zhangFu;
@@ -422,6 +423,10 @@ struct PROPERTY_t
 	float zuoRiJiGouDongXiang;
 	float zuoRiSanHuShuLiang;
 	float zuoRiZongJinE;
+	float preZuoShou;
+
+	float zongLiuRuBiZuoRiZongJinE;
+	float zuoRiKaiPanZhangFu;
 
 	//zhang ting
 	int   jingLiuRuBiLiuTongIndex;
@@ -477,6 +482,7 @@ struct PROPERTY_t
 	//构造函数初始化
 	PROPERTY_t()
 	{
+		zhangFu = -10.0;
 		limitUpMoney = 0;
 		ddeIdx = 0;
 		zhuLiJingBiLiuTong = 0.0;
@@ -507,6 +513,9 @@ struct PROPERTY_t
 		zuoRiZhenFu = 0.0;
 		zuoRiZhuLiJingLiang = 0.0;
 		zuoRiZongJinE = 0.0;
+		zongLiuRuBiZuoRiZongJinE = 0.0;
+		zuoRiKaiPanZhangFu = -15.0;
+		preZuoShou = 0.0;
 
 		//zhang ting
 		indexLvsC = 0;
