@@ -49,8 +49,8 @@ bool compZiJinFuseJingLiuRu(const PROPERTY_t &a, const PROPERTY_t &b) {
 bool compZiJinFuseDaDanJingE(const PROPERTY_t &a, const PROPERTY_t &b) {
 	return a.zhuLiJingE > b.zhuLiJingE;
 }
-
-/*void propertyVecChuBubbleSort(vector<PROPERTY_t> &propertyVec)
+/*
+void propertyVecChuBubbleSort(vector<PROPERTY_t> &propertyVec)
 {
 	int n = propertyVec.size();
 	for (int i = 0; i < n - 1; i++)
@@ -81,8 +81,25 @@ void propertyVecRuBubbleSort(vector<PROPERTY_t> &propertyVec)
 			}
 		}
 	}
-}*/
-
+}
+//出现isfinite值，导致排序区域中断
+void propertyVecDaDanBubbleSort(vector<PROPERTY_t> &propertyVec)
+{
+	int n = propertyVec.size();
+	for (int i = 0; i < n - 1; i++)
+	{
+		for (int j = n - 1; j >= i + 1; j--)
+		{
+			if (propertyVec[j - 1].zongLiuRuBiZuoRiZongJinE < propertyVec[j].zongLiuRuBiZuoRiZongJinE)
+			{
+				PROPERTY_t temp = propertyVec[j - 1];
+				propertyVec[j - 1] = propertyVec[j];
+				propertyVec[j] = temp;
+			}
+		}
+	}
+}
+*/
 
 float huanShouMax = 25.0F;
 float liangBiMin = 1.2F;
@@ -169,6 +186,7 @@ void main()
 		strcpy(anaCode.code, tempBuf);
 		analyseVec.push_back(anaCode);
 	}
+	vector<analyseCode_t> independentAnalyVec = analyseVec;
 
 	fclose(cfgFp);
 
@@ -215,7 +233,7 @@ void main()
 	vector<zhangTing_t> zhangTingVecToday;
 	zhangTingVecToday.clear();
 	//只进行竞价数据比较
-	if(1 >= fileIndex)
+	//if(1 >= fileIndex)
 	{
 		zhuLiJingLiangMin = 2.0;
 
@@ -335,7 +353,7 @@ void main()
 			struct myclass {
 				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zongLiuRuBiZuoRiZongJinE > b.zongLiuRuBiZuoRiZongJinE); }
 			} liuRuBiZuoRiChengJiao;
-
+			//propertyVecDaDanBubbleSort(propertyAnalyVecForSort);
 			std::sort(propertyAnalyVecForSort.begin(), propertyAnalyVecForSort.end(), liuRuBiZuoRiChengJiao);
 			vector<PROPERTY_t>::iterator proIter = propertyAnalyVecForSort.begin();
 			int ziJinIndex = 1;
@@ -592,6 +610,7 @@ void main()
 				}
 			}
 		}
+		if (1 >= fileIndex)
 		{
 			fprintf(rstFp, "高度板排序------------------------------------------------------------------------------------------------------------------------\n");
 			vector<PROPERTY_t> propertyAnalyVecJingJia = propertyAnalyVec;
@@ -619,6 +638,24 @@ void main()
 				if (20 < countOne)
 				{
 					//break;
+				}
+			}
+		}
+		else
+		{
+			fprintf(rstFp, "持仓股------------------------------------------------------------------------------------------------------------------------\n");
+			int analySize = independentAnalyVec.size();
+			for (int analyIdx = 0; analyIdx < analySize; analyIdx++)				
+			{
+				vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
+				while (proIter != propertyAnalyVec.end())
+				{
+					if (0 == strcmp(proIter->code, independentAnalyVec[analyIdx].code))
+					{
+						shareSelectPrint(rstFp, *proIter, propertyAnalyVecPre);
+						break;
+					}
+					++proIter;
 				}
 			}
 		}

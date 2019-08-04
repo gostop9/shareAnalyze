@@ -19,8 +19,10 @@ change log
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "shareDef.h"
 
 using std::string;
+using namespace SHAREDEF;
 
 typedef long long int64;
 
@@ -482,9 +484,12 @@ struct PROPERTY_t
 	//构造函数初始化
 	PROPERTY_t()
 	{
-		zhangFu = -10.0;
+		zhangFu = -12.0;
 		limitUpMoney = 0;
 		ddeIdx = 0;
+		zijinIdx = MAX_SHARE_NUM;
+		zijinChuIdx = MAX_SHARE_NUM;
+		liuRuBiZuoRiChengJiaoIdx = MAX_SHARE_NUM;
 		zhuLiJingBiLiuTong = 0.0;
 		neiWaiPanBiLiuTongGu = 0.0;
 		jingLiuRuBiLiuTong = 0.0;
@@ -513,7 +518,7 @@ struct PROPERTY_t
 		zuoRiZhenFu = 0.0;
 		zuoRiZhuLiJingLiang = 0.0;
 		zuoRiZongJinE = 0.0;
-		zongLiuRuBiZuoRiZongJinE = 0.0;
+		zongLiuRuBiZuoRiZongJinE = -FLT_MAX;
 		zuoRiKaiPanZhangFu = -15.0;
 		preZuoShou = 0.0;
 

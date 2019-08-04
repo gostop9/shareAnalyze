@@ -946,7 +946,7 @@ property.sanRiZhangFu, property.wuRiZhangFu, property.shiRiZhangFu);
 股:%5.2f,始:%6s,末:%6s,开:%2d,机:%6.2f,盘比:%5.2f,主总:%5.2f,净增:%7.2f,净利:%7.4f,\
 净流:%7.4f,大:%7.4f,比:%5.2f,中:%7.4f,比:%5.2f,小:%7.4f,比:%5.2f\n",
 //三:%5.2f,五:%5.2f,十:%5.2f\n", 
-property.code, property.xianJia, printFlag.c_str(), property.name, property.zuoRiKaiPanZhangFu, property.zhangFu, property.zongLiuRuBiLiuTong*100.0, property.liuRuBiZuoRiChengJiaoIdx, property.zijinIdx, property.zijinChuIdx, property.zongJinE/TENTHOUSAND, property.continueDay, jingJiaLiangBi, property.weiBi, zhangTingBan, property.zuoRiZongJinE/TENTHOUSAND, property.limitUpMoney/TENTHOUSAND, property.indexLvsC,
+property.code, property.xianJia, printFlag.c_str(), property.name, property.zuoRiKaiPanZhangFu, property.zhangFu, property.zongLiuRuBiZuoRiZongJinE*100.0, property.liuRuBiZuoRiChengJiaoIdx, property.zijinIdx, property.zijinChuIdx, property.zongJinE/TENTHOUSAND, property.continueDay, jingJiaLiangBi, property.weiBi, zhangTingBan, property.zuoRiZongJinE/TENTHOUSAND, property.limitUpMoney/TENTHOUSAND, property.indexLvsC,
 property.ziYouLiuTongShiZhi / DIVIDE, zuoRiHuanShou, zuoRiLiangBi, property.limitReason, property.suoShuHangYe,property.zhuLiJingLiang,
 daDanJinBiLiuTong, zhongDanJinBiLiuTong, zhongXiaoDanJinBiLiuTong, property.jingLiuRu / TENTHOUSAND, property.jingLiuRuBiLiuTongIndex, property.zongLiuRuBiLiuTongIndex, property.zongLiuChuBiLiuTongIndex, property.chengJiaoBiLiuTongIndex, property.ddeIdx, property.huanShou, property.liangBi,
 property.guXingPingFen, property.firstLimitTime, property.lastLimitTime, property.limitOpenCount, property.jiGouDongXiang, property.zongLiuRuBiLiuTong*100.0, zhuLiJingBi, property.jingLiZengLv, property.jingLiRun / DIVIDE,
@@ -1036,6 +1036,7 @@ void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPER
 		proIter->xiaoDanLiuRuBiLiuTong = (proIter->xiaoDanLiuRu) / zuiXinLiuTongShiZhi;
 		proIter->zhongDanLiuRuBiLiuTong = (proIter->zhongDanLiuRu) / zuiXinLiuTongShiZhi;
 		proIter->daZhongLiuRuBiLiuTong = (proIter->daDanLiuRu + proIter->zhongDanLiuRu) / zuiXinLiuTongShiZhi;
+		if (!isfinite(proIter->daZhongLiuRuBiLiuTong)) { proIter->daZhongLiuRuBiLiuTong = 0.0; }
 		proIter->zongLiuRuBiLiuTong = (proIter->daDanLiuRu + proIter->zhongDanLiuRu + proIter->xiaoDanLiuRu) / zuiXinLiuTongShiZhi;
 		if (!isfinite(proIter->zongLiuRuBiLiuTong)) { proIter->zongLiuRuBiLiuTong = 0.0; }
 		proIter->zongLiuChuBiLiuTong = (proIter->daDanLiuChu + proIter->zhongDanLiuChu + proIter->xiaoDanLiuChu) / zuiXinLiuTongShiZhi;
@@ -1085,6 +1086,7 @@ void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPER
 				//proIter->zongLiuRuBiZuoRiZongJinE = proIter->liangBi;//(proIter->waiPan - proIter->neiPan) / proIter->ziYouLiuTongGu;
 				//proIter->zongLiuRuBiZuoRiZongJinE = proIter->waiPan * proIter->xianJia / proIter->liuTongShiZhi;
 				proIter->zongLiuRuBiZuoRiZongJinE = proIter->zhuLiJingE / zuiXinLiuTongShiZhi;
+				if (!isfinite(proIter->zongLiuRuBiZuoRiZongJinE)) { proIter->zongLiuRuBiZuoRiZongJinE = -100.0; }
 				//proIter->zongLiuRuBiZuoRiZongJinE = proIter->zhuLiJingLiang;
 				proIter->zuoRiKaiPanZhangFu = (proPreIter->kaiPan - proPreIter->zuoShou) * 100.0 / proPreIter->zuoShou;
 				proIter->preZuoShou = proPreIter->zuoShou;

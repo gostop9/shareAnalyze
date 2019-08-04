@@ -43,7 +43,7 @@ namespace SHARE_FLAG
 		{
 			shareFlag.append("*");
 		}
-		if ((shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)
+		if (abs(shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)
 		{
 			shareFlag.append("-"); //T字板
 			if (shareProperty.zuoRiZhenFu < FLT_MIN) //昨日一字板
@@ -80,14 +80,14 @@ namespace SHARE_FLAG
 			shareFlag.append("=");
 		}
 		if (
-			((shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)
+			(abs(shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)
 			&& (shareProperty.zuoRiZhenFu > FLT_MIN)
 			)
 		{
 			shareFlag.append("T"); //昨日T字板
 		}
 		if (
-			((shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)
+			(abs(shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)
 			&& (shareProperty.zuoRiZhenFu < FLT_MIN)
 			)
 		{
@@ -113,7 +113,7 @@ namespace SHARE_FLAG
 			)
 		{
 			if (//昨日一字板
-				((shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)
+				(abs(shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)
 				&& (shareProperty.zuoRiZhenFu < FLT_MIN)
 				&& (shareProperty.zuoRiHuanShou > 5.9)
 				)
@@ -126,7 +126,7 @@ namespace SHARE_FLAG
 				if (true == yiZiBanJudge(shareProperty))// 一字开盘
 				{
 					if (
-						((shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)//昨日一字板
+						(abs(shareProperty.zuoRiZuiGao - shareProperty.zuoRiKaiPan) < FLT_MIN)//昨日一字板
 						&& (shareProperty.zuoRiZhenFu < FLT_MIN)
 						)
 					{

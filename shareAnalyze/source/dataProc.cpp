@@ -238,6 +238,11 @@ bool readZijinFile(char *fileName, vector<ZIJIN_t> &zijinVec)
 		ZIJIN_t tempZijin;
 		vector<string> &strVec = *zijinStrVecIter++;
 		strcpy(tempZijin.code, strVec[i++].c_str());
+		//剔除科创板股票_20190722
+		if (strncmp(tempZijin.code, "SH688", 5) == 0)
+		{
+			continue;
+		}
 		strcpy(tempZijin.name, strVec[i++].c_str());
 
 		//liuTongShiZhi
@@ -1132,6 +1137,12 @@ bool readZhangfuFile(char *fileName, vector<ZHANGFU_t> &zhangfuVec)
 		ZHANGFU_t tempZhangfu;
 		vector<string> &strVec = *zhangfuStrVecIter++;
 		strcpy(tempZhangfu.code, strVec[i++].c_str());
+		//剔除科创板股票_20190722
+		if (strncmp(tempZhangfu.code, "SH688", 5) == 0)
+		{
+			continue;
+		}
+
 		strcpy(tempZhangfu.name, strVec[i++].c_str());
 		//liuTongShiZhi
 		char liuTongShiZhi[CHAR_LEN];
