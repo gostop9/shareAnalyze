@@ -34,7 +34,7 @@ namespace SHAREDEF
 	const float kaiPanZfMax = 1.2;
 	const float kaiPanZfMin = -6.9;
 	const float zhangFuRoundMin = 0.0019;
-	const int MAX_ZIJIN_IDX = 17;
+	const int MAX_ZIJIN_IDX = 37;
 
 	const int CHAR_LEN = (30);
 	static char nonChar[CHAR_LEN];

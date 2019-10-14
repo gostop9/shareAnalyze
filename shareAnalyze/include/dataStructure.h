@@ -518,7 +518,7 @@ struct PROPERTY_t
 		zuoRiZhenFu = 0.0;
 		zuoRiZhuLiJingLiang = 0.0;
 		zuoRiZongJinE = 0.0;
-		zongLiuRuBiZuoRiZongJinE = -FLT_MAX;
+		zongLiuRuBiZuoRiZongJinE = -100.0;
 		zuoRiKaiPanZhangFu = -15.0;
 		preZuoShou = 0.0;
 

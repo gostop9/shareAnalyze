@@ -19,8 +19,12 @@ namespace GUBEN
 		FILE *fp = fopen(fileName, "rt");
 		if (NULL == fp)
 		{
-			printf("Open guben file failed!\n");
-			return false;
+			fp = fopen("D:/share/自由流通市值.txt", "rt");
+			if (NULL == fp)
+			{
+				printf("Open guben file failed!\n");
+				return false;
+			}
 		}
 
 		while (fgets(lineDateBuf, lineDataLen, fp) != NULL)

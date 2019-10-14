@@ -14,6 +14,21 @@ namespace SHARE_FLAG
 	std::string getShareFlag(T &shareProperty)
 	{
 		string shareFlag;
+		if (
+			(shareProperty.zijinIdx < 2500)
+			&& (shareProperty.zongLiuRuBiLiuTong*100.0 > 0.7)
+			&& (shareProperty.zongLiuRuBiZuoRiZongJinE*100.0 > -0.3)
+			)
+		{
+			shareFlag.append("#");
+		}
+		if (
+			(2 == shareProperty.continueDay)
+			)
+		{
+			shareFlag.append("!");
+		}
+
 		/*if (
 			(
 			(shareProperty.zhongXiaoDanJinBiLiuTong > 0.0)
@@ -56,7 +71,8 @@ namespace SHARE_FLAG
 				}
 			}
 		}*/
-		if (
+
+		/*if (
 			(shareProperty.zijinIdx > 1500)
 			&& (shareProperty.weiBi > WEIBI_MAX)
 			)
@@ -145,7 +161,8 @@ namespace SHARE_FLAG
 					shareFlag.append("#");
 				}
 			}
-		}
+		}*/
+
 		/*if (
 			(shareProperty.weiBi > -83.0)
 			&& ( 

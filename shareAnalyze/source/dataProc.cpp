@@ -1581,6 +1581,7 @@ void fileNameCat(char *ddeFileName,
 	char *zhuliFileName, 
 	char *zhangfuFileName, 
 	char *zhangtingFileName, 
+	char *guBenFileName,
 	char *path, 
 	char *date)
 {
@@ -1614,5 +1615,10 @@ void fileNameCat(char *ddeFileName,
 	strcat(zhangtingFileName, "zhangting_");
 	strncat(zhangtingFileName, date, 8);
 	strcat(zhangtingFileName, ".txt");
+
+	strcpy(guBenFileName, path);
+	strcat(guBenFileName, "自由流通市值_");
+	strncat(guBenFileName, date, 8);
+	strcat(guBenFileName, ".txt");
 }
 }

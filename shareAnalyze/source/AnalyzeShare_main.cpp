@@ -110,7 +110,6 @@ float daDanJingEBMin = 0.08F;
 void main()
 {
 	vector<guBen_t> guBenVec;
-	readGuBenFile("D:/share/自由流通市值.txt", guBenVec);
 
 	//结果code保存
 	std::vector<std::string> resultSet;
@@ -123,6 +122,7 @@ void main()
 		printf("Open config file failed!\n");
 		return;
 	}
+	char guBenFileName[100];
 	char ddeFileName[100], zijinName[100], zhuliFileName[100], zhangfuFileName[100], zhangtingFileName[100], zhangtingFileNameToday[100];
 	char date[20], path[100];
 	char dataPre[20];
@@ -242,8 +242,11 @@ void main()
 			zhuliFileName,
 			zhangfuFileName,
 			zhangtingFileName,
+			guBenFileName,
 			path,
 			dataPre);
+
+		readGuBenFile(guBenFileName, guBenVec);
 
 		memset(zhangtingFileNameToday, 0, sizeof(zhangtingFileNameToday));
 		strcpy(zhangtingFileNameToday, path);
@@ -298,6 +301,7 @@ void main()
 			zhuliFileName,
 			zhangfuFileName,
 			zhangtingFileName,
+			guBenFileName,
 			path,
 			dateNow);
 
@@ -547,6 +551,15 @@ void main()
 				yiZiBanCount, shangZhangLv, avgZhang, zhangCount, dieCount, xinGuCount, zuoRiYiZiCount, stCount);
 
 			fprintf(rstFp, "连板涨幅::%5.2f, 昨日连板个数:%d\n", conAvgIncrease / float(conZhangCount), conZhangCount);
+
+			/*if (avgZhang > 1.5)
+			{
+				fprintf(rstFp, "可操作\n");
+			}
+			else
+			{
+				fprintf(rstFp, "………………………………………………………………………………………………谨慎！！！！！\n");
+			}*/
 		}
 
 		{
@@ -626,6 +639,7 @@ void main()
 					fprintf(rstFp, "\n");
 				}
 				if ((0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+					//&&(analyProty.zongLiuRuBiZuoRiZongJinE > 0.0)
 					)
 				{
 					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
