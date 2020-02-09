@@ -18,9 +18,9 @@ void shareSelectZDZ(FILE *fp, std::vector<PROPERTY_t> &propertyAnalyVec, int dde
 
 void shareSelectFinal(FILE *fp, std::vector<PROPERTY_t> &propertyVec);
 
-void shareParaFuse(std::vector<DDE_t> &dde, std::vector<ZIJIN_t> &zijin, std::vector<ZHULI_t> &zhuli, std::vector<ZHANGFU_t> &zhangfu, std::vector<guBen_t> &gubenVec, std::vector<PROPERTY_t> &propertyVec, std::vector<analyseCode_t> &analyVec, std::vector<PROPERTY_t> &propertyAnalyVec);
+void shareParaFuse(std::vector<DDE_t> &dde, std::vector<ZIJIN_t> &zijin, std::vector<ZHULI_t> &zhuli, std::vector<ZHANGFU_t> &zhangfu, std::vector<ZHANGFU_t> &preJingJiazhangfu, std::vector<guBen_t> &gubenVec, std::vector<PROPERTY_t> &propertyVec, std::vector<analyseCode_t> &analyVec, std::vector<PROPERTY_t> &propertyAnalyVec);
 
-void shareParaFuseWithoutZhuli(std::vector<ZIJIN_t> &zijin, std::vector<ZHANGFU_t> &zhangfu, std::vector<guBen_t> &gubenVec, std::vector<PROPERTY_t> &propertyVec, std::vector<analyseCode_t> &analyVec, std::vector<PROPERTY_t> &propertyAnalyVec);
+void shareParaFuseWithoutZhuli(std::vector<ZIJIN_t> &zijin, std::vector<ZHANGFU_t> &zhangfu, std::vector<ZHANGFU_t> &preJingJiazhangfu, std::vector<guBen_t> &gubenVec, std::vector<PROPERTY_t> &propertyVec, std::vector<analyseCode_t> &analyVec, std::vector<PROPERTY_t> &propertyAnalyVec);
 
 int shareFuseSelect(int &fileIndex, PROPERTY_t &property, std::vector<std::vector<PROPERTY_t>> &propertyVecV, std::vector<string> &selectVec);
 

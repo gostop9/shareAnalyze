@@ -292,7 +292,7 @@ void shareSelectZDZ(FILE *fp, vector<PROPERTY_t> &propertyVec, int ddeSelectCoun
 	}*/
 }
 
-void shareParaFuse(vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &zhuli, vector<ZHANGFU_t> &zhangfu, vector<guBen_t> &gubenVec, vector<PROPERTY_t> &propertyVec, vector<analyseCode_t> &analyVec, vector<PROPERTY_t> &propertyAnalyVec)
+void shareParaFuse(vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &zhuli, vector<ZHANGFU_t> &zhangfu, vector<ZHANGFU_t> &preJingJiazhangfu, vector<guBen_t> &gubenVec, vector<PROPERTY_t> &propertyVec, vector<analyseCode_t> &analyVec, vector<PROPERTY_t> &propertyAnalyVec)
 {
 	int zijinIndex = 1;
 	int shareNum = zijin.size();
@@ -419,31 +419,46 @@ void shareParaFuse(vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &
                             property.shiYingDong = zhangfuIter->shiYingDong;
                             property.shiYingJing = zhangfuIter->shiYingJing;
                             property.shiYingTTM = zhangfuIter->shiYingTTM;
-
-							if (0 < gubenVec.size())
+							
+							if (0 < preJingJiazhangfu.size())
 							{
-								vector<guBen_t>::iterator gubenIter = gubenVec.begin();
-								// 自由流通市值只有6位code码
-								char codeTemp[10];
-								memset(codeTemp, 0, sizeof(codeTemp));
-								while (gubenIter != gubenVec.end())
+								vector<ZHANGFU_t>::iterator prezhangfuIter = preJingJiazhangfu.begin();
+								while (prezhangfuIter != preJingJiazhangfu.end())
 								{
-									char *pCode = zhangfuIter->code;
-									strncpy(codeTemp, &pCode[2], 6);
-									if (0 == strcmp(gubenIter->code, codeTemp))
+									if (0 == strcmp(zijinIter->code, prezhangfuIter->code))
 									{
-										property.ziYouLiuTongGu = gubenIter->ziYouLiuTongGu;
-										property.guXingPingFen = gubenIter->guXingPingFen;
+										property.preJingJiaZongJinE = prezhangfuIter->zongJinE;
+
+										if (0 < gubenVec.size())
+										{
+											vector<guBen_t>::iterator gubenIter = gubenVec.begin();
+											// 自由流通市值只有6位code码
+											char codeTemp[10];
+											memset(codeTemp, 0, sizeof(codeTemp));
+											while (gubenIter != gubenVec.end())
+											{
+												char *pCode = zijinIter->code;
+												strncpy(codeTemp, &pCode[2], 6);
+												if (0 == strcmp(gubenIter->code, codeTemp))
+												{
+													property.ziYouLiuTongGu = gubenIter->ziYouLiuTongGu;
+													property.guXingPingFen = gubenIter->guXingPingFen;
+													break;
+												}
+												++gubenIter;
+											}
+										}
+										else
+										{
+											property.ziYouLiuTongGu = 0.0;
+											property.guXingPingFen = 0.0;
+										}
 										break;
 									}
-									++gubenIter;
+									++prezhangfuIter;
 								}
 							}
-							else
-							{
-								property.ziYouLiuTongGu = 0.0;
-								property.guXingPingFen = 0.0;
-							}
+							break;
                         }
                         ++zhangfuIter;
                     }
@@ -471,7 +486,7 @@ void shareParaFuse(vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &
 	}
 }
 
-void shareParaFuseWithoutZhuli(vector<ZIJIN_t> &zijin, vector<ZHANGFU_t> &zhangfu, vector<guBen_t> &gubenVec, vector<PROPERTY_t> &propertyVec, vector<analyseCode_t> &analyVec, vector<PROPERTY_t> &propertyAnalyVec)
+void shareParaFuseWithoutZhuli(vector<ZIJIN_t> &zijin, vector<ZHANGFU_t> &zhangfu, vector<ZHANGFU_t> &preJingJiazhangfu, vector<guBen_t> &gubenVec, vector<PROPERTY_t> &propertyVec, vector<analyseCode_t> &analyVec, vector<PROPERTY_t> &propertyAnalyVec)
 {
 	int zijinIndex = 1;
 	int shareNum = zijin.size();
@@ -576,29 +591,43 @@ void shareParaFuseWithoutZhuli(vector<ZIJIN_t> &zijin, vector<ZHANGFU_t> &zhangf
 						property.shiYingJing = zhangfuIter->shiYingJing;
 						property.shiYingTTM = zhangfuIter->shiYingTTM;
 
-						if (0 < gubenVec.size())
+						if (0 < preJingJiazhangfu.size())
 						{
-							vector<guBen_t>::iterator gubenIter = gubenVec.begin();
-							// 自由流通市值只有6位code码
-							char codeTemp[10];
-							memset(codeTemp, 0, sizeof(codeTemp));
-							while (gubenIter != gubenVec.end())
+							vector<ZHANGFU_t>::iterator prezhangfuIter = preJingJiazhangfu.begin();
+							while (prezhangfuIter != preJingJiazhangfu.end())
 							{
-								char *pCode = zhangfuIter->code;
-								strncpy(codeTemp, &pCode[2], 6);
-								if (0 == strcmp(gubenIter->code, codeTemp))
+								if (0 == strcmp(zijinIter->code, prezhangfuIter->code))
 								{
-									property.ziYouLiuTongGu = gubenIter->ziYouLiuTongGu;
-									property.guXingPingFen = gubenIter->guXingPingFen;
+									property.preJingJiaZongJinE = prezhangfuIter->zongJinE;
+
+									if (0 < gubenVec.size())
+									{
+										vector<guBen_t>::iterator gubenIter = gubenVec.begin();
+										// 自由流通市值只有6位code码
+										char codeTemp[10];
+										memset(codeTemp, 0, sizeof(codeTemp));
+										while (gubenIter != gubenVec.end())
+										{
+											char *pCode = zijinIter->code;
+											strncpy(codeTemp, &pCode[2], 6);
+											if (0 == strcmp(gubenIter->code, codeTemp))
+											{
+												property.ziYouLiuTongGu = gubenIter->ziYouLiuTongGu;
+												property.guXingPingFen = gubenIter->guXingPingFen;
+												break;
+											}
+											++gubenIter;
+										}
+									}
+									else
+									{
+										property.ziYouLiuTongGu = 0.0;
+										property.guXingPingFen = 0.0;
+									}
 									break;
 								}
-								++gubenIter;
+								++prezhangfuIter;
 							}
-						}
-						else
-						{
-							property.ziYouLiuTongGu = 0.0;
-							property.guXingPingFen = 0.0;
 						}
 
 						propertyVec.push_back(property);
@@ -850,7 +879,8 @@ property.sanRiZhangFu, property.wuRiZhangFu, property.shiRiZhangFu);
 					zhanLiuBi = 0.0;
 				}*/
 				float zhanLiuBi = 0;
-				float zhangTingBan = getLimitUpMoney<PROPERTY_t>(property, zhanLiuBi);
+				float dianDanJinE = 0;
+				float zhangTingBan = getLimitUpMoney<PROPERTY_t>(property, zhanLiuBi, dianDanJinE);
 				/*if ((zuoRiHuanShou > 1.9)
 				&& (zuoRiHuanShou < 15.0)
 				&& (zuoRiLiangBi > 1.4)
@@ -940,16 +970,16 @@ property.sanRiZhangFu, property.wuRiZhangFu, property.shiRiZhangFu);
 				}*/
 				string printFlag = getShareFlag<PROPERTY_t>(property);
 				//float yuanMeiShou = ((float)property.shouMeiBi * property.xianJia) / 10000;
-				fprintf(fp, "%-8s, %6.2f, %4s%-8s,昨:%6.2f,涨:%6.2f, 比:%5.2f, __成:%5.2f,资:%4d,出:%4d,成交:%5.0f,连:%2d,  竞比:%6.2f,委:%7.2f,涨停:%9.2f, 昨成:%6.0f,昨停:%5.0f, 开:%2d, \
-| %7.3f亿,原:%-16s,主净:%5.2f,昨换:%5.2f,昨量:%5.2f,HY:%-14s, | \
+				fprintf(fp, "%-8s, %6.2f, %2s%-8s,昨:%6.2f,涨:%6.2f, 比:%5.2f, __成:%5.2f,资:%4d,出:%4d,成交:%5.0f,昨竞:%5.0f,连:%2d,  竞比:%6.2f,委:%7.2f,涨停:%9.2f,垫:%9.2f, 昨成:%6.0f,昨停:%5.0f, 开:%2d, \
+| %7.3f亿,原:%-16s,股:%5.2f, 主净:%5.2f,昨换:%5.2f,昨量:%5.2f,HY:%-14s, | \
 大:%8.2f,中:%8.2f,中小:%8.2f, | 全:%5.2f,净流:%4d,总入:%4d,总出:%4d,成交:%4d,主:%3d,换:%5.2f,量:%5.2f,\
-股:%5.2f,始:%6s,末:%6s,封:%3d,机:%6.2f,盘比:%5.2f,主总:%5.2f,净增:%7.2f,净利:%7.4f,\
+始:%6s,末:%6s,封:%3d,机:%6.2f,盘比:%5.2f,主总:%5.2f,净增:%7.2f,净利:%7.4f,\
 净流:%7.4f,大:%7.4f,比:%5.2f,中:%7.4f,比:%5.2f,小:%7.4f,比:%5.2f\n",
 //三:%5.2f,五:%5.2f,十:%5.2f\n", 
-property.code, property.xianJia, printFlag.c_str(), property.name, property.zuoRiKaiPanZhangFu, property.zhangFu, property.zongLiuRuBiZuoRiZongJinE*100.0, property.zongLiuRuBiLiuTong*100.0, property.zijinIdx, property.zijinChuIdx, property.zongJinE/TENTHOUSAND, property.continueDay, jingJiaLiangBi, property.weiBi, zhangTingBan, property.zuoRiZongJinE/TENTHOUSAND, property.limitUpMoney/TENTHOUSAND, property.limitOpenCount,
-property.ziYouLiuTongShiZhi / DIVIDE, property.limitReason, property.zhuLiJingLiang, zuoRiHuanShou, zuoRiLiangBi, property.suoShuHangYe,
+property.code, property.xianJia, printFlag.c_str(), property.name, property.zuoRiKaiPanZhangFu, property.zhangFu, property.zongLiuRuBiZuoRiZongJinE*100.0, property.zongLiuRuBiLiuTong*100.0, property.zijinIdx, property.zijinChuIdx, property.zongJinE/TENTHOUSAND, property.preJingJiaZongJinE/TENTHOUSAND, property.continueDay, jingJiaLiangBi, property.weiBi, zhangTingBan, dianDanJinE, property.zuoRiZongJinE/TENTHOUSAND, property.limitUpMoney/TENTHOUSAND, property.limitOpenCount,
+property.ziYouLiuTongShiZhi / DIVIDE, property.limitReason, property.guXingPingFen, property.zhuLiJingLiang, zuoRiHuanShou, zuoRiLiangBi, property.suoShuHangYe,
 daDanJinBiLiuTong, zhongDanJinBiLiuTong, zhongXiaoDanJinBiLiuTong, property.jingLiuRu / TENTHOUSAND, property.jingLiuRuBiLiuTongIndex, property.zongLiuRuBiLiuTongIndex, property.zongLiuChuBiLiuTongIndex, property.chengJiaoBiLiuTongIndex, property.ddeIdx, property.huanShou, property.liangBi,
-property.guXingPingFen, property.firstLimitTime, property.lastLimitTime, property.indexLvsC, property.jiGouDongXiang, property.zongLiuRuBiLiuTong*100.0, zhuLiJingBi, property.jingLiZengLv, property.jingLiRun / DIVIDE,
+property.firstLimitTime, property.lastLimitTime, property.indexLvsC, property.jiGouDongXiang, property.zongLiuRuBiLiuTong*100.0, zhuLiJingBi, property.jingLiZengLv, property.jingLiRun / DIVIDE,
 property.jingLiuRu / DIVIDE, property.daDanJinE / DIVIDE, property.daDanJingEB, property.zhongDanJinE / DIVIDE, property.zhongDanJingEB, property.xiaoDanJinE / DIVIDE, property.xiaoDanJingEB
 //property.sanRiZhangFu, property.wuRiZhangFu, property.shiRiZhangFu
 );
@@ -978,7 +1008,8 @@ void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPER
 		//set default zhang ting para
 		{
 			float zhanLiuBi = 0;
-			float zhangTingBan = getLimitUpMoney<PROPERTY_t>((*proIter), zhanLiuBi);
+			float dianDanJinE = 0;
+			float zhangTingBan = getLimitUpMoney<PROPERTY_t>((*proIter), zhanLiuBi, dianDanJinE);
 
 			//proIter->indexLvsC = ztIter->indexLvsC;
 			//proIter->ziYouLiuTongGu = ztIter->ziYouLiuTongGu;
@@ -1056,8 +1087,15 @@ void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPER
 		proIter->zhongXiaoDanZongBiLiuTong = (proIter->zhongDanZongE + proIter->xiaoDanZongE) / zuiXinLiuTongShiZhi;
 
 		float zhanLiuBi = 0;
-		float zhangTingBan = getLimitUpMoney<PROPERTY_t>((*proIter), zhanLiuBi);
+		float dianDanJinE = 0;
+		float zhangTingBan = getLimitUpMoney<PROPERTY_t>((*proIter), zhanLiuBi, dianDanJinE);
 		proIter->zhangTingBan = zhangTingBan;
+		proIter->dianDanJinE = dianDanJinE;
+		if (0.0 < zhangTingBan)
+		{
+			proIter->limitVsDealJingJia = zhangTingBan / proIter->zongJinE;
+			proIter->limitVsCirculateJingJia = zhangTingBan / proIter->ziYouLiuTongShiZhi;
+		}
 
 		vector<PROPERTY_t>::iterator proPreIter = propertyAnalyVec.begin();
 		while (proPreIter != propertyAnalyVec.end())

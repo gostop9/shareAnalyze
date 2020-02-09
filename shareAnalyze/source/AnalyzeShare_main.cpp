@@ -113,6 +113,7 @@ void main()
 
 	//结果code保存
 	std::vector<std::string> resultSet;
+	resultSet.reserve(100);
 
 	// cfg file
 	FILE *cfgFp;
@@ -126,9 +127,11 @@ void main()
 	char ddeFileName[100], zijinName[100], zhuliFileName[100], zhangfuFileName[100], zhangtingFileName[100], zhangtingFileNameToday[100];
 	char date[20], path[100];
 	char dataPre[20];
+	char dataPreJingJiaFileName[100];
 	memset(date, 0, sizeof(date));
 	memset(path, 0, sizeof(path));
-	memset(dataPre, 0, sizeof(date));
+	memset(dataPre, 0, sizeof(dataPre));
+	memset(dataPreJingJiaFileName, 0, sizeof(dataPreJingJiaFileName));
 	int fileIndex, ddeSelectCount, zijinSelectCount, zhuliSelectCount;
 
 	int itemNum = 0;
@@ -184,7 +187,11 @@ void main()
 		strncpy(tempBuf, strVec[strIdx++].c_str(), cpyLen);
 		analyseCode_t anaCode;
 		strcpy(anaCode.code, tempBuf);
-		analyseVec.push_back(anaCode);
+		string strTemp = tempBuf;
+		if (strTemp.length() > 0)
+		{
+			analyseVec.push_back(anaCode);
+		}
 	}
 	vector<analyseCode_t> independentAnalyVec = analyseVec;
 
@@ -214,6 +221,7 @@ void main()
 	vector<vector<PROPERTY_t>> propertyV;
 	vector<vector<ZIJIN_t>> zijinJingLiuRu;
 	vector<vector<PROPERTY_t>> propertyVecJingLiuRu;
+	vector<ZHANGFU_t> preJingJiazhangfu;
 
 	int fileSize = (fileIndex > 1) ? fileIndex : 1;
 	dde.resize(fileSize);
@@ -243,6 +251,7 @@ void main()
 			zhangfuFileName,
 			zhangtingFileName,
 			guBenFileName,
+			dataPreJingJiaFileName,
 			path,
 			dataPre);
 
@@ -266,6 +275,7 @@ void main()
 		{
 			//vector<ZHANGFU_t> zhangfu;
 			readZhangfuFile(zhangfuFileName, zhangfu[0]);
+			readZhangfuFile(dataPreJingJiaFileName, preJingJiazhangfu);
 		}
 		
 		//提取昨日涨停code
@@ -276,7 +286,7 @@ void main()
 		readZhangTingFile(zhangtingFileNameToday, zhangTingVecToday);
 		getZhangTingCode(zhangTingVecToday, limitTodayVec);
 
-		shareParaFuse(dde[0], zijin[0], zhuli[0], zhangfu[0], guBenVec, propertyV[0], analyseVec, propertyAnalyVecPre);
+		shareParaFuse(dde[0], zijin[0], zhuli[0], zhangfu[0], preJingJiazhangfu, guBenVec, propertyV[0], analyseVec, propertyAnalyVecPre);
 		//chooseAnalyzeProperty(propertyV[0], analyseVec, propertyAnalyVecPre);
 		propertyAnalyVecPre = propertyV[0];
 	}
@@ -302,6 +312,7 @@ void main()
 			zhangfuFileName,
 			zhangtingFileName,
 			guBenFileName,
+			dataPreJingJiaFileName,
 			path,
 			dateNow);
 
@@ -325,11 +336,11 @@ void main()
 		vector<PROPERTY_t> propertyAnalyVec;
 		if (true == zhuliFileFlag)
 		{
-			shareParaFuse(dde[vecIndex], ziinDaDanJingE, zhuli[vecIndex], zhangfu[vecIndex], guBenVec, propertyV[vecIndex], analyseVec, propertyAnalyVec);
+			shareParaFuse(dde[vecIndex], ziinDaDanJingE, zhuli[vecIndex], zhangfu[vecIndex], preJingJiazhangfu, guBenVec, propertyV[vecIndex], analyseVec, propertyAnalyVec);
 		}
 		else
 		{
-			shareParaFuseWithoutZhuli(ziinDaDanJingE, zhangfu[vecIndex], guBenVec, propertyV[vecIndex], analyseVec, propertyAnalyVec);
+			shareParaFuseWithoutZhuli(ziinDaDanJingE, zhangfu[vecIndex], preJingJiazhangfu, guBenVec, propertyV[vecIndex], analyseVec, propertyAnalyVec);
 		}
 
 		//根据实际流通计算其他参数
@@ -524,6 +535,7 @@ void main()
 				PROPERTY_t &analyProty = propertyAnalyVecTongJi[i];
 				if (analyProty.continueDay > 1
 					&& (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+					&& (0 != strcmp(analyProty.limitReason, NEW_SHARE_ON.c_str()))
 					)
 				{
 					string name = analyProty.name;
@@ -538,6 +550,7 @@ void main()
 				if (
 					(true == yiZiBanJudge(analyProty))
 					&& (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+					&& (0 != strcmp(analyProty.limitReason, NEW_SHARE_ON.c_str()))
 					&& ((yiZiBanCount - xinGuCount) < 6)
 					)
 				{
@@ -584,14 +597,25 @@ void main()
 			//shareSelectFinal(rstFp, propertyVecJingLiuRu[vecIndex]);
 			
 			fprintf(rstFp, "总流入排序-----------------\n");
+			resultSet.clear();
+			//加入持仓股
+			int analySize = independentAnalyVec.size();
+			for (int analyIdx = 0; analyIdx < analySize; analyIdx++)
+			{
+				string indCode = independentAnalyVec[analyIdx].code;
+				resultSet.push_back(indCode);
+			}
 			//打印排第一的票
-			selectFirstShare(rstFp,
+			selectFirstShare(
+				fileIndex,
+				rstFp,
 				buyFp,
 				programBuyProty,
 				programFindFlag,
 				propertyAnalyVec,
 				propertyAnalyVecSort,
-				propertyAnalyVecPre);
+				propertyAnalyVecPre,
+				resultSet);
 
 			fclose(buyFp);
 		}
@@ -793,6 +817,18 @@ void main()
 	fprintf(rstFp, "\n");
 	fclose(rstFp);
 
+	if (1 == fileIndex)
+	{
+		string strFileName = resultFileName;
+		string subName = strFileName.substr(9, 9);
+		if (0 != strcmp(subName.c_str(), "result_zt"))
+		{
+			tdxBlockAppend(zxgTdxFileName, resultSet);
+			tdxBlockModify(tjxgTdxFileName, resultSet);
+		}
+	}
+
+	/*
 	//保存选股结果到文件
 	codeResultSave(resultSet);
 
@@ -803,5 +839,6 @@ void main()
 	{
 		tdxBlockCfgModify(dateStr);
 	}
+	*/
 }
 

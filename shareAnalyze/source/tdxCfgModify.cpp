@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstring>
 #include "shareDef.h"
+#include "tdxCfgModify.h"
 
 using namespace std;
 using namespace SHAREDEF;
@@ -141,4 +142,104 @@ void codeResultSave(std::vector<std::string> &resultSet)
 	}
 	fclose(codeFp);
 }
+
+void tdxBlockAppend(const std::string &blockFileName, std::vector<std::string> &resultSet)
+{
+	vector<std::string> strZidingyiVec;
+	FILE *codeTdxFp;
+	std::string pathTdx = blockFileName;
+	//首先读取板块文件中的code，避免添加时重复
+	codeTdxFp = fopen(pathTdx.c_str(), "rt");
+	if (NULL == codeTdxFp)
+	{
+		printf("Open codeTdxFp file failed!\n");
+	}
+	else
+	{
+		while (fgets(lineDateBuf, lineDataLen, codeTdxFp) != NULL)
+		{
+			std::string str = lineDateBuf;
+			if (5 < str.length())
+			{
+				strZidingyiVec.push_back(str.substr(0, 7));
+			}
+			memset(lineDateBuf, 0, lineDataLen);
+		}
+		fclose(codeTdxFp);
+	}
+	codeTdxFp = fopen(pathTdx.c_str(), "wt");
+	if (NULL == codeTdxFp)
+	{
+		printf("Open codeTdxFp file failed!\n");
+		return;
+	}
+	for (vector<std::string>::const_iterator iter = resultSet.begin(); iter != resultSet.end(); ++iter)
+	{
+		std::string codeHead = iter->substr(0, 2);
+		int cmpResult = codeHead.compare("SH");
+		if (0 == cmpResult) //上海股票SH开头
+		{
+			std::string resultStr = "1";
+			resultStr.append(iter->substr(2, 20));
+			fprintf(codeTdxFp, "%7s\n", resultStr.c_str());
+			std::vector<std::string>::iterator it;
+			it = find(strZidingyiVec.begin(), strZidingyiVec.end(), resultStr);
+			if (it != strZidingyiVec.end())
+			{
+				strZidingyiVec.erase(it);
+			}
+		}
+		else
+		{
+			std::string resultStr = "0";
+			resultStr.append(iter->substr(2, 20));
+			fprintf(codeTdxFp, "%7s\n", resultStr.c_str());
+			std::vector<std::string>::iterator it;
+			it = find(strZidingyiVec.begin(), strZidingyiVec.end(), resultStr);
+			if (it != strZidingyiVec.end())
+			{
+				strZidingyiVec.erase(it);
+			}
+		}
+	}
+
+	//write remain code to file
+	for (vector<std::string>::const_iterator iter = strZidingyiVec.begin(); iter != strZidingyiVec.end(); ++iter)
+	{
+		fprintf(codeTdxFp, "%7s\n", iter->c_str());
+	}
+	fclose(codeTdxFp);
+}
+
+void tdxBlockModify(const std::string &blockFileName, std::vector<std::string> &resultSet)
+{
+	vector<std::string> strZidingyiVec;
+	FILE *codeTdxFp;
+	std::string pathTdx = blockFileName;
+
+	codeTdxFp = fopen(pathTdx.c_str(), "wt");
+	if (NULL == codeTdxFp)
+	{
+		printf("Open codeTdxFp file failed!\n");
+		return;
+	}
+	for (vector<std::string>::const_iterator iter = resultSet.begin(); iter != resultSet.end(); ++iter)
+	{
+		std::string codeHead = iter->substr(0, 2);
+		int cmpResult = codeHead.compare("SH");
+		if (0 == cmpResult) //上海股票SH开头
+		{
+			std::string resultStr = "1";
+			resultStr.append(iter->substr(2, 20));
+			fprintf(codeTdxFp, "%7s\n", resultStr.c_str());
+		}
+		else
+		{
+			std::string resultStr = "0";
+			resultStr.append(iter->substr(2, 20));
+			fprintf(codeTdxFp, "%7s\n", resultStr.c_str());
+		}
+	}
+}
+
 }

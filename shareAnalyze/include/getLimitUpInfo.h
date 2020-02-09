@@ -32,6 +32,7 @@ namespace GETLIMITUPINFO
 				huanShou = p.huanShou;
 				liangBi = p.liangBi;
 				zongJinE = p.zongJinE;
+				preJingJiaZongJinE = p.preJingJiaZongJinE;
 
 				zijinIdx = p.zijinIdx;
 				zijinChuIdx = p.zijinChuIdx;
@@ -144,6 +145,7 @@ namespace GETLIMITUPINFO
 				jingJiaLiangBi = p.jingJiaLiangBi;
 				zhongXiaoBiJingLiuRu = p.zhongXiaoBiJingLiuRu;
 				zhangTingBan = p.zhangTingBan;
+				dianDanJinE = p.dianDanJinE;
 				zuoRiHuanShou = p.zuoRiHuanShou;
 				zuoRiKaiPan = p.zuoRiKaiPan;
 				zuoRiZuiGao = p.zuoRiZuiGao;
@@ -162,6 +164,8 @@ namespace GETLIMITUPINFO
 				zongLiuRuBiZuoRiZongJinE = p.zongLiuRuBiZuoRiZongJinE;
 				zuoRiKaiPanZhangFu = p.zuoRiKaiPanZhangFu;
 				preZuoShou = p.preZuoShou;
+				limitVsDealJingJia = p.limitVsDealJingJia;
+				limitVsCirculateJingJia = p.limitVsCirculateJingJia;
 
 				jingLiuRuBiLiuTongIndex = p.jingLiuRuBiLiuTongIndex;
 				zongLiuRuBiLiuTongIndex = p.zongLiuRuBiLiuTongIndex;

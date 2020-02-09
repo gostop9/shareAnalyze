@@ -93,10 +93,10 @@ void sortByGaodu(std::vector<PROPERTY_t> &propertyAnalyVec)
 
 void sortByZhangfuGaodu(std::vector<PROPERTY_t> &propertyAnalyVec)
 {
-	struct gaoDu {
+	struct zhangFu {
 		bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhangFu > b.zhangFu); }
-	} cmpMethodGaoDu;
-	stable_sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethodGaoDu);
+	} cmpMethod_zhangFu;
+	stable_sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zhangFu);
 	sortByGaodu(propertyAnalyVec);
 }
 
@@ -107,6 +107,20 @@ void sortByTimeZhangfuGaodu(std::vector<PROPERTY_t> &propertyAnalyVec)
 	} cmpMethod_lastLimitTimeIndex;
 	std::stable_sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_lastLimitTimeIndex);
 	sortByZhangfuGaodu(propertyAnalyVec);
+}
+
+void sortByZhangfuLimitVsDealJingJiaGaodu(std::vector<PROPERTY_t> &propertyAnalyVec)
+{
+	struct zhangFu {
+		bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhangFu > b.zhangFu); }
+	} cmpMethod_zhangFu;
+	stable_sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zhangFu);
+
+	struct limitVsDealJingJiaIndex {
+		bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.limitVsDealJingJia > b.limitVsDealJingJia); }
+	} cmpMethod_limitVsDealJingJiaIndex;
+	std::stable_sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_limitVsDealJingJiaIndex);
+	sortByGaodu(propertyAnalyVec);
 }
 
 float getZuoRiJiaCha(PROPERTY_t &analyProty)
@@ -146,13 +160,51 @@ void changeFinalBuy(PROPERTY_t &finalBuy, PROPERTY_t &analyProty, int &buyFlag)
 	}
 }
 
-void selectFirstShare(FILE *rstFp,
+void getYiZiBanToday(std::vector<PROPERTY_t> &propertyAnalyVec, std::vector<PROPERTY_t> &yiZiBanTodayPropertyAnalyVec)
+{
+	yiZiBanTodayPropertyAnalyVec.reserve(100);
+	int analyNum = propertyAnalyVec.size();
+	for (int i = 0; i < analyNum; i++)
+	{
+		PROPERTY_t &analyProty = propertyAnalyVec[i];
+		string name = analyProty.name;
+		std::size_t found = name.find("ST");
+		if (
+			(found != std::string::npos)//剔除ST股
+			|| (0 == strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+			|| (0 == strcmp(analyProty.limitReason, NEW_SHARE_ON.c_str()))
+			)
+		{
+			continue;
+		}
+		if (true == yiZiBanJudge(analyProty))
+		{
+			yiZiBanTodayPropertyAnalyVec.push_back(analyProty);
+		}
+	}
+}
+
+//保存结果code，后续输出到文件
+void saveResultCode(char *rstCode, std::vector<std::string> &resultSet)
+{
+	string codeStr(rstCode);
+	vector<string>::iterator s = find(resultSet.begin(), resultSet.end(), codeStr);
+	if (s == resultSet.end())//未找到
+	{
+		resultSet.push_back(codeStr);
+	}
+}
+
+void selectFirstShare(
+	int fileIndex,
+	FILE *rstFp,
 	FILE *buyFp,
 	PROPERTY_t programBuyProty,
 	int programFindFlag,
 	std::vector<PROPERTY_t> &propertyAnalyVec,
 	std::vector<PROPERTY_t> &propertyAnalyVecSort,
-	std::vector<PROPERTY_t> &propertyAnalyVecPre)
+	std::vector<PROPERTY_t> &propertyAnalyVecPre,
+	std::vector<std::string> &resultSet)
 {
 	float zhangTingDvalue = 0.009;
 	float weiBiThreshold = -78.0;
@@ -161,6 +213,9 @@ void selectFirstShare(FILE *rstFp,
 	float zhuLiJingLiangThreshold = -0.001209;//-0.001209;
 	float zongLiuRuThreshold0 = 0.001754;//0.001754;
 	float zongLiuRuThreshold1 = 0.001754;//0.002794;
+	float dianDanThreshold = 548.0;//598.0;
+	float yaDanThreshold = -500.0;
+	float gxpfThreshold = 49.0;
 	int buyNum = MAX_ZIJIN_IDX - 1;
 	int weiBanNum = 60;
 	vector<PROPERTY_t> analyVecBuy;
@@ -185,6 +240,7 @@ void selectFirstShare(FILE *rstFp,
 		if (
 			(found != std::string::npos)//剔除ST股
 			|| (0 == strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+			|| (0 == strcmp(analyProty.limitReason, NEW_SHARE_ON.c_str()))
 			)
 		{
 			continue;
@@ -197,6 +253,23 @@ void selectFirstShare(FILE *rstFp,
 		//shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 		//fprintf(rstFp, "**********\n");
 		break;
+	}
+
+	//加入一字开盘的股票
+	if (1 == fileIndex)
+	{
+		vector<PROPERTY_t> yiZiBanTodayPropertyAnalyVec;
+		getYiZiBanToday(propertyAnalyVecSort, yiZiBanTodayPropertyAnalyVec);
+		analyNum = yiZiBanTodayPropertyAnalyVec.size();
+		for (int i = 0; i < analyNum; i++)
+		{
+			PROPERTY_t &analyProty = yiZiBanTodayPropertyAnalyVec[i];
+			analyVecBuy.push_back(analyProty);
+			if (analyProty.continueDay < 1)
+			{
+				analyVecWei.push_back(analyProty);
+			}
+		}
 	}
 
 	//打印排第一的票
@@ -241,6 +314,24 @@ void selectFirstShare(FILE *rstFp,
 				{
 					continue;
 				}
+
+				if (false == yiZiBanJudge(analyProty))// 非一字开盘
+				{
+					if ((analyProty.dianDanJinE < dianDanThreshold)
+						|| (analyProty.zhangTingBan > yaDanThreshold)
+						)
+					{
+						if ((analyProty.zijinIdx > 10) || (analyProty.dianDanJinE < 200.0))
+						{
+							continue;
+						}
+					}
+				}
+				//一进二，涨停时间较靠后
+				/*if ((1 == analyProty.continueDay) && (atoi(analyProty.lastLimitTime) > 133000))
+				{
+					continue;
+				}*/
 				if (1
 					&& ((analyProty.zhangFu > kaiPanZfMax)
 						|| (analyProty.zhangFu < kaiPanZfMin))
@@ -251,17 +342,24 @@ void selectFirstShare(FILE *rstFp,
 					&& (analyProty.continueDay > 0)
 					&& (
 					((analyProty.zijinIdx < MAX_ZIJIN_IDX) && (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1))
-						|| (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.003))
+						|| (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.003)
+						|| (analyProty.zijinIdx < 10))
 					&& (analyProty.zongJinE > (998.0 * TENTHOUSAND))
+					&& (analyProty.guXingPingFen > gxpfThreshold)
+					//&& ((analyProty.zongLiuRuBiZuoRiZongJinE > zhuLiJingLiangThreshold-0.0038) || (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.004))
 					)
 				{
 					//昨日非一字或T字的，成交需大于2500万，避免庄股
 					if (
 						((abs(analyProty.zuoRiZuiGao - analyProty.zuoRiKaiPan) > FLT_MIN)
-							|| (abs(analyProty.zuoShou - analyProty.zuoRiKaiPan) > FLT_MIN))
+							|| (abs(analyProty.zuoShou - analyProty.zuoRiKaiPan) > FLT_MIN))						
 						)
 					{
-						if (analyProty.zuoRiZongJinE > (4000.0 * TENTHOUSAND))
+						if ((analyProty.zuoRiZongJinE > (3800.0 * TENTHOUSAND))
+							//&& (analyProty.zuoRiLiangBi > (0.5))
+							// 非一字开盘
+							|| ((true == yiZiBanJudge(analyProty)))
+							)
 						{
 							analyVecBuy.push_back(analyProty);
 						}
@@ -286,10 +384,20 @@ void selectFirstShare(FILE *rstFp,
 		for (int i = 0; i < weiBanNum; i++)
 		{
 			PROPERTY_t &analyProty = propertyAnalyVecSort[i];
+
+			if (false == yiZiBanJudge(analyProty))// 非一字开盘
+			{
+				if (analyProty.dianDanJinE < dianDanThreshold)
+				{
+					continue;
+				}
+			}
 			if (1
 				&& (analyProty.weiBi > weiBiThreshold)
 				&& (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
 				&& (analyProty.zongJinE > (970.0 * TENTHOUSAND))
+				//&& (analyProty.dianDanJinE > dianDanThreshold)
+				&& (analyProty.guXingPingFen > gxpfThreshold - 5.1)
 				)
 			{
 				if (1
@@ -351,140 +459,161 @@ void selectFirstShare(FILE *rstFp,
 			}
 		}*/
 		analyNum = analyVecBuy.size();
-		sortByZhangfuGaodu(analyVecBuy);
-		//打印大幅低开股
-		/*fprintf(rstFp, "低开股\n");
-		for (int i = 0; i < analyNum; i++)
+		if (0 < analyNum)
 		{
-			PROPERTY_t &analyProty = analyVecBuy[i];
-			if (analyProty.zhangFu < kaiPanZfMin)
+			sortByZhangfuLimitVsDealJingJiaGaodu(analyVecBuy);
+			//打印大幅低开股
+			/*fprintf(rstFp, "低开股\n");
+			for (int i = 0; i < analyNum; i++)
 			{
-				shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
-			}
-		}*/
-		//打印高开股
-		fprintf(rstFp, "高开股\n");
-		shareSelectPrint(rstFp, gaoduProperty, propertyAnalyVecPre);
-		for (int i = 0; i < analyNum; i++)
-		{
-			PROPERTY_t &analyProty = analyVecBuy[i];
-			if ((analyProty.zhangFu > kaiPanZfMax)
-				//&& (analyProty.liuRuBiZuoRiChengJiaoIdx < zhuLiIndexThreshold)
-				//&& ((analyProty.zuoRiKaiPanZhangFu - zhangFuMargin) < analyProty.zhangFu)
-				&& (analyProty.continueDay > 0)
-				//&& (analyProty.continueDay != 2)
-				&& ((analyProty.zijinIdx < MAX_ZIJIN_IDX) || (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1))
-				)
+				PROPERTY_t &analyProty = analyVecBuy[i];
+				if (analyProty.zhangFu < kaiPanZfMin)
+				{
+					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+				}
+			}*/
+			//打印高开股
+			fprintf(rstFp, "高开股\n");
+			shareSelectPrint(rstFp, gaoduProperty, propertyAnalyVecPre);
+			int contiDay = analyVecBuy[0].continueDay;
+			for (int i = 0; i < analyNum; i++)
 			{
-				shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
-			}
-			//选择开盘涨幅最高代码
-			float zuoRiJiaCha = getZuoRiJiaCha(analyProty);
-			if (1
-				&& (analyProty.zhangFu > kaiPanZfMax)
-				&& (analyProty.zhangTingBan < 17.0)				
-				//&& ((zuoRiJiaCha < 0.12)
-				//	|| ((analyProty.zuoRiKaiPanZhangFu + zhangFuMargin) < analyProty.zhangFu))
-				//&& (analyProty.continueDay < 5)
-				//&& (analyProty.zijinIdx < MAX_ZIJIN_IDX)
-				&& ((analyProty.liuRuBiZuoRiChengJiaoIdx < zhuLiIndexThreshold) 
-					|| (analyProty.zongLiuRuBiZuoRiZongJinE > zhuLiJingLiangThreshold))
-				//&& (analyProty.zongLiuRuBiZuoRiZongJinE > zhuLiJingLiangThreshold)
-				)
-			{
-				float finalBuyDvalue = abs(round(round(finalBuy.zuoShou * 100.0) * 1.1) / 100.0 - finalBuy.xianJia);
-				float analyProtyDvalue = abs(round(round(analyProty.zuoShou * 100.0) * 1.1) / 100.0 - analyProty.xianJia);
-				//abs(round(analyProty.zuoShou * 110.0) / 100.0 - analyProty.xianJia);
-				//跳过涨停价开盘，委比较小股
-				if (
-					(analyProty.weiBi < -30.0) 
-					&& (analyProtyDvalue < zhangTingDvalue)
-					&& (analyProty.continueDay > 0)
-					)
+				PROPERTY_t &analyProty = analyVecBuy[i];
+				if (contiDay != analyProty.continueDay)
 				{
-					continue;
+					fprintf(rstFp, "\n");
+					contiDay = analyProty.continueDay;
 				}
-				//跳过委买市值较小，委比较小股
-				if (
-					(analyProty.weiBi < 10.0)
-					&& (analyProty.zhangTingBan > -700.0)
-					)
+				if (true == yiZiBanJudge(analyProty))
 				{
-					continue;
-				}
-				//跳过昨日涨停原因为超跌反弹
-				string limitR = analyProty.limitReason;
-				string::size_type idx;
-				idx = limitR.find("超跌反弹");//在a中查找b.
-				if (1
-					&& (idx != string::npos)
-					&& (analyProty.continueDay > 0)
-					)
-				{
-					continue;
-				}
-				//跳过涨停价开盘，成交金额较小股
-				if (
-					//(analyProty.zongJinE < (2000.0 * TENTHOUSAND))
-					((analyProty.jingJiaLiangBi < 30.0) 
-						&& (analyProty.weiBi < weiBiMaxThreshold) 
-						//&& (analyProty.zongJinE < (4000.0 * TENTHOUSAND))
-						&& ((analyProty.zongJinE / analyProty.ziYouLiuTongShiZhi) < 0.03)
-						)
-					&& (analyProtyDvalue < zhangTingDvalue)
-					)
-				{
-					continue;
-				}
-				//昨日非一字涨停开，今天开盘涨幅没拉出高度
-				if (1
-					//(analyProty.continueDay > 0)
-					&& ((analyProty.zuoRiKaiPanZhangFu + zhangFuMargin) > analyProty.zhangFu)
-					&& (analyProtyDvalue > zhangTingDvalue)
-					)
-				{
-					//昨日一字或T字的暂时跳过
-					if ((abs(analyProty.zuoRiZuiGao - analyProty.zuoRiKaiPan) < FLT_MIN)
-						&& (abs(analyProty.zuoShou - analyProty.zuoRiKaiPan) < FLT_MIN))
+					if (analyProty.continueDay > 0)
 					{
-					}
-					else
-					{
-						continue;
-					}
-				}
-				if (
-					(analyProty.continueDay < 1)
-					&& ((analyProty.zijinIdx > 60)
-						|| (analyProty.zongLiuRuBiLiuTong < zongLiuRuThreshold0))
-					)
-				{
-					continue;
-				}
-				if ((finalBuyDvalue < zhangFuRoundMin)
-					&& (analyProtyDvalue < zhangFuRoundMin)
-					)
-				{					
-					if (abs(analyProty.weiBi - finalBuy.weiBi) < FLT_MIN)
-					{
-						if (analyProty.zhangTingBan > finalBuy.zhangTingBan)
-						{
-							changeFinalBuy(finalBuy, analyProty, buyFlag);
-						}
-					}
-					else
-					{
-						if (analyProty.weiBi > finalBuy.weiBi)
-						{
-							changeFinalBuy(finalBuy, analyProty, buyFlag);
-						}
+						shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+						saveResultCode(analyProty.code, resultSet);
 					}
 				}
 				else
 				{
-					if (analyProty.zhangFu > finalBuy.zhangFu)
+					if ((analyProty.zhangFu > kaiPanZfMax)
+						//&& (analyProty.liuRuBiZuoRiChengJiaoIdx < zhuLiIndexThreshold)
+						//&& ((analyProty.zuoRiKaiPanZhangFu - zhangFuMargin) < analyProty.zhangFu)
+						&& (analyProty.continueDay > 0)
+						//&& (analyProty.continueDay != 2)
+						&& ((analyProty.zijinIdx < MAX_ZIJIN_IDX) || (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1))
+						)
 					{
-						changeFinalBuy(finalBuy, analyProty, buyFlag);
+						shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+						saveResultCode(analyProty.code, resultSet);
+					}
+				}
+				//选择开盘涨幅最高代码
+				float zuoRiJiaCha = getZuoRiJiaCha(analyProty);
+				if (1
+					&& (analyProty.zhangFu > kaiPanZfMax)
+					&& (analyProty.zhangTingBan < 17.0)
+					//&& ((zuoRiJiaCha < 0.12)
+					//	|| ((analyProty.zuoRiKaiPanZhangFu + zhangFuMargin) < analyProty.zhangFu))
+					//&& (analyProty.continueDay < 5)
+					//&& (analyProty.zijinIdx < MAX_ZIJIN_IDX)
+					&& ((analyProty.liuRuBiZuoRiChengJiaoIdx < zhuLiIndexThreshold)
+						|| (analyProty.zongLiuRuBiZuoRiZongJinE > zhuLiJingLiangThreshold))
+					//&& (analyProty.zongLiuRuBiZuoRiZongJinE > zhuLiJingLiangThreshold)
+					)
+				{
+					float finalBuyDvalue = abs(round(round(finalBuy.zuoShou * 100.0) * 1.1) / 100.0 - finalBuy.xianJia);
+					float analyProtyDvalue = abs(round(round(analyProty.zuoShou * 100.0) * 1.1) / 100.0 - analyProty.xianJia);
+					//abs(round(analyProty.zuoShou * 110.0) / 100.0 - analyProty.xianJia);
+					//跳过涨停价开盘，委比较小股
+					if (
+						(analyProty.weiBi < -30.0)
+						&& (analyProtyDvalue < zhangTingDvalue)
+						&& (analyProty.continueDay > 0)
+						)
+					{
+						continue;
+					}
+					//跳过委买市值较小，委比较小股
+					if (
+						(analyProty.weiBi < 10.0)
+						&& (analyProty.zhangTingBan > -700.0)
+						)
+					{
+						continue;
+					}
+					//跳过昨日涨停原因为超跌反弹
+					string limitR = analyProty.limitReason;
+					string::size_type idx;
+					idx = limitR.find("超跌反弹");//在a中查找b.
+					if (1
+						&& (idx != string::npos)
+						&& (analyProty.continueDay > 0)
+						)
+					{
+						continue;
+					}
+					//跳过涨停价开盘，成交金额较小股
+					if (
+						//(analyProty.zongJinE < (2000.0 * TENTHOUSAND))
+						((analyProty.jingJiaLiangBi < 30.0)
+							&& (analyProty.weiBi < weiBiMaxThreshold)
+							//&& (analyProty.zongJinE < (4000.0 * TENTHOUSAND))
+							&& ((analyProty.zongJinE / analyProty.ziYouLiuTongShiZhi) < 0.03)
+							)
+						&& (analyProtyDvalue < zhangTingDvalue)
+						)
+					{
+						continue;
+					}
+					//昨日非一字涨停开，今天开盘涨幅没拉出高度
+					if (1
+						//(analyProty.continueDay > 0)
+						&& ((analyProty.zuoRiKaiPanZhangFu + zhangFuMargin) > analyProty.zhangFu)
+						&& (analyProtyDvalue > zhangTingDvalue)
+						)
+					{
+						//昨日一字或T字的暂时跳过
+						if ((abs(analyProty.zuoRiZuiGao - analyProty.zuoRiKaiPan) < FLT_MIN)
+							&& (abs(analyProty.zuoShou - analyProty.zuoRiKaiPan) < FLT_MIN))
+						{
+						}
+						else
+						{
+							continue;
+						}
+					}
+					if (
+						(analyProty.continueDay < 1)
+						&& ((analyProty.zijinIdx > 60)
+							|| (analyProty.zongLiuRuBiLiuTong < zongLiuRuThreshold0))
+						)
+					{
+						continue;
+					}
+					if ((finalBuyDvalue < zhangFuRoundMin)
+						&& (analyProtyDvalue < zhangFuRoundMin)
+						)
+					{
+						if (abs(analyProty.weiBi - finalBuy.weiBi) < FLT_MIN)
+						{
+							if (analyProty.zhangTingBan > finalBuy.zhangTingBan)
+							{
+								changeFinalBuy(finalBuy, analyProty, buyFlag);
+							}
+						}
+						else
+						{
+							if (analyProty.weiBi > finalBuy.weiBi)
+							{
+								changeFinalBuy(finalBuy, analyProty, buyFlag);
+							}
+						}
+					}
+					else
+					{
+						if (analyProty.zhangFu > finalBuy.zhangFu)
+						{
+							changeFinalBuy(finalBuy, analyProty, buyFlag);
+						}
 					}
 				}
 			}
@@ -492,22 +621,35 @@ void selectFirstShare(FILE *rstFp,
 		//打印高开未板股
 		fprintf(rstFp, "未板高开股\n");
 		analyNum = analyVecWei.size();
-		sortByZhangfuGaodu(analyVecWei);
+		sortByZhangfuLimitVsDealJingJiaGaodu(analyVecWei);
 		for (int i = 0; i < analyNum; i++)
 		{
 			PROPERTY_t &analyProty = analyVecWei[i];
-			if ((analyProty.zhangFu > kaiPanZfMax + 2.0)
-				&& ((analyProty.liuRuBiZuoRiChengJiaoIdx < zhuLiIndexThreshold) || (analyProty.zongLiuRuBiZuoRiZongJinE > zhuLiJingLiangThreshold))
-				//&& ((analyProty.zuoRiKaiPanZhangFu - zhangFuMargin) < analyProty.zhangFu)
-				)
+			if (true == yiZiBanJudge(analyProty))
 			{
-				shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+				char *p = "N";
+				if (strstr(analyProty.name, p) == NULL)
+				{
+					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+					saveResultCode(analyProty.code, resultSet);
+				}
+			}
+			else
+			{
+				if ((analyProty.zhangFu > kaiPanZfMax + 2.0)
+					&& ((analyProty.liuRuBiZuoRiChengJiaoIdx < zhuLiIndexThreshold) || (analyProty.zongLiuRuBiZuoRiZongJinE > zhuLiJingLiangThreshold))
+					//&& ((analyProty.zuoRiKaiPanZhangFu - zhangFuMargin) < analyProty.zhangFu)
+					)
+				{
+					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
+					saveResultCode(analyProty.code, resultSet);
+				}
 			}
 		}
 		//委比股
 		fprintf(rstFp, "委比高股---------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 		analyNum = analyVecWeiBi.size();
-		sortByZhangfuGaodu(analyVecWeiBi);
+		sortByZhangfuLimitVsDealJingJiaGaodu(analyVecWeiBi);
 		for (int i = 0; i < analyNum; i++)
 		{
 			PROPERTY_t &analyProty = analyVecWeiBi[i];

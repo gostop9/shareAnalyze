@@ -1582,6 +1582,7 @@ void fileNameCat(char *ddeFileName,
 	char *zhangfuFileName, 
 	char *zhangtingFileName, 
 	char *guBenFileName,
+	char *dataPreJingJiaFileName,
 	char *path, 
 	char *date)
 {
@@ -1590,6 +1591,8 @@ void fileNameCat(char *ddeFileName,
 	memset(zhuliFileName, 0, sizeof(zhuliFileName));
 	memset(zhangfuFileName, 0, sizeof(zhangfuFileName));
 	memset(zhangtingFileName, 0, sizeof(zhangtingFileName));
+	memset(guBenFileName, 0, sizeof(guBenFileName));
+	memset(dataPreJingJiaFileName, 0, sizeof(dataPreJingJiaFileName));
 
 	strcpy(ddeFileName, path);
 	strcat(ddeFileName, "DDE_");
@@ -1620,5 +1623,11 @@ void fileNameCat(char *ddeFileName,
 	strcat(guBenFileName, "自由流通市值_");
 	strncat(guBenFileName, date, 8);
 	strcat(guBenFileName, ".txt");
+
+	//增加前一日竞价文件读取，比较连板股的竞价金额
+	strcpy(dataPreJingJiaFileName, path);
+	strcat(dataPreJingJiaFileName, "zhangfu_");
+	strncat(dataPreJingJiaFileName, date, 8);
+	strcat(dataPreJingJiaFileName, "_1.txt");
 }
 }

@@ -264,6 +264,8 @@ struct PROPERTY_t
 	float liangBi;
 	float zongJinE;
 
+	float preJingJiaZongJinE;
+
 	//zijin
 	int   zijinIdx;
 	int   zijinChuIdx;
@@ -410,6 +412,7 @@ struct PROPERTY_t
 	float jingJiaLiangBi;
 	float zhongXiaoBiJingLiuRu;
 	float zhangTingBan;
+	float dianDanJinE;
 	float zuoRiHuanShou;
 	float zuoRiKaiPan;
 	float zuoRiZuiGao;
@@ -429,6 +432,9 @@ struct PROPERTY_t
 
 	float zongLiuRuBiZuoRiZongJinE;
 	float zuoRiKaiPanZhangFu;
+
+	float limitVsDealJingJia;
+	float limitVsCirculateJingJia;
 
 	//zhang ting
 	int   jingLiuRuBiLiuTongIndex;
@@ -490,6 +496,7 @@ struct PROPERTY_t
 		zijinIdx = MAX_SHARE_NUM;
 		zijinChuIdx = MAX_SHARE_NUM;
 		liuRuBiZuoRiChengJiaoIdx = MAX_SHARE_NUM;
+		preJingJiaZongJinE = 0.0;
 		zhuLiJingBiLiuTong = 0.0;
 		neiWaiPanBiLiuTongGu = 0.0;
 		jingLiuRuBiLiuTong = 0.0;
@@ -521,6 +528,9 @@ struct PROPERTY_t
 		zongLiuRuBiZuoRiZongJinE = -100.0;
 		zuoRiKaiPanZhangFu = -15.0;
 		preZuoShou = 0.0;
+
+		limitVsDealJingJia = 0.0;
+		limitVsCirculateJingJia = 0.0;
 
 		//zhang ting
 		indexLvsC = 0;

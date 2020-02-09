@@ -10,4 +10,9 @@ namespace TDXCFGMODIFY
 	void tdxBlockCfgModify(std::string &date);
 
 	void codeResultSave(std::vector<std::string> &resultSet);
+
+	void tdxBlockAppend(const std::string &blockFileName, std::vector<std::string> &resultSet);
+
+	void tdxBlockModify(const std::string &blockFileName, std::vector<std::string> &resultSet);
+
 }

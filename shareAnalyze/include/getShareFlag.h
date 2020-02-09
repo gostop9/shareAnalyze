@@ -235,16 +235,20 @@ namespace SHARE_FLAG
 	}
 
 	template<typename T>
-	float getLimitUpMoney(T &shareProperty, float &zhanLiuBi)
+	float getLimitUpMoney(T &shareProperty, float &zhanLiuBi, float &dianDan)
 	{
-		float maiLiang = (shareProperty.weiCha * 100.0 / shareProperty.weiBi - shareProperty.weiCha) / 2.0;
-		float zhangTingBan = shareProperty.zuoShou * (-1.1) * maiLiang / 10000.0; //千万量级显示
+		float sellLiang = (shareProperty.weiCha * 100.0 / shareProperty.weiBi - shareProperty.weiCha) / 2.0;
+		float zhangTingBan = shareProperty.zuoShou * (-1.1) * sellLiang / 10000.0; //千万量级显示
+
+		float buyLiang = (shareProperty.weiCha * 100.0 / shareProperty.weiBi + shareProperty.weiCha) / 2.0;
+		dianDan = shareProperty.xianJia * (0.94) * buyLiang / 10000.0; //千万量级显示
 
 		zhanLiuBi = zhangTingBan * 1000000 / shareProperty.ziYouLiuTongShiZhi;
 		if (true == yiZiBanJudge(shareProperty))// 一字开盘			
 		{
 			zhangTingBan = (shareProperty.buyLiang * shareProperty.xianJia) / 1000000.0;
 			zhanLiuBi = zhangTingBan * 100000000.0 / shareProperty.ziYouLiuTongShiZhi;
+			dianDan = dianDan - zhangTingBan*100.0;
 		}
 		else if (shareProperty.weiBi < -100.0) // 委差为无效值时
 		{

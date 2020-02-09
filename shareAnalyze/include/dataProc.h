@@ -18,6 +18,7 @@ namespace DATAPROC
 		char *zhangfuFileName, 
 		char *zhangtingFileName, 
 		char *guBenFileName,
+		char *dataPreJingJiaFileName,
 		char *path, 
 		char *date);
 }

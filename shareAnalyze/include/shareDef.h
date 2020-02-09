@@ -16,6 +16,7 @@ namespace SHAREDEF
 	const float BI_LIUTONG = 100000.0;
 
 	const std::string NEW_SHARE = "新股";
+	const std::string NEW_SHARE_ON = "新股上市";
 	const std::string PRE_NEW_SHARE = "次新";
 	const std::string PRO_NEW_SHARE = "次新股";
 
@@ -30,6 +31,9 @@ namespace SHAREDEF
 	const std::string continueLimitFileName = "D:/share/continueLimit.txt";
 
 	const std::string ztProportionFileName = "D:/share/ztProportion.txt";
+
+	const std::string zxgTdxFileName = "D:/new_jyplug/T0002/blocknew/ZXG.blk";
+	const std::string tjxgTdxFileName = "D:/new_jyplug/T0002/blocknew/TJXG.blk";
 
 	const float kaiPanZfMax = 1.2;
 	const float kaiPanZfMin = -6.9;

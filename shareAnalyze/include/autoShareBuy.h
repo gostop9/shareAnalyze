@@ -9,13 +9,20 @@ void autoShareBuy(FILE *buyFp, std::vector<PROPERTY_t> &propertyAnalyVec, PROPER
 void sortByGaodu(std::vector<PROPERTY_t> &propertyAnalyVec);
 void sortByZhangfuGaodu(std::vector<PROPERTY_t> &propertyAnalyVec);
 void sortByTimeZhangfuGaodu(std::vector<PROPERTY_t> &propertyAnalyVec);
-void selectFirstShare(FILE *rstFp, 
+void sortByZhangfuLimitVsDealJingJiaGaodu(std::vector<PROPERTY_t> &propertyAnalyVec);
+
+void selectFirstShare(
+	int fileIndex,
+	FILE *rstFp,
 	FILE *buyFp, 
 	PROPERTY_t programBuyProty, 
 	int programFindFlag, 
 	std::vector<PROPERTY_t> &propertyAnalyVec, 
 	std::vector<PROPERTY_t> &propertyAnalyVecSort, 
-	std::vector<PROPERTY_t> &propertyAnalyVecPre);
+	std::vector<PROPERTY_t> &propertyAnalyVecPre,
+	std::vector<std::string> &resultSet);
 float getZuoRiJiaCha(PROPERTY_t &analyProty);
 void changeFinalBuy(PROPERTY_t &finalBuy, PROPERTY_t &analyProty, int &buyFlag);
+void getYiZiBanToday(std::vector<PROPERTY_t> &propertyAnalyVec, std::vector<PROPERTY_t> &yiZiBanTodayPropertyAnalyVec);
+void saveResultCode(char *rstCode, std::vector<std::string> &resultSet);
 }
