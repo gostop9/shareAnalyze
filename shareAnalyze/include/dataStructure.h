@@ -38,7 +38,7 @@ extern float daDanJingEBMin;
 struct DDE_t
 {
     char  code[10];
-    char  name[10];
+    char  name[12];
     float zhuLiJingLiang;
     float sanHuShuLiang;
     float zhuLiJinE;
@@ -56,7 +56,7 @@ struct DDE_t
 struct ZIJIN_t
 {
     char  code[10];
-    char  name[10];
+    char  name[12];
     float liuTongShiZhi;
 	float ziYouLiuTongShiZhi;//20180901 add，不用读取标签文件	
     float huanShou;
@@ -143,7 +143,7 @@ struct ZIJIN_t
 struct ZHULI_t
 {
     char  code[10];
-    char  name[10];
+    char  name[12];
     float liuTongShiZhi;
     float xianJia;
     float jinRiZengCangZhanBi;
@@ -177,7 +177,7 @@ struct ZHULI_t
 struct ZHANGFU_t
 {
     char  code[10];
-    char  name[10];
+    char  name[12];
     float liuTongShiZhi;
 	float huanShou;
 	float xianJia;
@@ -250,7 +250,7 @@ struct PROPERTY_t
 	//DDE
 	int   ddeIdx;
 	char  code[10];
-	char  name[10];
+	char  name[12];
 	float zhuLiJingLiang;
 	float sanHuShuLiang;
 	float zhuLiJinE;
@@ -676,6 +676,32 @@ struct guBen_t
 	//float ziYouLiuTongShiZhi;
 	float ziYouLiuTongGu;
 	float guXingPingFen;
+};
+
+struct kaiPanSummary_t
+{
+	int   yiZiBanCount;
+	int   zhangCount;
+	int   dieCount;
+	float avgZhang;
+	int   xinGuCount;
+	int   zuoRiYiZiCount;
+	int   stCount;
+	float conAvgIncrease;
+	int   conZhangCount;
+
+	kaiPanSummary_t()
+	{
+		yiZiBanCount = 0;
+		zhangCount = 0;
+		dieCount = 0;
+		avgZhang = 0.0;
+		xinGuCount = 0;
+		zuoRiYiZiCount = 0;
+		stCount = 0;
+		conAvgIncrease = 0.0;
+		conZhangCount = 0;
+	}
 };
 
 #endif

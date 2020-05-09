@@ -23,6 +23,10 @@
 #include "shareDef.h"
 #include "tdxCfgModify.h"
 #include "autoShareBuy.h"
+#include "SpreadSheet.h"
+#include "excelRdWt.h"
+#include <BasicExcel.hpp>
+using namespace YExcel;
 
 using namespace std;
 using namespace DATAPROC;
@@ -32,6 +36,7 @@ using namespace GETLIMITUPINFO;
 using namespace SHAREDEF;
 using namespace TDXCFGMODIFY;
 using namespace AUTOSHAREBUY;
+using namespace EXCELREADWRITE;
 
 char configFileName[] = "D:/share/config.txt";
 char resultFileName[30] = "D:/share/result.txt";
@@ -114,6 +119,14 @@ void main()
 	//结果code保存
 	std::vector<std::string> resultSet;
 	resultSet.reserve(100);
+
+	//板块排序code保存
+	std::vector<std::string> resultSetBlock;
+	resultSetBlock.reserve(300);
+
+	//未板高开股
+	std::vector<std::string> resultSetWbgk;
+	resultSetWbgk.reserve(300);
 
 	// cfg file
 	FILE *cfgFp;
@@ -297,6 +310,7 @@ void main()
 		zhuLiJingLiangMin = float(fileIndex)/ float(10.0);
 	}
 
+	kaiPanSummary_t summary;
 	for (int iFile = fileIndex; iFile >= 0; iFile--)
 	{
 		char indexString[5];
@@ -451,13 +465,13 @@ void main()
 			return;
 		}
 		int analyNum = propertyAnalyVec.size();
-		if (1 >= fileIndex)
+		//if (1 >= fileIndex)
 		{
 			// sort all item
 			limitUpReason_t limitupInfo;
 			if (1 == fileIndex)
 			{
-				limitupInfo.limitShareOrdering(propertyAnalyVec);
+				//limitupInfo.limitShareOrdering(propertyAnalyVec);
 
 				//程序下单
 				//autoShareBuy(buyFp, propertyAnalyVec, programBuyProty, programFindFlag);
@@ -470,8 +484,25 @@ void main()
 			ztrVec.reserve(analyNum);
 			limitupInfo.getLimitUpReason(propertyAnalyVec, ztrVec, newShareCodeVec);
 
+			//加入持仓股
+			resultSetBlock.clear();			
+			int analySize = independentAnalyVec.size();
+			for (int analyIdx = 0; analyIdx < analySize; analyIdx++)
+			{
+				string indCode = independentAnalyVec[analyIdx].code;
+				resultSetBlock.push_back(indCode);
+			}
 			//排序并打印结果
-			limitupInfo.limitShareSort(rstFp, ztrVec);
+			vector<PROPERTY_t> propertyAnalyVecBlock;
+			propertyAnalyVecBlock.reserve(300);
+			propertyAnalyVecBlock.clear();
+			limitupInfo.limitShareSort(rstFp, ztrVec, resultSetBlock, fileIndex, propertyAnalyVecBlock);
+
+			if (1 == fileIndex)
+			{
+				ExcelRwC excelReadWrite;
+				excelReadWrite.excelWriteRowC(dateNow, propertyAnalyVecBlock, summary);
+			}
 
 			if (0)
 			{
@@ -483,7 +514,7 @@ void main()
 				limitupInfo.getLimitUpHy(propertyAnalyVec, hyVec, newShareCodeVec);
 
 				//排序并打印结果
-				limitupInfo.limitShareSort(rstFp, hyVec);
+				limitupInfo.limitShareSort(rstFp, hyVec, resultSetBlock, fileIndex, propertyAnalyVecBlock);
 			}
 
 			//保存连续涨停数据
@@ -565,6 +596,17 @@ void main()
 
 			fprintf(rstFp, "连板涨幅::%5.2f, 昨日连板个数:%d\n", conAvgIncrease / float(conZhangCount), conZhangCount);
 
+			summary.avgZhang = avgZhang;
+			summary.zhangCount = zhangCount;
+			summary.dieCount = dieCount;
+			summary.yiZiBanCount = yiZiBanCount;
+			summary.xinGuCount = xinGuCount;
+			summary.zuoRiYiZiCount = zuoRiYiZiCount;
+			summary.stCount = stCount;
+			summary.conAvgIncrease = conAvgIncrease;
+			summary.conZhangCount = conZhangCount;
+
+
 			/*if (avgZhang > 1.5)
 			{
 				fprintf(rstFp, "可操作\n");
@@ -598,6 +640,7 @@ void main()
 			
 			fprintf(rstFp, "总流入排序-----------------\n");
 			resultSet.clear();
+			resultSetWbgk.clear();
 			//加入持仓股
 			int analySize = independentAnalyVec.size();
 			for (int analyIdx = 0; analyIdx < analySize; analyIdx++)
@@ -615,7 +658,8 @@ void main()
 				propertyAnalyVec,
 				propertyAnalyVecSort,
 				propertyAnalyVecPre,
-				resultSet);
+				resultSet,
+				resultSetWbgk);
 
 			fclose(buyFp);
 		}
@@ -651,7 +695,16 @@ void main()
 		{
 			fprintf(rstFp, "高度板排序------------------------------------------------------------------------------------------------------------------------\n");
 			vector<PROPERTY_t> propertyAnalyVecJingJia = propertyAnalyVec;
-			sortByTimeZhangfuGaodu(propertyAnalyVecJingJia);
+			//
+			if (1 == fileIndex)
+			{
+				sortByTimeZhangfuGaodu(propertyAnalyVecJingJia);
+			}
+			else
+			{
+				sortByFirstLimitTimeGaodu(propertyAnalyVecJingJia);
+			}
+			
 			int num = propertyAnalyVecJingJia.size();
 			int countOne = 0;
 			for (int i = 0; i < num; i++)
@@ -825,6 +878,38 @@ void main()
 		{
 			tdxBlockAppend(zxgTdxFileName, resultSet);
 			tdxBlockModify(tjxgTdxFileName, resultSet);
+
+			tdxBlockAppend(zxgTdxFileName_multi, resultSet);
+			tdxBlockModify(tjxgTdxFileName_multi, resultSet);
+
+			tdxBlockAppend(zxgTdxFileName_hongta, resultSet);
+			tdxBlockModify(tjxgTdxFileName_hongta, resultSet);
+
+			//修改早盘竞价板块
+			tdxBlockModify(zpjjTdxFileName, resultSetBlock);
+			tdxBlockModify(zpjjTdxFileName_multi, resultSetBlock);
+			tdxBlockModify(zpjjTdxFileName_hongta, resultSetBlock);
+
+			//修改未板高开板块
+			tdxBlockModify(wbgkTdxFileName, resultSetWbgk);
+			tdxBlockModify(wbgkTdxFileName_multi, resultSetWbgk);
+			tdxBlockModify(wbgkTdxFileName_hongta, resultSetWbgk);
+		}		
+	}
+
+	time_t rawtime;
+	struct tm *ptminfo;
+	time(&rawtime);
+	ptminfo = localtime(&rawtime);
+	if (15 < ptminfo->tm_hour)
+	{
+		string strFileName = resultFileName;
+		string subName = strFileName.substr(9, 9);
+		if (0 != strcmp(subName.c_str(), "result_zt"))
+		{
+			tdxBlockModify(bkjeTdxFileName, resultSetBlock);
+			tdxBlockModify(bkjeTdxFileName_multi, resultSetBlock);
+			tdxBlockModify(bkjeTdxFileName_hongta, resultSetBlock);
 		}
 	}
 

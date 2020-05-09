@@ -250,6 +250,7 @@ namespace GETLIMITUPINFO
 		std::string reason;
 		int         ztCount;
 		float       zhangFuZong;
+		float       zhangFuMax;
 		int         zfAvgOder;
 		float       zongShiZhi;
 		float       danWeiShiZhi;
@@ -257,6 +258,8 @@ namespace GETLIMITUPINFO
 		float       jingLiuRuBiLiuTongZong;
 		float       zongLiuRuBiLiuTongZong;
 		float       shiZhiXzhangFuZong;
+		float       zongJinEXZong;
+		float       zongLimitVsCirculateJingJia;
 		//std::string suoShuHangYe;
 		//int         hyCount;
 
@@ -265,7 +268,10 @@ namespace GETLIMITUPINFO
 		struct zfAvg_t
 		{
 			//bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return ((a.zhangFuZong / a.ztCount) > (b.zhangFuZong / b.ztCount)); }
-			bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return ((a.shiZhiXzhangFuZong) > (b.shiZhiXzhangFuZong)); }
+			//bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return (a.zhangFuZong > b.zhangFuZong); }
+			bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return (a.zongLimitVsCirculateJingJia > b.zongLimitVsCirculateJingJia); }
+			//bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return (a.zongJinEXZong > b.zongJinEXZong); }
+			//bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return ((a.shiZhiXzhangFuZong) > (b.shiZhiXzhangFuZong)); }
 			//bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return ((a.zongShiZhi / a.danWeiShiZhi) > (b.zongShiZhi / b.danWeiShiZhi)); }
 		};
 
@@ -287,8 +293,26 @@ namespace GETLIMITUPINFO
 
 		void getLimitUpHy(std::vector<PROPERTY_t> &propertyAnalyVec, std::vector<limitUpReason_t> &ztrVec, std::vector<std::string> &newShareCodeVec);
 
-		void limitShareSort(FILE * fp, std::vector<limitUpReason_t> &ztrVec);
+		void sortByZhangFuZongLimitVsCirculateJingJiaZong(std::vector<limitUpReason_t> &ztrVec);
+
+		void limitShareSort(FILE * fp, std::vector<limitUpReason_t> &ztrVec, std::vector<std::string> &resultSetBlock, int fileIndex, std::vector<PROPERTY_t> &propertyAnalyVecBlock);
 
 		void limitShareOrdering(std::vector<PROPERTY_t> &propertyAnalyVec);
+
+	limitUpReason_t()
+	{
+		ztCount = 0;
+		zhangFuZong = 0.0;
+		zhangFuMax = 0.0;
+		zfAvgOder = 0;
+		zongShiZhi = 0.0;
+		danWeiShiZhi = 0.0;
+		jingJiaLiangBiZong = 0.0;
+		jingLiuRuBiLiuTongZong = 0.0;
+		zongLiuRuBiLiuTongZong = 0.0;
+		shiZhiXzhangFuZong = 0.0;
+		zongJinEXZong = 0.0;
+		zongLimitVsCirculateJingJia = 0.0;
+	}
 	};
 }

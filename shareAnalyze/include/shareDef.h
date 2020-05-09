@@ -20,9 +20,9 @@ namespace SHAREDEF
 	const std::string PRE_NEW_SHARE = "次新";
 	const std::string PRO_NEW_SHARE = "次新股";
 
-	const float DIVIDE = 100000000; //“亿”为单位
+	const float DIVIDE = 100000000.0; //“亿”为单位
 
-	const float TENTHOUSAND = 10000; //“万”为单位
+	const float TENTHOUSAND = 10000.0; //“万”为单位
 
 	const int MAX_SHARE_NUM = 4000;
 
@@ -34,6 +34,21 @@ namespace SHAREDEF
 
 	const std::string zxgTdxFileName = "D:/new_jyplug/T0002/blocknew/ZXG.blk";
 	const std::string tjxgTdxFileName = "D:/new_jyplug/T0002/blocknew/TJXG.blk";
+	const std::string bkjeTdxFileName = "D:/new_jyplug/T0002/blocknew/BKJE.blk";
+	const std::string zpjjTdxFileName = "D:/new_jyplug/T0002/blocknew/ZPJJ.blk";
+	const std::string wbgkTdxFileName = "D:/new_jyplug/T0002/blocknew/WBGK.blk";
+
+	const std::string zxgTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/ZXG.blk";
+	const std::string tjxgTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/TJXG.blk";
+	const std::string bkjeTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/BKJE.blk";
+	const std::string zpjjTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/ZPJJ.blk";
+	const std::string wbgkTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/WBGK.blk";
+
+	const std::string zxgTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/ZXG.blk";
+	const std::string tjxgTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/TJXG.blk";
+	const std::string bkjeTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/BKJE.blk";
+	const std::string zpjjTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/ZPJJ.blk";
+	const std::string wbgkTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/WBGK.blk";
 
 	const float kaiPanZfMax = 1.2;
 	const float kaiPanZfMin = -6.9;
@@ -42,4 +57,10 @@ namespace SHAREDEF
 
 	const int CHAR_LEN = (30);
 	static char nonChar[CHAR_LEN];
+
+	const float weiBiThreshold = -78.0;
+	const float dianDanThreshold = 580.0;
+	const float zongLiuRuThreshold0 = 0.001754;//0.001754;
+	const float zongLiuRuThreshold1 = 0.001754;//0.002794;
+	//const std::string ZTFPfileName = "D:/share/ZTFP.xlsx";
 }

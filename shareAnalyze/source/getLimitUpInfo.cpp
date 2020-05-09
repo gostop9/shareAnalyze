@@ -10,11 +10,13 @@
 #include "dataStructure.h"
 #include "getShareFlag.h"
 #include "shareSelect.h"
+#include "autoShareBuy.h"
 
 using namespace std;
 using namespace SHAREDEF;
 using namespace commonFun;
 using namespace SHARE_FLAG;
+using namespace AUTOSHAREBUY;
 namespace GETLIMITUPINFO
 {
 	void limitUpReason_t::jingBiConclude(PROPERTY_t &propertyAnaly, std::vector<float> &marginVec, std::vector<float> &jingBi)
@@ -107,12 +109,15 @@ namespace GETLIMITUPINFO
 			{
 				ztrIter->ztCount++;
 				ztrIter->zhangFuZong += analyProty.zhangFu;
+				ztrIter->zhangFuMax = max(analyProty.zhangFu, ztrIter->zhangFuMax);
 				ztrIter->zongShiZhi += analyProty.ziYouLiuTongShiZhi;
 				ztrIter->danWeiShiZhi += (analyProty.ziYouLiuTongShiZhi / analyProty.zhangFu * 100);
 				ztrIter->jingJiaLiangBiZong += analyProty.jingJiaLiangBi;
 				ztrIter->jingLiuRuBiLiuTongZong += analyProty.jingLiuRuBiLiuTong;
 				ztrIter->zongLiuRuBiLiuTongZong += analyProty.zongLiuRuBiLiuTong;
 				ztrIter->shiZhiXzhangFuZong += (analyProty.ziYouLiuTongShiZhi/(100 + analyProty.zhangFu) * analyProty.zhangFu);
+				ztrIter->zongJinEXZong += analyProty.zongJinE;
+				ztrIter->zongLimitVsCirculateJingJia += analyProty.limitVsCirculateJingJia;
 				//if (ztrIter->zhangFu < analyProty.zhangFu)
 				{
 					//limitUpInfo_t &ztSort = (limitUpInfo_t &)analyProty;
@@ -190,12 +195,15 @@ namespace GETLIMITUPINFO
 			ztrTemp.ztCount = 1;
 			ztrTemp.reason = ztStr;
 			ztrTemp.zhangFuZong = analyProty.zhangFu;
+			ztrTemp.zhangFuMax = analyProty.zhangFu;
 			ztrTemp.zongShiZhi = analyProty.ziYouLiuTongShiZhi;
 			ztrTemp.danWeiShiZhi = analyProty.ziYouLiuTongShiZhi / analyProty.zhangFu;
 			ztrTemp.jingJiaLiangBiZong = analyProty.jingJiaLiangBi;
 			ztrTemp.jingLiuRuBiLiuTongZong = analyProty.jingLiuRuBiLiuTong;
 			ztrTemp.zongLiuRuBiLiuTongZong = analyProty.zongLiuRuBiLiuTong;
 			ztrTemp.shiZhiXzhangFuZong = (analyProty.ziYouLiuTongShiZhi / (100 + analyProty.zhangFu) * analyProty.zhangFu);
+			ztrTemp.zongJinEXZong = analyProty.zongJinE;
+			ztrTemp.zongLimitVsCirculateJingJia = analyProty.limitVsCirculateJingJia;
 			ztrVec.push_back(ztrTemp);
 		}
 	}
@@ -212,6 +220,16 @@ namespace GETLIMITUPINFO
 		for (int i = 0; i < analyNum; i++)
 		{
 			PROPERTY_t &analyProty = propertyAnalyVec[i];
+
+			string name = analyProty.name;
+			std::size_t found = name.find("ST");
+			if (
+				(found != std::string::npos)//剔除ST股
+				)
+			{
+				continue;
+			}
+
 			string ztReason = analyProty.limitReason;
 			vector<string> strVec;
 			stringSplit(ztReason, "+", strVec);
@@ -264,13 +282,31 @@ namespace GETLIMITUPINFO
 		}
 	}
 
-	void limitUpReason_t::limitShareSort(FILE *fp, std::vector<limitUpReason_t> &ztrVec)
+	void limitUpReason_t::sortByZhangFuZongLimitVsCirculateJingJiaZong(std::vector<limitUpReason_t> &ztrVec)
 	{
+		// sort for zhangFuZong
+		struct zhangFuZong {
+			bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return (a.zhangFuMax > b.zhangFuMax); }
+		} cmpMethod_zhangFuZong;
+		std::stable_sort(ztrVec.begin(), ztrVec.end(), cmpMethod_zhangFuZong);
+
+		// sort for LimitVsCirculateJingJiaZong
+		struct LimitVsCirculateJingJiaZong {
+			bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return (a.zongLimitVsCirculateJingJia > b.zongLimitVsCirculateJingJia); }
+		} cmpMethod_LimitVsCirculateJingJiaZong;
+		std::stable_sort(ztrVec.begin(), ztrVec.end(), cmpMethod_LimitVsCirculateJingJiaZong);
+	}
+
+	void limitUpReason_t::limitShareSort(FILE *fp, std::vector<limitUpReason_t> &ztrVec, std::vector<std::string> &resultSetBlock, int fileIndex, std::vector<PROPERTY_t> &propertyAnalyVecBlock)
+	{
+		resultSetBlock.clear();
 		int ztrNum = ztrVec.size();
 		//按平均涨幅排序，用于查看板块强度
 		{
-			zfAvg_t zfAvg;
-			sort(ztrVec.begin(), ztrVec.end(), zfAvg);
+			//zfAvg_t zfAvg;
+			//sort(ztrVec.begin(), ztrVec.end(), zfAvg);
+
+			sortByZhangFuZongLimitVsCirculateJingJiaZong(ztrVec);
 			int zfAvgOder = 1;
 			for (int i = 0; i < ztrNum; i++)
 			{
@@ -283,28 +319,57 @@ namespace GETLIMITUPINFO
 			}
 		}
 		//按涨停原因出现次数排序
-		ztrCount_t ztrCount;
-		sort(ztrVec.begin(), ztrVec.end(), ztrCount);
+		//ztrCount_t ztrCount;
+		//sort(ztrVec.begin(), ztrVec.end(), ztrCount);
 
 		for (int i = 0; i < ztrNum; i++)
 		{
 			limitUpReason_t &ztrTemp = ztrVec[i];
+			int bkShareNum = ztrTemp.limitInfo.size();
+			std::vector<PROPERTY_t> propertyAnalyVec;
+			propertyAnalyVec.reserve(bkShareNum);
+
+			set<limitUpInfo_t>::iterator setIter = ztrTemp.limitInfo.begin();
+			for (int j = 0; j < bkShareNum; j++)
+			{
+				propertyAnalyVec.push_back(*setIter++);
+			}
+
+			if (1 == fileIndex)
+			{
+				sortByZhangfuLimitVsDealJingJiaGaodu(propertyAnalyVec);
+			}
+			else
+			{
+				sortByFirstLimitTimeGaodu(propertyAnalyVec);
+			}
+			//sortByLimitVsCirculateGaodu(propertyAnalyVec);
+
 			if (NEW_SHARE != ztrTemp.reason)
 			{
+				//sortByZhangfuLimitVsDealJingJiaGaodu((vector<PROPERTY_t>)ztrTemp);
+
 				float zhangFuAvg = ztrTemp.zhangFuZong / float(ztrTemp.ztCount);
 				set<limitUpInfo_t>::iterator setIter = ztrTemp.limitInfo.begin();
 				int shareCount = ztrTemp.limitInfo.size();
 				int maxDisplay = 5;
 				maxDisplay = shareCount < maxDisplay ? shareCount : maxDisplay;
 
+				maxDisplay = shareCount;
+
 				//float zhanLiuBi = 0;
 				//float zhangTingBan = getLimitUpMoney<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter), zhanLiuBi);
-				string printFlag = getShareFlag<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter));				
+				/*string printFlag = getShareFlag<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter));				
 				fprintf(fp, "%2d  %-8s  %6.2f, %4s%-8s  %6.2f | 昨停:%5.0f,封:%3d, %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%9.2f, 资金:%4d,  | %5.2f : %d  %s: \n",
 					ztrTemp.ztCount, setIter->code, setIter->xianJia, printFlag.c_str(), setIter->name, setIter->zhangFu, setIter->limitUpMoney/TENTHOUSAND, setIter->indexLvsC, setIter->ziYouLiuTongShiZhi / DIVIDE, setIter->continueDay, setIter->jingJiaLiangBi, setIter->zuoRiHuanShou, setIter->zuoRiLiangBi, setIter->weiBi, setIter->zhangTingBan, setIter->zijinIdx, zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.reason.c_str());
-				for (int j = 1; j < maxDisplay; j++)
+				*/
+				//fprintf(fp, "| %5.2f : %d  %s: \n", zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.reason.c_str());
+
+				fprintf(fp, "|%-16s: , 涨幅：%6.2f， 板块总成交金额：%6.2f亿\n", ztrTemp.reason.c_str(), ztrTemp.zhangFuZong, (ztrTemp.zongJinEXZong / (DIVIDE)));
+
+				for (int j = 0; j < maxDisplay; j++)
 				{
-					++setIter;
+					/*++setIter;
 
 					//float zhanLiuBi = 0;
 					//float zhangTingBan = getLimitUpMoney<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter), zhanLiuBi);
@@ -312,6 +377,23 @@ namespace GETLIMITUPINFO
 					string printFlag = getShareFlag<limitUpInfo_t>(const_cast<limitUpInfo_t &>(*setIter));					
 					fprintf(fp, "    %-8s  %6.2f, %4s%-8s  %6.2f | 昨停:%5.0f,封:%3d, %7.3f亿,连:%2d, %6.2f  %5.2f  %5.2f, 委:%6.2f,涨停:%9.2f, 资金:%4d\n",
 						setIter->code, setIter->xianJia, printFlag.c_str(), setIter->name, setIter->zhangFu, setIter->limitUpMoney/TENTHOUSAND, setIter->indexLvsC, setIter->ziYouLiuTongShiZhi / DIVIDE, setIter->continueDay, setIter->jingJiaLiangBi, setIter->zuoRiHuanShou, setIter->zuoRiLiangBi, setIter->weiBi, setIter->zhangTingBan, setIter->zijinIdx);
+					*/
+					PROPERTY_t propertyAnaly = propertyAnalyVec[j];
+					string name = propertyAnaly.name;
+					std::size_t found = name.find("ST");
+					if (
+						(found != std::string::npos)//剔除ST股
+						//|| (propertyAnaly.guXingPingFen < 45.0)
+						)
+					{
+						continue;
+					}
+
+					vector<PROPERTY_t> propertyAnalyVecPre;
+					shareSelectPrint(fp, propertyAnaly, propertyAnalyVecPre);
+					propertyAnalyVecBlock.push_back(propertyAnaly);
+
+					resultSetBlock.push_back(propertyAnaly.code);
 				}
 			}
 		}

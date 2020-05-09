@@ -43,6 +43,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -50,6 +51,7 @@
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -94,7 +96,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\mongo-c-driver\lib\bson-1.0.lib;C:\mongo-c-driver\lib\mongoc-1.0.lib;C:\mongo-cxx-driver\lib\bsoncxx.lib;C:\mongo-cxx-driver\lib\mongocxx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:\mongo-c-driver\lib\bson-1.0.lib;C:\mongo-c-driver\lib\mongoc-1.0.lib;C:\mongo-cxx-driver\lib\bsoncxx.lib;C:\mongo-cxx-driver\lib\mongocxx.lib;D:\share\shareAnalyze\shareAnalyze\source\SpreadSheet.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -123,35 +125,54 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>C:\mongo-c-driver\lib\bson-1.0.lib;C:\mongo-c-driver\lib\mongoc-1.0.lib;C:\mongo-cxx-driver\lib\bsoncxx.lib;C:\mongo-cxx-driver\lib\mongocxx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:\mongo-c-driver\lib\bson-1.0.lib;C:\mongo-c-driver\lib\mongoc-1.0.lib;C:\mongo-cxx-driver\lib\bsoncxx.lib;C:\mongo-cxx-driver\lib\mongocxx.lib;D:\share\shareAnalyze\shareAnalyze\source\SpreadSheet.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\autoShareBuy.h" />
+    <ClInclude Include="..\include\CApplication.h" />
+    <ClInclude Include="..\include\CChart.h" />
+    <ClInclude Include="..\include\CChartObject.h" />
+    <ClInclude Include="..\include\CChartObjects.h" />
+    <ClInclude Include="..\include\CFont0.h" />
+    <ClInclude Include="..\include\Cnterior.h" />
     <ClInclude Include="..\include\commonFun.h" />
+    <ClInclude Include="..\include\CRange0.h" />
+    <ClInclude Include="..\include\CWorkbook.h" />
+    <ClInclude Include="..\include\CWorkbooks0.h" />
+    <ClInclude Include="..\include\CWorksheet.h" />
+    <ClInclude Include="..\include\CWorksheets0.h" />
     <ClInclude Include="..\include\dataLineProc.h" />
     <ClInclude Include="..\include\dataProc.h" />
     <ClInclude Include="..\include\dataStructure.h" />
+    <ClInclude Include="..\include\excelRdWt.h" />
     <ClInclude Include="..\include\getLimitUpInfo.h" />
     <ClInclude Include="..\include\getShareFlag.h" />
     <ClInclude Include="..\include\readGuBen.h" />
     <ClInclude Include="..\include\readZhangTing.h" />
+    <ClInclude Include="..\include\Resource.h" />
     <ClInclude Include="..\include\shareDef.h" />
     <ClInclude Include="..\include\shareRaisingLtdPre.h" />
     <ClInclude Include="..\include\shareSelect.h" />
+    <ClInclude Include="..\include\SpreadSheet.h" />
+    <ClInclude Include="..\include\stdafx.h" />
+    <ClInclude Include="..\include\targetver.h" />
     <ClInclude Include="..\include\tdxCfgModify.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\AnalyzeShare_main.cpp" />
     <ClCompile Include="..\source\autoShareBuy.cpp" />
+    <ClCompile Include="..\source\BasicExcel.cpp" />
     <ClCompile Include="..\source\commonFun.cpp" />
     <ClCompile Include="..\source\dataLineProc.cpp" />
     <ClCompile Include="..\source\dataProc.cpp" />
+    <ClCompile Include="..\source\excelRdWt.cpp" />
     <ClCompile Include="..\source\getLimitUpInfo.cpp" />
     <ClCompile Include="..\source\readGuBen.cpp" />
     <ClCompile Include="..\source\readZhangTing.cpp" />
     <ClCompile Include="..\source\shareRaisingLtdPre.cpp" />
     <ClCompile Include="..\source\shareSelect.cpp" />
+    <ClCompile Include="..\source\stdafx.cpp" />
     <ClCompile Include="..\source\tdxCfgModify.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -123,6 +123,34 @@ void sortByZhangfuLimitVsDealJingJiaGaodu(std::vector<PROPERTY_t> &propertyAnaly
 	sortByGaodu(propertyAnalyVec);
 }
 
+void sortByFirstLimitTimeGaodu(std::vector<PROPERTY_t> &propertyAnalyVec)
+{
+	// sort for firstLimitTimeIndex
+	struct firstLimitTimeIndex {
+		bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (atoi(a.lastLimitTime) < atoi(b.lastLimitTime)); }
+	} cmpMethod_firstLimitTimeIndex;
+	std::stable_sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_firstLimitTimeIndex);
+
+	sortByGaodu(propertyAnalyVec);
+}
+
+void sortByLimitVsCirculateGaodu(std::vector<PROPERTY_t> &propertyAnalyVec)
+{
+	// sort for limitVsCirculate
+	/*struct limitVsCirculate {
+		bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.limitVsCirculate > b.limitVsCirculate); }
+	} cmpMethod_limitVsCirculate;
+	std::stable_sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_limitVsCirculate);
+	*/
+	// sort for limitOpenCount
+	struct limitOpenCount {
+		bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.limitUpMoney > b.limitUpMoney); }
+	} cmpMethod_limitOpenCount;
+	std::stable_sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_limitOpenCount);
+
+	sortByGaodu(propertyAnalyVec);
+}
+
 float getZuoRiJiaCha(PROPERTY_t &analyProty)
 {
 	float zuoRiJiaCha = abs(analyProty.zuoRiKaiPan - analyProty.zuoShou) / analyProty.preZuoShou;
@@ -204,7 +232,8 @@ void selectFirstShare(
 	std::vector<PROPERTY_t> &propertyAnalyVec,
 	std::vector<PROPERTY_t> &propertyAnalyVecSort,
 	std::vector<PROPERTY_t> &propertyAnalyVecPre,
-	std::vector<std::string> &resultSet)
+	std::vector<std::string> &resultSet,
+	std::vector<std::string> &resultSetWbgk)
 {
 	float zhangTingDvalue = 0.009;
 	float weiBiThreshold = -78.0;
@@ -250,6 +279,7 @@ void selectFirstShare(
 			//buyFlag = 1;
 		}
 		gaoduProperty = analyProty;
+		saveResultCode(analyProty.code, resultSet);
 		//shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 		//fprintf(rstFp, "**********\n");
 		break;
@@ -264,10 +294,25 @@ void selectFirstShare(
 		for (int i = 0; i < analyNum; i++)
 		{
 			PROPERTY_t &analyProty = yiZiBanTodayPropertyAnalyVec[i];
-			analyVecBuy.push_back(analyProty);
-			if (analyProty.continueDay < 1)
+			//跳过昨日涨停原因为超跌反弹
+			string limitR = analyProty.limitReason;
+			string::size_type idx;
+			idx = limitR.find("超跌反弹");//在a中查找b.
+			if (1
+				&& (idx != string::npos)
+				&& (analyProty.continueDay > 0)
+				)
 			{
-				analyVecWei.push_back(analyProty);
+				continue;
+			}
+			if ((analyProty.guXingPingFen > gxpfThreshold - 5.1)
+				 ||(analyProty.zhangTingBan > 10.0))
+			{
+				analyVecBuy.push_back(analyProty);
+				if (analyProty.continueDay < 1)
+				{
+					analyVecWei.push_back(analyProty);
+				}
 			}
 		}
 	}
@@ -290,7 +335,34 @@ void selectFirstShare(
 
 		int findFlag = 0;
 		int ztFindFlag = 0;
-		for (int i = 0; i < buyNum; i++)
+		for (int i = 0; i < 100; i++)
+		{
+			PROPERTY_t &analyProty = propertyAnalyVecSort[i];
+			//跳过昨日涨停原因为超跌反弹
+			string limitR = analyProty.limitReason;
+			string::size_type idx;
+			idx = limitR.find("超跌反弹");//在a中查找b.
+			if (1
+				&& (idx != string::npos)
+				&& (analyProty.continueDay > 0)
+				)
+			{
+				continue;
+			}
+			if (1
+				&& (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
+				)
+			{
+				if ((analyProty.zongLiuRuBiLiuTong > 0.0)
+					&& (analyProty.zongLiuRuBiZuoRiZongJinE > 0.0)
+					&& (analyProty.guXingPingFen > gxpfThreshold))
+				{
+					analyVecBuy.push_back(analyProty);
+				}
+			}
+		}
+		//for (int i = 0; i < buyNum; i++)
+		for (int i = 0; i < 100; i++)
 		{
 			PROPERTY_t &analyProty = propertyAnalyVecSort[i];
 			if (1
@@ -344,6 +416,7 @@ void selectFirstShare(
 					((analyProty.zijinIdx < MAX_ZIJIN_IDX) && (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1))
 						|| (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.003)
 						|| (analyProty.zijinIdx < 10))
+					//&& (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.003)
 					&& (analyProty.zongJinE > (998.0 * TENTHOUSAND))
 					&& (analyProty.guXingPingFen > gxpfThreshold)
 					//&& ((analyProty.zongLiuRuBiZuoRiZongJinE > zhuLiJingLiangThreshold-0.0038) || (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.004))
@@ -632,6 +705,7 @@ void selectFirstShare(
 				{
 					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 					saveResultCode(analyProty.code, resultSet);
+					saveResultCode(analyProty.code, resultSetWbgk);
 				}
 			}
 			else
@@ -643,6 +717,7 @@ void selectFirstShare(
 				{
 					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 					saveResultCode(analyProty.code, resultSet);
+					saveResultCode(analyProty.code, resultSetWbgk);
 				}
 			}
 		}

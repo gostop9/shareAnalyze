@@ -391,7 +391,7 @@ void shareParaFuse(vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &
                             property.zhuLiJinE = zhangfuIter->zhuLiJingE;//这两个一样的意思
 
                             property.guXingPingFen = zhangfuIter->guXingPingFen;
-                            property.weiBi = zhangfuIter->weiBi;
+                            //property.weiBi = zhangfuIter->weiBi;
                             property.jiGouDongXiang = zhangfuIter->jiGouDongXiang;
                             property.jingLiZengLv = zhangfuIter->jingLiZengLv;
                             property.jingLiRun = zhangfuIter->jingLiRun;
@@ -562,7 +562,7 @@ void shareParaFuseWithoutZhuli(vector<ZIJIN_t> &zijin, vector<ZHANGFU_t> &zhangf
 						property.zhuLiJinE = zhangfuIter->zhuLiJingE;//这两个一样的意思
 
 						property.guXingPingFen = zhangfuIter->guXingPingFen;
-						property.weiBi = zhangfuIter->weiBi;
+						//property.weiBi = zhangfuIter->weiBi;
 						property.jiGouDongXiang = zhangfuIter->jiGouDongXiang;
 						property.jingLiZengLv = zhangfuIter->jingLiZengLv;
 						property.jingLiRun = zhangfuIter->jingLiRun;
@@ -970,19 +970,36 @@ property.sanRiZhangFu, property.wuRiZhangFu, property.shiRiZhangFu);
 				}*/
 				string printFlag = getShareFlag<PROPERTY_t>(property);
 				//float yuanMeiShou = ((float)property.shouMeiBi * property.xianJia) / 10000;
-				fprintf(fp, "%-8s, %6.2f, %2s%-8s,昨:%6.2f,涨:%6.2f, 比:%5.2f, __成:%5.2f,资:%4d,出:%4d,成交:%5.0f,昨竞:%5.0f,连:%2d,  竞比:%6.2f,委:%7.2f,涨停:%9.2f,垫:%9.2f, 昨成:%6.0f,昨停:%5.0f, 开:%2d, \
-| %7.3f亿,原:%-16s,股:%5.2f, 主净:%5.2f,昨换:%5.2f,昨量:%5.2f,HY:%-14s, | \
+				/*fprintf(fp, "%-8s, %6.2f, %2s%-8s,昨:%6.2f,涨:%6.2f,原:%-16s, 比:%5.2f, __成:%5.2f,资:%4d,出:%4d,成交:%5.0f,昨竞:%5.0f,连:%2d,  竞比:%6.2f,委:%7.2f,涨停:%9.2f,垫:%9.2f, 昨成:%6.0f,昨停:%5.0f, 开:%2d, \
+| %7.3f亿,股:%5.2f, 主净:%5.2f,昨换:%5.2f,昨量:%5.2f,HY:%-14s, | \
 大:%8.2f,中:%8.2f,中小:%8.2f, | 全:%5.2f,净流:%4d,总入:%4d,总出:%4d,成交:%4d,主:%3d,换:%5.2f,量:%5.2f,\
 始:%6s,末:%6s,封:%3d,机:%6.2f,盘比:%5.2f,主总:%5.2f,净增:%7.2f,净利:%7.4f,\
 净流:%7.4f,大:%7.4f,比:%5.2f,中:%7.4f,比:%5.2f,小:%7.4f,比:%5.2f\n",
 //三:%5.2f,五:%5.2f,十:%5.2f\n", 
-property.code, property.xianJia, printFlag.c_str(), property.name, property.zuoRiKaiPanZhangFu, property.zhangFu, property.zongLiuRuBiZuoRiZongJinE*100.0, property.zongLiuRuBiLiuTong*100.0, property.zijinIdx, property.zijinChuIdx, property.zongJinE/TENTHOUSAND, property.preJingJiaZongJinE/TENTHOUSAND, property.continueDay, jingJiaLiangBi, property.weiBi, zhangTingBan, dianDanJinE, property.zuoRiZongJinE/TENTHOUSAND, property.limitUpMoney/TENTHOUSAND, property.limitOpenCount,
-property.ziYouLiuTongShiZhi / DIVIDE, property.limitReason, property.guXingPingFen, property.zhuLiJingLiang, zuoRiHuanShou, zuoRiLiangBi, property.suoShuHangYe,
+property.code, property.xianJia, printFlag.c_str(), property.name, property.zuoRiKaiPanZhangFu, property.zhangFu, property.limitReason, property.zongLiuRuBiZuoRiZongJinE*100.0, property.zongLiuRuBiLiuTong*100.0, property.zijinIdx, property.zijinChuIdx, property.zongJinE/TENTHOUSAND, property.preJingJiaZongJinE/TENTHOUSAND, property.continueDay, jingJiaLiangBi, property.weiBi, zhangTingBan, dianDanJinE, property.zuoRiZongJinE/TENTHOUSAND, property.limitUpMoney/TENTHOUSAND, property.limitOpenCount,
+property.ziYouLiuTongShiZhi / DIVIDE, property.guXingPingFen, property.zhuLiJingLiang, zuoRiHuanShou, zuoRiLiangBi, property.suoShuHangYe,
 daDanJinBiLiuTong, zhongDanJinBiLiuTong, zhongXiaoDanJinBiLiuTong, property.jingLiuRu / TENTHOUSAND, property.jingLiuRuBiLiuTongIndex, property.zongLiuRuBiLiuTongIndex, property.zongLiuChuBiLiuTongIndex, property.chengJiaoBiLiuTongIndex, property.ddeIdx, property.huanShou, property.liangBi,
 property.firstLimitTime, property.lastLimitTime, property.indexLvsC, property.jiGouDongXiang, property.zongLiuRuBiLiuTong*100.0, zhuLiJingBi, property.jingLiZengLv, property.jingLiRun / DIVIDE,
 property.jingLiuRu / DIVIDE, property.daDanJinE / DIVIDE, property.daDanJingEB, property.zhongDanJinE / DIVIDE, property.zhongDanJingEB, property.xiaoDanJinE / DIVIDE, property.xiaoDanJingEB
 //property.sanRiZhangFu, property.wuRiZhangFu, property.shiRiZhangFu
+);*/
+				fprintf(fp, "%-8s, %6.2f, %2s%-8s,昨:%6.2f,涨:%6.2f,原:%-16s, 比:%5.2f, __成:%5.2f,资:%4d,成交:%6.0f,昨:%5.0f,连:%2d,  竞比:%6.2f,委:%7.2f,涨停:%9.2f,垫:%9.2f, 昨成:%6.0f,昨停:%5.0f, 开:%2d, \
+| %7.3f亿,股:%5.2f,HY:%-14s, | \
+换:%5.2f,量:%5.2f,\
+始:%6s,末:%6s\n",
+//三:%5.2f,五:%5.2f,十:%5.2f\n", 
+property.code, property.xianJia, printFlag.c_str(), property.name, property.zuoRiKaiPanZhangFu, property.zhangFu, property.limitReason, property.zongLiuRuBiZuoRiZongJinE*100.0, property.zongLiuRuBiLiuTong*100.0, property.zijinIdx, property.zongJinE / TENTHOUSAND, property.preJingJiaZongJinE / TENTHOUSAND, property.continueDay, jingJiaLiangBi, property.weiBi, zhangTingBan, dianDanJinE, property.zuoRiZongJinE / TENTHOUSAND, property.limitUpMoney / TENTHOUSAND, property.limitOpenCount,
+property.ziYouLiuTongShiZhi / DIVIDE, property.guXingPingFen, property.suoShuHangYe,
+property.huanShou, property.liangBi,
+property.firstLimitTime, property.lastLimitTime
 );
+				/*fprintf(fp, "%-8s, %6.2f, %-8s,昨:%6.2f,涨:%6.2f,原:%-16s, 成交:%6.0f,昨竞:%5.0f,连:%2d, 涨停:%9.2f, 开:%2d, \
+| %7.3f亿,股:%5.2f, HY:%-14s, | \
+始:%6s,末:%6s\n",
+property.code, property.xianJia, property.name, property.zuoRiKaiPanZhangFu, property.zhangFu, property.limitReason, property.zongJinE / TENTHOUSAND, property.preJingJiaZongJinE / TENTHOUSAND, property.continueDay, zhangTingBan, property.limitOpenCount,
+property.ziYouLiuTongShiZhi / DIVIDE, property.guXingPingFen, property.suoShuHangYe,
+property.firstLimitTime, property.lastLimitTime
+);*/
 			}
 		}
 	}
