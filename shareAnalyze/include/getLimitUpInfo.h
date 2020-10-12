@@ -3,6 +3,9 @@
 #include <vector>
 #include <set>
 #include "dataStructure.h"
+#include "excelRdWt.h"
+
+using namespace EXCELREADWRITE;
 
 namespace GETLIMITUPINFO
 {
@@ -151,6 +154,7 @@ namespace GETLIMITUPINFO
 				zuoRiZuiGao = p.zuoRiZuiGao;
 				zuoRiLiangBi = p.zuoRiLiangBi;
 				zuoRiZhenFu = p.zuoRiZhenFu;
+				zuoRiZhangFu = p.zuoRiZhangFu;
 				zuoRiZhuLiJingLiang = p.zuoRiZhuLiJingLiang;
 				zuoRiDaDanJingEB = p.zuoRiDaDanJingEB;
 				zuoRiJingLiuRuBiLiuTong = p.zuoRiJingLiuRuBiLiuTong;
@@ -295,7 +299,7 @@ namespace GETLIMITUPINFO
 
 		void sortByZhangFuZongLimitVsCirculateJingJiaZong(std::vector<limitUpReason_t> &ztrVec);
 
-		void limitShareSort(FILE * fp, std::vector<limitUpReason_t> &ztrVec, std::vector<std::string> &resultSetBlock, int fileIndex, std::vector<PROPERTY_t> &propertyAnalyVecBlock);
+		void limitShareSort(FILE * fp, ExcelRwC &excelReadWrite, std::vector<limitUpReason_t> &ztrVec, std::vector<std::string> &resultSetBlock, int fileIndex, std::vector<PROPERTY_t> &propertyAnalyVecBlock);
 
 		void limitShareOrdering(std::vector<PROPERTY_t> &propertyAnalyVec);
 

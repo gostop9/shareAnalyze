@@ -11,12 +11,17 @@
 #include "getShareFlag.h"
 #include "shareSelect.h"
 #include "autoShareBuy.h"
+#include "excelRdWt.h"
+#include <BasicExcel.hpp>
+using namespace YExcel;
 
 using namespace std;
 using namespace SHAREDEF;
 using namespace commonFun;
 using namespace SHARE_FLAG;
 using namespace AUTOSHAREBUY;
+using namespace EXCELREADWRITE;
+
 namespace GETLIMITUPINFO
 {
 	void limitUpReason_t::jingBiConclude(PROPERTY_t &propertyAnaly, std::vector<float> &marginVec, std::vector<float> &jingBi)
@@ -284,6 +289,12 @@ namespace GETLIMITUPINFO
 
 	void limitUpReason_t::sortByZhangFuZongLimitVsCirculateJingJiaZong(std::vector<limitUpReason_t> &ztrVec)
 	{
+		// sort for zhangFuAvg
+		struct zhangFuAvg {
+			bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return (a.zhangFuZong / a.ztCount > b.zhangFuZong / b.ztCount); }
+		} cmpMethod_zhangFuAvg;
+		std::stable_sort(ztrVec.begin(), ztrVec.end(), cmpMethod_zhangFuAvg);
+
 		// sort for zhangFuZong
 		struct zhangFuZong {
 			bool operator() (const limitUpReason_t &a, const limitUpReason_t &b) { return (a.zhangFuMax > b.zhangFuMax); }
@@ -297,7 +308,7 @@ namespace GETLIMITUPINFO
 		std::stable_sort(ztrVec.begin(), ztrVec.end(), cmpMethod_LimitVsCirculateJingJiaZong);
 	}
 
-	void limitUpReason_t::limitShareSort(FILE *fp, std::vector<limitUpReason_t> &ztrVec, std::vector<std::string> &resultSetBlock, int fileIndex, std::vector<PROPERTY_t> &propertyAnalyVecBlock)
+	void limitUpReason_t::limitShareSort(FILE *fp, ExcelRwC &excelReadWrite, std::vector<limitUpReason_t> &ztrVec, std::vector<std::string> &resultSetBlock, int fileIndex, std::vector<PROPERTY_t> &propertyAnalyVecBlock)
 	{
 		resultSetBlock.clear();
 		int ztrNum = ztrVec.size();
@@ -338,6 +349,7 @@ namespace GETLIMITUPINFO
 			if (1 == fileIndex)
 			{
 				sortByZhangfuLimitVsDealJingJiaGaodu(propertyAnalyVec);
+				excelReadWrite.writeExcelSheet(propertyAnalyVec);
 			}
 			else
 			{

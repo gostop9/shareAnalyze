@@ -37,18 +37,21 @@ namespace SHAREDEF
 	const std::string bkjeTdxFileName = "D:/new_jyplug/T0002/blocknew/BKJE.blk";
 	const std::string zpjjTdxFileName = "D:/new_jyplug/T0002/blocknew/ZPJJ.blk";
 	const std::string wbgkTdxFileName = "D:/new_jyplug/T0002/blocknew/WBGK.blk";
+	const std::string cybzpjjTdxFileName = "D:/new_jyplug/T0002/blocknew/CYBZPJJ.blk";
 
 	const std::string zxgTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/ZXG.blk";
 	const std::string tjxgTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/TJXG.blk";
 	const std::string bkjeTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/BKJE.blk";
 	const std::string zpjjTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/ZPJJ.blk";
 	const std::string wbgkTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/WBGK.blk";
+	const std::string cybzpjjTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/CYBZPJJ.blk";
 
 	const std::string zxgTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/ZXG.blk";
 	const std::string tjxgTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/TJXG.blk";
 	const std::string bkjeTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/BKJE.blk";
 	const std::string zpjjTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/ZPJJ.blk";
 	const std::string wbgkTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/WBGK.blk";
+	const std::string cybzpjjTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/CYBZPJJ.blk";
 
 	const float kaiPanZfMax = 1.2;
 	const float kaiPanZfMin = -6.9;

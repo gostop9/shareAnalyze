@@ -109,6 +109,24 @@ void sortByTimeZhangfuGaodu(std::vector<PROPERTY_t> &propertyAnalyVec)
 	sortByZhangfuGaodu(propertyAnalyVec);
 }
 
+void sortByTimeZhangfuLimitVsDealJingJia(std::vector<PROPERTY_t> &propertyAnalyVec)
+{
+	struct lastLimitTimeIndex {
+		bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (atoi(a.lastLimitTime) < atoi(b.lastLimitTime)); }
+	} cmpMethod_lastLimitTimeIndex;
+	std::stable_sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_lastLimitTimeIndex);
+
+	struct zhangFu {
+		bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhangFu > b.zhangFu); }
+	} cmpMethod_zhangFu;
+	stable_sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_zhangFu);
+
+	struct limitVsDealJingJiaIndex {
+		bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.limitVsDealJingJia > b.limitVsDealJingJia); }
+	} cmpMethod_limitVsDealJingJiaIndex;
+	std::stable_sort(propertyAnalyVec.begin(), propertyAnalyVec.end(), cmpMethod_limitVsDealJingJiaIndex);
+}
+
 void sortByZhangfuLimitVsDealJingJiaGaodu(std::vector<PROPERTY_t> &propertyAnalyVec)
 {
 	struct zhangFu {
@@ -233,7 +251,9 @@ void selectFirstShare(
 	std::vector<PROPERTY_t> &propertyAnalyVecSort,
 	std::vector<PROPERTY_t> &propertyAnalyVecPre,
 	std::vector<std::string> &resultSet,
-	std::vector<std::string> &resultSetWbgk)
+	std::vector<std::string> &resultSetWbgk,
+	std::vector<PROPERTY_t> &resultVecWbgk,
+	std::vector<PROPERTY_t> &propertyAnalyVecBlock)
 {
 	float zhangTingDvalue = 0.009;
 	float weiBiThreshold = -78.0;
@@ -706,6 +726,8 @@ void selectFirstShare(
 					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 					saveResultCode(analyProty.code, resultSet);
 					saveResultCode(analyProty.code, resultSetWbgk);
+					resultVecWbgk.push_back(analyProty);
+					propertyAnalyVecBlock.push_back(analyProty);
 				}
 			}
 			else
@@ -718,6 +740,8 @@ void selectFirstShare(
 					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 					saveResultCode(analyProty.code, resultSet);
 					saveResultCode(analyProty.code, resultSetWbgk);
+					resultVecWbgk.push_back(analyProty);
+					propertyAnalyVecBlock.push_back(analyProty);
 				}
 			}
 		}

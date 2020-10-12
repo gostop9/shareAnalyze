@@ -2,7 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <math.h>
-#include <windows.h>
+//#include <windows.h>
 #include <stdio.h>
 #include <climits>
 #include <unordered_set>
@@ -983,12 +983,12 @@ property.firstLimitTime, property.lastLimitTime, property.indexLvsC, property.ji
 property.jingLiuRu / DIVIDE, property.daDanJinE / DIVIDE, property.daDanJingEB, property.zhongDanJinE / DIVIDE, property.zhongDanJingEB, property.xiaoDanJinE / DIVIDE, property.xiaoDanJingEB
 //property.sanRiZhangFu, property.wuRiZhangFu, property.shiRiZhangFu
 );*/
-				fprintf(fp, "%-8s, %6.2f, %2s%-8s,昨:%6.2f,涨:%6.2f,原:%-16s, 比:%5.2f, __成:%5.2f,资:%4d,成交:%6.0f,昨:%5.0f,连:%2d,  竞比:%6.2f,委:%7.2f,涨停:%9.2f,垫:%9.2f, 昨成:%6.0f,昨停:%5.0f, 开:%2d, \
+				fprintf(fp, "%-8s, %6.2f, %2s%-8s,昨:%6.2f,涨:%6.2f,涨:%6.2f,原:%-16s, 比:%5.2f, __成:%5.2f,资:%4d,成交:%6.0f,昨:%5.0f,连:%2d,  竞比:%6.2f,委:%7.2f,涨停:%9.2f,垫:%9.2f, 昨成:%6.0f,昨停:%5.0f, 开:%2d, \
 | %7.3f亿,股:%5.2f,HY:%-14s, | \
 换:%5.2f,量:%5.2f,\
 始:%6s,末:%6s\n",
 //三:%5.2f,五:%5.2f,十:%5.2f\n", 
-property.code, property.xianJia, printFlag.c_str(), property.name, property.zuoRiKaiPanZhangFu, property.zhangFu, property.limitReason, property.zongLiuRuBiZuoRiZongJinE*100.0, property.zongLiuRuBiLiuTong*100.0, property.zijinIdx, property.zongJinE / TENTHOUSAND, property.preJingJiaZongJinE / TENTHOUSAND, property.continueDay, jingJiaLiangBi, property.weiBi, zhangTingBan, dianDanJinE, property.zuoRiZongJinE / TENTHOUSAND, property.limitUpMoney / TENTHOUSAND, property.limitOpenCount,
+property.code, property.xianJia, printFlag.c_str(), property.name, property.zuoRiKaiPanZhangFu, property.zhangFu, property.zuoRiZhangFu, property.limitReason, property.zongLiuRuBiZuoRiZongJinE*100.0, property.zongLiuRuBiLiuTong*100.0, property.zijinIdx, property.zongJinE / TENTHOUSAND, property.preJingJiaZongJinE / TENTHOUSAND, property.continueDay, jingJiaLiangBi, property.weiBi, zhangTingBan, dianDanJinE, property.zuoRiZongJinE / TENTHOUSAND, property.limitUpMoney / TENTHOUSAND, property.limitOpenCount,
 property.ziYouLiuTongShiZhi / DIVIDE, property.guXingPingFen, property.suoShuHangYe,
 property.huanShou, property.liangBi,
 property.firstLimitTime, property.lastLimitTime
@@ -1131,6 +1131,7 @@ void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPER
 				proIter->zuoRiZuiGao = proPreIter->zuiGao;
 				proIter->zuoRiLiangBi = proPreIter->liangBi;
 				proIter->zuoRiZhenFu = proPreIter->zhenFu;
+				proIter->zuoRiZhangFu = proPreIter->zhangFu;
 				proIter->zuoRiZhuLiJingLiang = proPreIter->zhuLiJingLiang;
 				proIter->zuoRiDaDanJingEB = proPreIter->daDanJingEB;
 				proIter->zuoRiJiGouDongXiang = proPreIter->jiGouDongXiang;

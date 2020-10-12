@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <windows.h>
+//#include <windows.h>
 #include <stdio.h>
 #include "dataStructure.h"
 #include "dataProc.h"

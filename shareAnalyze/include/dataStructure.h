@@ -418,6 +418,7 @@ struct PROPERTY_t
 	float zuoRiZuiGao;
 	float zuoRiLiangBi;
 	float zuoRiZhenFu;
+	float zuoRiZhangFu;
 	float zuoRiZhuLiJingLiang;
 	float zuoRiDaDanJingEB;
 	float zuoRiJingLiuRuBiLiuTong;
@@ -523,6 +524,7 @@ struct PROPERTY_t
 		zuoRiZuiGao = 0.0;
 		zuoRiLiangBi = 0.0;
 		zuoRiZhenFu = 0.0;
+		zuoRiZhangFu = 0.0;
 		zuoRiZhuLiJingLiang = 0.0;
 		zuoRiZongJinE = 0.0;
 		zongLiuRuBiZuoRiZongJinE = -100.0;
