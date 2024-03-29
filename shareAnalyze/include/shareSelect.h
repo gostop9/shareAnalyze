@@ -32,6 +32,10 @@ void chooseAnalyzeProperty(std::vector<PROPERTY_t> &propertyVec, std::vector<ana
 
 bool yiZiBanJudge(PROPERTY_t &property);
 
+bool zuoRiYiZiBanTbanJudge(PROPERTY_t &property);
+
+bool zuoRiYiZiBanJudge(PROPERTY_t &property);
+
 void zhangFuSummarize(PROPERTY_t &property, int &zhangCount, int &dieCount, int &yiZiBanCount, int &xinGuCount, int &stCount, float &averageIncrease, int &codeCount);
 
 #endif

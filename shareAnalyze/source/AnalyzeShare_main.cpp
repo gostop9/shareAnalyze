@@ -118,6 +118,8 @@ void main()
 {
 	vector<guBen_t> guBenVec;
 
+	int flag_guXinZhengShu = 0;
+
 	//结果code保存
 	std::vector<std::string> resultSet;
 	resultSet.reserve(100);
@@ -139,6 +141,10 @@ void main()
 	//用于excel显示
 	vector<PROPERTY_t> propertyAnalyVecBlock;
 	propertyAnalyVecBlock.reserve(300);
+
+	// 保存板块排名第一的股票
+	std::vector<PROPERTY_t> proBanKuaiFirstVec;
+	proBanKuaiFirstVec.reserve(100);
 
 	// cfg file
 	FILE *cfgFp;
@@ -303,13 +309,27 @@ void main()
 			readZhangfuFile(dataPreJingJiaFileName, preJingJiazhangfu);
 		}
 		
-		//提取昨日涨停code
-		readZhangTingFile(zhangtingFileName, zhangTingVecPre);
-		getZhangTingCode(zhangTingVecPre, analyseVec);
-		
-		//提取今日涨停code
-		readZhangTingFile(zhangtingFileNameToday, zhangTingVecToday);
-		getZhangTingCode(zhangTingVecToday, limitTodayVec);
+		//if (20210831 > cnt_int)
+		{
+			//提取昨日涨停code
+			readZhangTingFile(zhangtingFileName, zhangTingVecPre);
+			getZhangTingCode(zhangTingVecPre, analyseVec);
+
+			//提取今日涨停code
+			readZhangTingFile(zhangtingFileNameToday, zhangTingVecToday);
+			getZhangTingCode(zhangTingVecToday, limitTodayVec);
+		}
+		/*else
+		{
+			//提取昨日涨停code
+			readZhangTingFile_THS(zhangtingFileName, zhangTingVecPre);
+			getZhangTingCode(zhangTingVecPre, analyseVec);
+
+			//提取今日涨停code
+			readZhangTingFile_THS(zhangtingFileNameToday, zhangTingVecToday);
+			getZhangTingCode(zhangTingVecToday, limitTodayVec);
+		}*/
+
 
 		shareParaFuse(dde[0], zijin[0], zhuli[0], zhangfu[0], preJingJiazhangfu, guBenVec, propertyV[0], analyseVec, propertyAnalyVecPre);
 		//chooseAnalyzeProperty(propertyV[0], analyseVec, propertyAnalyVecPre);
@@ -341,6 +361,28 @@ void main()
 			dataPreJingJiaFileName,
 			path,
 			dateNow);
+
+		// 获取股性评分区间的flag
+		{
+			int cnt_int = 0, cnt_num = 0;
+			for (int i = 0;zhangfuFileName[i] != '\0';++i) //当a数组元素不为结束符时.遍历字符串a.
+			{
+				if (zhangfuFileName[i] >= '0' && zhangfuFileName[i] <= '9') //如果是数字.
+				{
+					cnt_num++;
+					cnt_int *= 10;
+					cnt_int += zhangfuFileName[i] - '0'; //数字字符的ascii-字符'0'的ascii码就等于该数字.
+					if (cnt_num >= 8) //取8位数字进行判断20180522
+					{
+						break;
+					}
+				}
+			}
+			if ((cnt_int >= 20201118) && (cnt_int <= 20211123))
+			{
+				flag_guXinZhengShu = 1;
+			}
+		}
 
 		int vecIndex = fileIndex - iFile;
 		//vector<DDE_t> dde;
@@ -511,7 +553,7 @@ void main()
 			}
 			//排序并打印结果
 			propertyAnalyVecBlock.clear();
-			limitupInfo.limitShareSort(rstFp, excelReadWrite, ztrVec, resultSetBlock, fileIndex, propertyAnalyVecBlock);
+			limitupInfo.limitShareSort(rstFp, excelReadWrite, ztrVec, resultSetBlock, fileIndex, propertyAnalyVecBlock, proBanKuaiFirstVec, flag_guXinZhengShu);
 			//提取创业板code
 			for (int analyIdx = 0; analyIdx < resultSetBlock.size(); analyIdx++)
 			{
@@ -532,7 +574,7 @@ void main()
 				limitupInfo.getLimitUpHy(propertyAnalyVec, hyVec, newShareCodeVec);
 
 				//排序并打印结果
-				limitupInfo.limitShareSort(rstFp, excelReadWrite, hyVec, resultSetBlock, fileIndex, propertyAnalyVecBlock);
+				limitupInfo.limitShareSort(rstFp, excelReadWrite, hyVec, resultSetBlock, fileIndex, propertyAnalyVecBlock, proBanKuaiFirstVec, flag_guXinZhengShu);
 			}
 
 			//保存连续涨停数据
@@ -695,13 +737,30 @@ void main()
 		if (1 == fileIndex)
 		{
 			excelReadWrite.excelRowIndex;
-			excelReadWrite.writeExcelSheet(resultVecWbgk);
+			excelReadWrite.writeExcelSheet(resultVecWbgk, flag_guXinZhengShu);
 
 			vector<PROPERTY_t> propertyAnalyVecJingJia = propertyAnalyVec;
 			sortByTimeZhangfuLimitVsDealJingJia(propertyAnalyVecJingJia);
 
+			// 赋值在其他板块非第一的flag
+			vector<PROPERTY_t>::iterator itFirst = proBanKuaiFirstVec.begin();
+			while (itFirst != proBanKuaiFirstVec.end())
+			{
+				vector<PROPERTY_t>::iterator it = propertyAnalyVecJingJia.begin();
+				while (it != propertyAnalyVecJingJia.end())
+				{
+					if (0 == strcmp(it->code, itFirst->code))
+					{
+						it->banKuaiFirstFlag = 1;
+						break;
+					}
+					++it;
+				}
+				++itFirst;
+			}
+
 			excelReadWrite.excelRowIndex++;
-			excelReadWrite.writeExcelSheet(propertyAnalyVecJingJia);
+			excelReadWrite.writeExcelSheet(propertyAnalyVecJingJia, flag_guXinZhengShu);
 
 			excelReadWrite.closeExcelSheet();
 		}
@@ -919,19 +978,62 @@ void main()
 		string subName = strFileName.substr(9, 9);
 		if (0 != strcmp(subName.c_str(), "result_zt"))
 		{
-			tdxBlockAppend(zxgTdxFileName, resultSet);
+			/*tdxBlockAppend(zxgTdxFileName, resultSet);
 			tdxBlockModify(tjxgTdxFileName, resultSet);
 
 			tdxBlockAppend(zxgTdxFileName_multi, resultSet);
 			tdxBlockModify(tjxgTdxFileName_multi, resultSet);
 
 			tdxBlockAppend(zxgTdxFileName_hongta, resultSet);
-			tdxBlockModify(tjxgTdxFileName_hongta, resultSet);
+			tdxBlockModify(tjxgTdxFileName_hongta, resultSet);*/
+
+			std::vector<std::string> resultZxgSet;
+			resultZxgSet.reserve(100);
+			resultZxgSet.clear();
+
+			//加入一字开盘的股票到自选股
+			{
+				vector<PROPERTY_t> yiZiBanTodayPropertyAnalyVec;
+				vector<PROPERTY_t> &propertyAnalyVecSort = propertyV[0];
+				getYiZiBanToday(propertyAnalyVecSort, yiZiBanTodayPropertyAnalyVec);
+				// sort for zhangTingBanIndex
+				struct zhangTingBanIndex {
+					bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return ((a.zhangTingBan / a.ziYouLiuTongShiZhi) > (b.zhangTingBan / b.ziYouLiuTongShiZhi)); }
+				} cmpMethod_zhangTingBanIndex;
+				std::sort(yiZiBanTodayPropertyAnalyVec.begin(), yiZiBanTodayPropertyAnalyVec.end(), cmpMethod_zhangTingBanIndex);
+				int analyNum = yiZiBanTodayPropertyAnalyVec.size();
+				for (int i = 0; i < analyNum; i++)
+				{
+					PROPERTY_t &analyProty = yiZiBanTodayPropertyAnalyVec[i];
+					resultZxgSet.push_back(analyProty.code);
+				}
+			}
+
+			//加入持仓股到自选股前
+			int analySize = independentAnalyVec.size();
+			for (int analyIdx = 0; analyIdx < analySize; analyIdx++)
+			{
+				string indCode = independentAnalyVec[analyIdx].code;
+				resultZxgSet.push_back(indCode);
+			}
+			resultZxgSet.insert(resultZxgSet.end(), resultSetBlock.begin(), resultSetBlock.end());
+
+			//tdxBlockAppend(zxgTdxFileName, resultSetBlock);
+			tdxBlockAppend(zxgTdxFileName, resultZxgSet);
+			tdxBlockModify(tjxgTdxFileName, resultSetBlock);
+
+			//tdxBlockAppend(zxgTdxFileName_multi, resultSetBlock);
+			tdxBlockAppend(zxgTdxFileName_multi, resultZxgSet);
+			tdxBlockModify(tjxgTdxFileName_multi, resultSetBlock);
+
+			//tdxBlockAppend(zxgTdxFileName_hongta, resultSetBlock);
+			tdxBlockAppend(zxgTdxFileName_hongta, resultZxgSet);
+			tdxBlockModify(tjxgTdxFileName_hongta, resultSetBlock);
 
 			//修改早盘竞价板块
 			tdxBlockModify(zpjjTdxFileName, resultSetBlock);
 			tdxBlockModify(zpjjTdxFileName_multi, resultSetBlock);
-			tdxBlockModify(zpjjTdxFileName_hongta, resultSetBlock);cybzpjjTdxFileName_hongta;
+			tdxBlockModify(zpjjTdxFileName_hongta, resultSetBlock);
 			
 		    //修改创业板早盘竞价
 			tdxBlockModify(cybzpjjTdxFileName, chuangyebanSetBlock);
@@ -949,7 +1051,8 @@ void main()
 	struct tm *ptminfo;
 	time(&rawtime);
 	ptminfo = localtime(&rawtime);
-	if ((15 < ptminfo->tm_hour) || (9.14 > ptminfo->tm_hour))
+	float time_hour_min = (float)ptminfo->tm_hour + (float)ptminfo->tm_min / 100.0;
+	if ((15 < time_hour_min) || (9.14 > time_hour_min))
 	{
 		string strFileName = resultFileName;
 		string subName = strFileName.substr(9, 9);

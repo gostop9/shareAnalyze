@@ -56,4 +56,6 @@ struct continueDay_t
 void getZhangTingCode(std::vector<zhangTing_t> &zhangTingVec, std::vector<analyseCode_t> &codeVec);
 
 bool readZhangTingFile(char *fileName, std::vector<zhangTing_t> &zhangtingVec);
+
+bool readZhangTingFile_THS(char *fileName, std::vector<zhangTing_t> &zhangTingVec);
 }

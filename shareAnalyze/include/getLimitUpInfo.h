@@ -222,6 +222,7 @@ namespace GETLIMITUPINFO
 				zuoRiJiGouDongXiangIndex = p.zuoRiJiGouDongXiangIndex;
 				zuoRiSanHuShuLiangIndex = p.zuoRiSanHuShuLiangIndex;
 				sanHuShuLiangIndex = p.sanHuShuLiangIndex;
+				banKuaiFirstFlag = p.banKuaiFirstFlag;
 				totalIndex = p.totalIndex;
 			}
 		/*public:
@@ -299,7 +300,7 @@ namespace GETLIMITUPINFO
 
 		void sortByZhangFuZongLimitVsCirculateJingJiaZong(std::vector<limitUpReason_t> &ztrVec);
 
-		void limitShareSort(FILE * fp, ExcelRwC &excelReadWrite, std::vector<limitUpReason_t> &ztrVec, std::vector<std::string> &resultSetBlock, int fileIndex, std::vector<PROPERTY_t> &propertyAnalyVecBlock);
+		void limitShareSort(FILE *fp, ExcelRwC &excelReadWrite, std::vector<limitUpReason_t> &ztrVec, std::vector<std::string> &resultSetBlock, int fileIndex, std::vector<PROPERTY_t> &propertyAnalyVecBlock, std::vector<PROPERTY_t> &proBanKuaiFirstVec, int flag_guXinZhengShu);
 
 		void limitShareOrdering(std::vector<PROPERTY_t> &propertyAnalyVec);
 

@@ -450,7 +450,7 @@ struct PROPERTY_t
 	float limitVsDeal;
 	float limitVsCirculate;
 	float limitUpMoney;
-	char  limitReason[50];
+	char  limitReason[250];
 
 	int   jingJiaLiangBiIndex;
 	int   weiBiIndex;
@@ -486,6 +486,7 @@ struct PROPERTY_t
 	int   zuoRiJiGouDongXiangIndex;
 	int   zuoRiSanHuShuLiangIndex;
 	int   sanHuShuLiangIndex;
+	int   banKuaiFirstFlag;
 	int   totalIndex;
 
 	//构造函数初始化
@@ -580,6 +581,7 @@ struct PROPERTY_t
 		zuoRiJiGouDongXiangIndex = 0;
 		zuoRiSanHuShuLiangIndex = 0;
 		sanHuShuLiangIndex = 0;
+		banKuaiFirstFlag = 0;
 		totalIndex = 0;
 		//memset(this, 0, sizeof(PROPERTY_t));
 		//或者是下面的格式 

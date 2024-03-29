@@ -313,6 +313,8 @@ void shareParaFuse(vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &
 		strcpy(property.code, zijinIter->code);
 		strcpy(property.name, zijinIter->name);
 		property.liuTongShiZhi = zijinIter->liuTongShiZhi;
+		property.ziYouLiuTongGu = zijinIter->liuTongShiZhi / zijinIter->xianJia;
+
 		property.jingLiuRu = zijinIter->jingLiuRu;
 		property.daDanLiuRu = zijinIter->daDanLiuRu;
 		property.daDanLiuChu = zijinIter->daDanLiuChu;
@@ -442,7 +444,7 @@ void shareParaFuse(vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &
 												if (0 == strcmp(gubenIter->code, codeTemp))
 												{
 													property.ziYouLiuTongGu = gubenIter->ziYouLiuTongGu;
-													property.guXingPingFen = gubenIter->guXingPingFen;
+													//property.guXingPingFen = gubenIter->guXingPingFen;
 													break;
 												}
 												++gubenIter;
@@ -509,6 +511,8 @@ void shareParaFuseWithoutZhuli(vector<ZIJIN_t> &zijin, vector<ZHANGFU_t> &zhangf
 			strcpy(property.code, zijinIter->code);
 			strcpy(property.name, zijinIter->name);
 			property.liuTongShiZhi = zijinIter->liuTongShiZhi;
+			property.ziYouLiuTongGu = zijinIter->liuTongShiZhi / zijinIter->xianJia;
+
 			property.jingLiuRu = zijinIter->jingLiuRu;
 			property.daDanLiuRu = zijinIter->daDanLiuRu;
 			property.daDanLiuChu = zijinIter->daDanLiuChu;
@@ -613,7 +617,7 @@ void shareParaFuseWithoutZhuli(vector<ZIJIN_t> &zijin, vector<ZHANGFU_t> &zhangf
 											if (0 == strcmp(gubenIter->code, codeTemp))
 											{
 												property.ziYouLiuTongGu = gubenIter->ziYouLiuTongGu;
-												property.guXingPingFen = gubenIter->guXingPingFen;
+												//property.guXingPingFen = gubenIter->guXingPingFen;
 												break;
 											}
 											++gubenIter;
@@ -740,7 +744,7 @@ void shareParaFuseWithoutZhuli(vector<ZIJIN_t> &zijin, vector<ZHANGFU_t> &zhangf
 						if (0 == strcmp(gubenIter->code, codeTemp))
 						{
 							property.ziYouLiuTongGu = gubenIter->ziYouLiuTongGu;
-							property.guXingPingFen = gubenIter->guXingPingFen;
+							//property.guXingPingFen = gubenIter->guXingPingFen;
 							break;
 						}
 						++gubenIter;
@@ -1045,8 +1049,16 @@ void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPER
 		{
 			char codeTemp[10];
 			memset(codeTemp, 0, sizeof(codeTemp));
-			char *pCode = proIter->code;
-			strncpy(codeTemp, &pCode[2], 6);
+
+			if (6 == strlen(ztIter->code))
+			{
+				char *pCode = proIter->code;
+				strncpy(codeTemp, &pCode[2], 6);
+			}
+			else
+			{
+				strcpy(codeTemp, proIter->code);
+			}
 
 			if (0 == strcmp(codeTemp, ztIter->code))
 			{
@@ -1242,6 +1254,33 @@ bool yiZiBanJudge(PROPERTY_t &property)
 		(property.sellLiant < 1.0)
 		&& (property.weiBi > WEIBI_MAX)
 		)// Ò»×Ö¿ªÅÌ
+	{
+		flag = true;
+	}
+	return flag;
+}
+
+bool zuoRiYiZiBanTbanJudge(PROPERTY_t &property)
+{
+	bool flag = false;
+	if (
+		((abs(property.zuoRiZuiGao - property.zuoRiKaiPan) < FLT_MIN)
+			&& (abs(property.zuoShou - property.zuoRiKaiPan) < FLT_MIN))
+		)
+	{
+		flag = true;
+	}
+	return flag;
+}
+
+bool zuoRiYiZiBanJudge(PROPERTY_t &property)
+{
+	bool flag = false;
+	if (
+		((abs(property.zuoRiZuiGao - property.zuoRiKaiPan) < FLT_MIN)
+			&& (abs(property.zuoShou - property.zuoRiKaiPan) < FLT_MIN)
+			&& (property.zuoRiZhenFu < FLT_MIN))
+		)
 	{
 		flag = true;
 	}
