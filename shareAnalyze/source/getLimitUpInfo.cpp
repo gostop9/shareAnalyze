@@ -308,7 +308,7 @@ namespace GETLIMITUPINFO
 		std::stable_sort(ztrVec.begin(), ztrVec.end(), cmpMethod_LimitVsCirculateJingJiaZong);
 	}
 
-	void limitUpReason_t::limitShareSort(FILE *fp, ExcelRwC &excelReadWrite, std::vector<limitUpReason_t> &ztrVec, std::vector<std::string> &resultSetBlock, int fileIndex, std::vector<PROPERTY_t> &propertyAnalyVecBlock)
+	void limitUpReason_t::limitShareSort(FILE *fp, ExcelRwC &excelReadWrite, std::vector<limitUpReason_t> &ztrVec, std::vector<std::string> &resultSetBlock, int fileIndex, std::vector<PROPERTY_t> &propertyAnalyVecBlock, std::vector<PROPERTY_t> &proBanKuaiFirstVec, int flag_guXinZhengShu)
 	{
 		resultSetBlock.clear();
 		int ztrNum = ztrVec.size();
@@ -333,6 +333,27 @@ namespace GETLIMITUPINFO
 		//ztrCount_t ztrCount;
 		//sort(ztrVec.begin(), ztrVec.end(), ztrCount);
 
+		if (1 == fileIndex)
+		{
+			for (int i = 0; i < ztrNum; i++)
+			{
+				limitUpReason_t &ztrTemp = ztrVec[i];
+				int bkShareNum = ztrTemp.limitInfo.size();
+				std::vector<PROPERTY_t> propertyAnalyVec;
+				propertyAnalyVec.reserve(bkShareNum);
+
+				set<limitUpInfo_t>::iterator setIter = ztrTemp.limitInfo.begin();
+				for (int j = 0; j < bkShareNum; j++)
+				{
+					propertyAnalyVec.push_back(*setIter++);
+				}
+				sortByZhangfuLimitVsDealJingJiaGaodu(propertyAnalyVec);
+
+				propertyAnalyVec[0].banKuaiFirstFlag = 1;
+				proBanKuaiFirstVec.push_back(propertyAnalyVec[0]);
+			}
+		}
+
 		for (int i = 0; i < ztrNum; i++)
 		{
 			limitUpReason_t &ztrTemp = ztrVec[i];
@@ -349,7 +370,24 @@ namespace GETLIMITUPINFO
 			if (1 == fileIndex)
 			{
 				sortByZhangfuLimitVsDealJingJiaGaodu(propertyAnalyVec);
-				excelReadWrite.writeExcelSheet(propertyAnalyVec);
+
+				// 赋值在其他板块非第一的flag
+				vector<PROPERTY_t>::iterator itFirst = proBanKuaiFirstVec.begin();
+				while (itFirst != proBanKuaiFirstVec.end())
+				{
+					vector<PROPERTY_t>::iterator it = propertyAnalyVec.begin();
+					while (it != propertyAnalyVec.end())
+					{
+						if (0 == strcmp(it->code, itFirst->code))
+						{
+							it->banKuaiFirstFlag = 1;
+							break;
+						}
+						++it;
+					}
+					++itFirst;
+				}
+				excelReadWrite.writeExcelSheet(propertyAnalyVec, flag_guXinZhengShu);
 			}
 			else
 			{

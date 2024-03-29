@@ -227,12 +227,60 @@ void ExcelRwC::setYiZiBanBackColor(CWorksheet &wsMySheet, char &headerSymbol, in
 	Cnterior interior; // 底色设置  
 	CRange0	 colorRge;
 	CString range1, range2;
-	char column = 'N';
+	char column = 'O';
 	range1.Format("%c%d", column, row);
 	range2.Format("%c%d", column, row);
 	colorRge.AttachDispatch(wsMySheet.get_Range(COleVariant(_T(range1.GetString())), COleVariant(_T(range2.GetString()))), true);
 	interior.AttachDispatch(colorRge.get_Interior());
 	interior.put_ColorIndex(COleVariant((long)3)); // 底色设置为红色
+
+	colorRge.ReleaseDispatch();
+	interior.ReleaseDispatch();
+}
+
+void ExcelRwC::setJingJiaJinEBackColor(CWorksheet &wsMySheet, char &headerSymbol, int &row)
+{
+	Cnterior interior; // 底色设置  
+	CRange0	 colorRge;
+	CString range1, range2;
+	char column = 'J';
+	range1.Format("%c%d", column, row);
+	range2.Format("%c%d", column, row);
+	colorRge.AttachDispatch(wsMySheet.get_Range(COleVariant(_T(range1.GetString())), COleVariant(_T(range2.GetString()))), true);
+	interior.AttachDispatch(colorRge.get_Interior());
+	interior.put_ColorIndex(COleVariant((long)46));
+
+	colorRge.ReleaseDispatch();
+	interior.ReleaseDispatch();
+}
+
+void ExcelRwC::setYiZiBanGuXingBackColor(CWorksheet &wsMySheet, char &headerSymbol, int &row)
+{
+	Cnterior interior; // 底色设置  
+	CRange0	 colorRge;
+	CString range1, range2;
+	char column = 'I';
+	range1.Format("%c%d", column, row);
+	range2.Format("%c%d", column, row);
+	colorRge.AttachDispatch(wsMySheet.get_Range(COleVariant(_T(range1.GetString())), COleVariant(_T(range2.GetString()))), true);
+	interior.AttachDispatch(colorRge.get_Interior());
+	interior.put_ColorIndex(COleVariant((long)16));
+
+	colorRge.ReleaseDispatch();
+	interior.ReleaseDispatch();
+}
+
+void ExcelRwC::setLimitOpenCountBackColor(CWorksheet &wsMySheet, char &headerSymbol, int &row)
+{
+	Cnterior interior; // 底色设置  
+	CRange0	 colorRge;
+	CString range1, range2;
+	char column = 'S';
+	range1.Format("%c%d", column, row);
+	range2.Format("%c%d", column, row);
+	colorRge.AttachDispatch(wsMySheet.get_Range(COleVariant(_T(range1.GetString())), COleVariant(_T(range2.GetString()))), true);
+	interior.AttachDispatch(colorRge.get_Interior());
+	interior.put_ColorIndex(COleVariant((long)14));
 
 	colorRge.ReleaseDispatch();
 	interior.ReleaseDispatch();
@@ -244,7 +292,7 @@ void ExcelRwC::setContinueDayBackColor(CWorksheet &wsMySheet, char &headerSymbol
 		CRange0	colorRge;
 		CFont0  ft;    // 要插入excel类库里面的Font类，下面类似  
 		CString tempString;
-		char column = 'K';
+		char column = 'L';
 		tempString.Format("%c%d", column, row);
 		colorRge.AttachDispatch(wsMySheet.get_Range(COleVariant(_T(tempString.GetString())), COleVariant(_T(tempString.GetString()))));
 		ft.AttachDispatch(colorRge.get_Font());
@@ -279,7 +327,7 @@ void ExcelRwC::setZuoRiZhangFuColor(CWorksheet &wsMySheet, char &headerSymbol, f
 		CRange0	colorRge;
 		CFont0  ft;    // 要插入excel类库里面的Font类，下面类似  
 		CString tempString;
-		char column = 'F';
+		char column = 'G';
 		tempString.Format("%c%d", column, row);
 		colorRge.AttachDispatch(wsMySheet.get_Range(COleVariant(_T(tempString.GetString())), COleVariant(_T(tempString.GetString()))));
 		ft.AttachDispatch(colorRge.get_Font());
@@ -289,6 +337,177 @@ void ExcelRwC::setZuoRiZhangFuColor(CWorksheet &wsMySheet, char &headerSymbol, f
 		}
 		ft.ReleaseDispatch();
 		colorRge.ReleaseDispatch();
+	}
+}
+
+void ExcelRwC::setJingJiaZhangFuColor(CWorksheet &wsMySheet, char &headerSymbol, float zhangFu, int continueDay, int &row)
+{
+	{
+		CRange0	colorRge;
+		CFont0  ft;    // 要插入excel类库里面的Font类，下面类似  
+		CString tempString;
+		char column = 'E';
+		tempString.Format("%c%d", column, row);
+		colorRge.AttachDispatch(wsMySheet.get_Range(COleVariant(_T(tempString.GetString())), COleVariant(_T(tempString.GetString()))));
+		ft.AttachDispatch(colorRge.get_Font());
+		if ((6.0 < zhangFu) && (1 == continueDay))
+		{
+			setCellBackColor(wsMySheet, headerSymbol, column, row, 6); //红色
+		}
+		ft.ReleaseDispatch();
+		colorRge.ReleaseDispatch();
+	}
+}
+
+void ExcelRwC::setZuoRiJingJiaZhangFuColor(CWorksheet &wsMySheet, char &headerSymbol, int &row)
+{
+	{
+		CRange0	colorRge;
+		CFont0  ft;    // 要插入excel类库里面的Font类，下面类似  
+		CString tempString;
+		char column = 'D';
+		tempString.Format("%c%d", column, row);
+		colorRge.AttachDispatch(wsMySheet.get_Range(COleVariant(_T(tempString.GetString())), COleVariant(_T(tempString.GetString()))));
+		ft.AttachDispatch(colorRge.get_Font());
+
+		setCellBackColor(wsMySheet, headerSymbol, column, row, 6);
+
+		ft.ReleaseDispatch();
+		colorRge.ReleaseDispatch();
+	}
+}
+
+void ExcelRwC::setYiZiBanJingJiaJinEColor(CWorksheet &wsMySheet, char &headerSymbol, float zongJinE, int &row)
+{
+	{
+		CRange0	colorRge;
+		CFont0  ft;    // 要插入excel类库里面的Font类，下面类似  
+		CString tempString;
+		char column = 'J';
+		tempString.Format("%c%d", column, row);
+		colorRge.AttachDispatch(wsMySheet.get_Range(COleVariant(_T(tempString.GetString())), COleVariant(_T(tempString.GetString()))));
+		ft.AttachDispatch(colorRge.get_Font());
+		if ((1800.0 * TENTHOUSAND) < zongJinE)
+		{
+			setCellBackColor(wsMySheet, headerSymbol, column, row, 6); //红色
+		}
+		ft.ReleaseDispatch();
+		colorRge.ReleaseDispatch();
+	}
+}
+
+void ExcelRwC::setZuoRiChengJiaoJinEColor(CWorksheet &wsMySheet, char &headerSymbol, float zuoRiChengJiaoJinE, int &row)
+{
+	{
+		CRange0	colorRge;
+		CFont0  ft;    // 要插入excel类库里面的Font类，下面类似  
+		CString tempString;
+		char column = 'C';
+		tempString.Format("%c%d", column, row);
+		colorRge.AttachDispatch(wsMySheet.get_Range(COleVariant(_T(tempString.GetString())), COleVariant(_T(tempString.GetString()))));
+		ft.AttachDispatch(colorRge.get_Font());
+		if ((5000.0 * TENTHOUSAND) > zuoRiChengJiaoJinE)
+		{
+			setCellBackColor(wsMySheet, headerSymbol, column, row, 17);
+		}
+		ft.ReleaseDispatch();
+		colorRge.ReleaseDispatch();
+	}
+}
+
+void ExcelRwC::setShouBanGaoKaiErBanYiZiColor(vector<PROPERTY_t>::iterator it, CWorksheet &wsMySheet, char &headerSymbol, int &row)
+{
+	{
+		CRange0	colorRge;
+		CFont0  ft;    // 要插入excel类库里面的Font类，下面类似  
+		CString tempString;
+		char column = 'C';
+		tempString.Format("%c%d", column, row);
+		colorRge.AttachDispatch(wsMySheet.get_Range(COleVariant(_T(tempString.GetString())), COleVariant(_T(tempString.GetString()))));
+		ft.AttachDispatch(colorRge.get_Font());
+		if((3.99 < it->zuoRiKaiPanZhangFu) && (1 == it->continueDay))
+		{
+			setCellBackColor(wsMySheet, headerSymbol, column, row, 17);
+		}
+		ft.ReleaseDispatch();
+		colorRge.ReleaseDispatch();
+	}
+}
+
+void ExcelRwC::setZuoRiYiZiFangLiangJinYiZiColor(vector<PROPERTY_t>::iterator it, CWorksheet &wsMySheet, char &headerSymbol, int &row)
+{
+	{
+		bool zuoRiyiZiBanFlag = zuoRiYiZiBanJudge(*it);
+		CRange0	colorRge;
+		CFont0  ft;    // 要插入excel类库里面的Font类，下面类似  
+		CString tempString;
+		char column = 'Q';
+		tempString.Format("%c%d", column, row);
+		colorRge.AttachDispatch(wsMySheet.get_Range(COleVariant(_T(tempString.GetString())), COleVariant(_T(tempString.GetString()))));
+		ft.AttachDispatch(colorRge.get_Font());
+		if ((zuoRiyiZiBanFlag) && (0 < it->continueDay) && ((8000.0 * TENTHOUSAND) < it->zuoRiZongJinE))
+		{
+			setCellBackColor(wsMySheet, headerSymbol, column, row, 17);
+		}
+		ft.ReleaseDispatch();
+		colorRge.ReleaseDispatch();
+	}
+}
+
+void ExcelRwC::setSpecificColors(vector<PROPERTY_t>::iterator it, CWorksheet &wsMySheet, char &excelHeaderSymbol, int &row, int flag_guXinZhengShu)
+{
+	PROPERTY_t &analyProty = *it;
+	bool zuoRiyiZiBanTFlag = zuoRiYiZiBanTbanJudge(analyProty);
+	bool yiZiBanFlag = yiZiBanJudge(analyProty);
+	float zhangFuMargin = 1.2;
+	float kaiPanZfMax = zhangFuMargin + 2.0;
+	float zuoRiKaiPanZfMax = 3.3;
+	float zuoRiChengJiaoJinEMin = 5000.0;
+
+	if ((!yiZiBanFlag) && (analyProty.zongJinE > 9707.0 * TENTHOUSAND))
+	{
+		setJingJiaJinEBackColor(wsMySheet, excelHeaderSymbol, row);
+	}
+	if (yiZiBanFlag)
+	{
+		if (((analyProty.guXingPingFen < 49.0) && (0 == flag_guXinZhengShu)) ||
+			((analyProty.guXingPingFen > 2012) && (1 == flag_guXinZhengShu)))
+		{
+			setYiZiBanGuXingBackColor(wsMySheet, excelHeaderSymbol, row);
+		}
+	}
+	if (0 == analyProty.limitOpenCount)
+	{
+		setLimitOpenCountBackColor(wsMySheet, excelHeaderSymbol, row);
+	}
+	if (-4.0 > analyProty.zhangFu) // -6.0 
+	{
+		char column = 'E';
+		setCellBackColor(wsMySheet, excelHeaderSymbol, column, row, 16);
+	}
+	if ((0.006 < analyProty.zongLiuRuBiLiuTong) && 
+		((danRiJingJiaThreshould * TENTHOUSAND) < analyProty.zongJinE) && 
+		((analyProty.preJingJiaZongJinE < analyProty.zongJinE) || (jingJiaJinEThreshould < analyProty.zongJinE))
+		)
+	{
+		char column = 'X';
+		setCellBackColor(wsMySheet, excelHeaderSymbol, column, row, 46);
+	}
+	//昨日非一字或T字的
+	if (!zuoRiyiZiBanTFlag)
+	{
+		setZuoRiChengJiaoJinEColor(wsMySheet, excelHeaderSymbol, it->zuoRiZongJinE, row);
+		setShouBanGaoKaiErBanYiZiColor(it, wsMySheet, excelHeaderSymbol, row);
+	}
+	if (
+		((zhangFuMargin < (it->zhangFu - it->zuoRiKaiPanZhangFu)) && (it->zhangFu >= kaiPanZfMax)
+			&& ((zuoRiKaiPanZfMax > it->zuoRiKaiPanZhangFu) || (1 < it->continueDay)))
+		|| zuoRiyiZiBanTFlag)
+	{
+		if (zuoRiyiZiBanTFlag || ((zuoRiChengJiaoJinEMin * TENTHOUSAND) < it->zuoRiZongJinE))
+		{
+			setZuoRiJingJiaZhangFuColor(wsMySheet, excelHeaderSymbol, row);
+		}
 	}
 }
 
@@ -303,6 +522,7 @@ char ExcelRwC::excelWriteHeaderC(CRange0 &rgMyRge)
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("NAME"));
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("昨日开盘涨幅"));
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("涨幅"));
+	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("自由流通市值"));
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("昨日涨幅"));
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("涨停原因"));
 
@@ -320,7 +540,6 @@ char ExcelRwC::excelWriteHeaderC(CRange0 &rgMyRge)
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("昨日成交"));
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("昨日涨停封单"));
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("涨停打开次数"));
-	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("自由流通市值"));
 
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("首次涨停时间"));
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("最终涨停时间"));
@@ -425,11 +644,15 @@ void ExcelRwC::closeExcelSheet()
 	ExcelApp.ReleaseDispatch();
 }
 
-void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec)
+void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec, int flag_guXinZhengShu)
 {
 	int &i = excelRowIndex;
 	// 将数据填入Excel表格
 	int showNum = 1;
+	if (0 >= propertyVec.size())
+	{
+		return;
+	}
 	vector<PROPERTY_t>::iterator it = propertyVec.begin();
 	rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(1)), COleVariant(it->limitReason));
 	while (it != propertyVec.end())
@@ -461,6 +684,7 @@ void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec)
 		float tempZhangfu = ((float)((int)((it->zuoRiKaiPanZhangFu + 0.005) * 100))) / 100;
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(tempZhangfu));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->zhangFu));
+		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant((LONG)(it->ziYouLiuTongShiZhi / DIVIDE)));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->zuoRiZhangFu));
 
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->limitReason));
@@ -492,24 +716,61 @@ void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec)
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant((LONG)(it->zuoRiZongJinE / TENTHOUSAND)));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant((LONG)(it->limitUpMoney / TENTHOUSAND)));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant((LONG)(it->limitOpenCount)));
-		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant((LONG)(it->ziYouLiuTongShiZhi / DIVIDE)));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->firstLimitTime));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->lastLimitTime));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->suoShuHangYe));
-		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->huanShou));
-		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->liangBi));
+		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant((LONG)it->zijinIdx));
+		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->zongLiuRuBiLiuTong * 100.0));
 
+		bool yiZiBanFlag = yiZiBanJudge(analyProty);
 		if (1)
 		{
 			//加入一字开盘的股票，显示红色
 			{
-				if ((analyProty.guXingPingFen > 44.0)
-					&& (true == yiZiBanJudge(analyProty)))
+				if ((true == yiZiBanFlag)
+					//&& (analyProty.guXingPingFen > 34.0))
+					)
 				{
 					setBackColor(wsMySheet, excelHeaderSymbol, i, 38);
 					setYiZiBanBackColor(wsMySheet, excelHeaderSymbol, i); //红色
+					if ((analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + zongLiuRuThreshold_for_yizi)
+						//&& ((analyProty.guXingPingFen > 30.0) && (0 == flag_guXinZhengShu) || (analyProty.guXingPingFen < 2712) && (1 == flag_guXinZhengShu))
+						)
+					{
+						char column = 'F';
+						setBackColor(wsMySheet, column, i, 20);
+					}
+					setZuoRiYiZiFangLiangJinYiZiColor(it, wsMySheet, excelHeaderSymbol, i);
 					setContinueDayBackColor(wsMySheet, excelHeaderSymbol, analyProty.continueDay, i);
 					setZuoRiZhangFuColor(wsMySheet, excelHeaderSymbol, it->zuoRiZhangFu, i);
+					setYiZiBanJingJiaJinEColor(wsMySheet, excelHeaderSymbol, it->zongJinE, i);
+					//setJingJiaZhangFuColor(wsMySheet, excelHeaderSymbol, it->zhangFu, it->continueDay, i);
+
+					/*if ((analyProty.zongJinE > 970.0 * TENTHOUSAND))
+					{
+						//setJingJiaJinEBackColor(wsMySheet, excelHeaderSymbol, i);
+					}
+					if (0 == analyProty.limitOpenCount)
+					{
+						setLimitOpenCountBackColor(wsMySheet, excelHeaderSymbol, i);
+					}
+					//昨日非一字或T字的
+					if (!zuoRiyiZiBanTFlag)
+					{
+						setZuoRiChengJiaoJinEColor(wsMySheet, excelHeaderSymbol, it->zuoRiZongJinE, i);
+					}
+					if (
+						((zhangFuMargin < (it->zhangFu - it->zuoRiKaiPanZhangFu)) && (it->zhangFu >= kaiPanZfMax)
+							&& ((zuoRiKaiPanZfMax > it->zuoRiKaiPanZhangFu) || (1 < it->continueDay)))
+						|| zuoRiyiZiBanTFlag)
+					{
+						if (zuoRiyiZiBanTFlag || ((zuoRiChengJiaoJinEMin * TENTHOUSAND) < it->zuoRiZongJinE))
+						{
+							setZuoRiJingJiaZhangFuColor(wsMySheet, excelHeaderSymbol, i);
+						}
+					}*/
+					setSpecificColors(it, wsMySheet, excelHeaderSymbol, i, flag_guXinZhengShu);
+
 					++it;
 					i++;
 					continue;
@@ -517,15 +778,45 @@ void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec)
 			}
 			//股性太差的，显示黑色
 			{
-				if (analyProty.guXingPingFen < 49.0)
+				if (((analyProty.guXingPingFen < 49.0) && (0 == flag_guXinZhengShu)) ||
+					((analyProty.guXingPingFen > 2012) && (1 == flag_guXinZhengShu)))
+					//if(0)
 				{
 					setBackColor(wsMySheet, excelHeaderSymbol, i, 15);
-					if (true == yiZiBanJudge(analyProty))
+					if ((true == yiZiBanFlag) || (zuoRiYiZiBanJudge(*it)))
 					{
-						setYiZiBanBackColor(wsMySheet, excelHeaderSymbol, i); //红色
+						//setYiZiBanBackColor(wsMySheet, excelHeaderSymbol, i); //红色
+						setZuoRiYiZiFangLiangJinYiZiColor(it, wsMySheet, excelHeaderSymbol, i);
 					}
 					setContinueDayBackColor(wsMySheet, excelHeaderSymbol, analyProty.continueDay, i);
 					setZuoRiZhangFuColor(wsMySheet, excelHeaderSymbol, it->zuoRiZhangFu, i);
+					setJingJiaZhangFuColor(wsMySheet, excelHeaderSymbol, it->zhangFu, it->continueDay, i);
+
+					/*if ((analyProty.zongJinE > 970.0 * TENTHOUSAND))
+					{
+						//setJingJiaJinEBackColor(wsMySheet, excelHeaderSymbol, i);
+					}
+					if (0 == analyProty.limitOpenCount)
+					{
+						setLimitOpenCountBackColor(wsMySheet, excelHeaderSymbol, i);
+					}
+					//昨日非一字或T字的
+					if (!zuoRiyiZiBanTFlag)
+					{
+						setZuoRiChengJiaoJinEColor(wsMySheet, excelHeaderSymbol, it->zuoRiZongJinE, i);
+					}
+					if (
+						((zhangFuMargin < (it->zhangFu - it->zuoRiKaiPanZhangFu)) && (it->zhangFu >= kaiPanZfMax)
+							&& ((zuoRiKaiPanZfMax > it->zuoRiKaiPanZhangFu) || (1 < it->continueDay)))
+						|| zuoRiyiZiBanTFlag)
+					{
+						if (zuoRiyiZiBanTFlag || ((zuoRiChengJiaoJinEMin * TENTHOUSAND) < it->zuoRiZongJinE))
+						{
+							setZuoRiJingJiaZhangFuColor(wsMySheet, excelHeaderSymbol, i);
+						}
+					}*/
+					setSpecificColors(it, wsMySheet, excelHeaderSymbol, i, flag_guXinZhengShu);
+
 					++it;
 					i++;
 					continue;
@@ -550,23 +841,91 @@ void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec)
 					&& (analyProty.continueDay > 0)
 					)
 				{
-					if (true == yiZiBanJudge(analyProty))
+					if (true == yiZiBanFlag)
 					{
 						setYiZiBanBackColor(wsMySheet, excelHeaderSymbol, i); //红色
+						setZuoRiYiZiFangLiangJinYiZiColor(it, wsMySheet, excelHeaderSymbol, i);
+						if ((analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + zongLiuRuThreshold_for_yizi)
+							//&& ((analyProty.guXingPingFen > 30.0) && (0 == flag_guXinZhengShu) || (analyProty.guXingPingFen < 2712) && (1 == flag_guXinZhengShu))
+							)
+						{
+							char column = 'F';
+							setBackColor(wsMySheet, column, i, 20);
+						}
 					}
 					setContinueDayBackColor(wsMySheet, excelHeaderSymbol, analyProty.continueDay, i);
 					setZuoRiZhangFuColor(wsMySheet, excelHeaderSymbol, it->zuoRiZhangFu, i);
+					setJingJiaZhangFuColor(wsMySheet, excelHeaderSymbol, it->zhangFu, it->continueDay, i);
+
+					/*if ((analyProty.zongJinE > 970.0 * TENTHOUSAND))
+					{
+						//setJingJiaJinEBackColor(wsMySheet, excelHeaderSymbol, i);
+					}
+					if (0 == analyProty.limitOpenCount)
+					{
+						setLimitOpenCountBackColor(wsMySheet, excelHeaderSymbol, i);
+					}
+					//昨日非一字或T字的
+					if (!zuoRiyiZiBanTFlag)
+					{
+						setZuoRiChengJiaoJinEColor(wsMySheet, excelHeaderSymbol, it->zuoRiZongJinE, i);
+					}
+					if (
+						((zhangFuMargin < (it->zhangFu - it->zuoRiKaiPanZhangFu)) && (it->zhangFu >= kaiPanZfMax)
+							&& ((zuoRiKaiPanZfMax > it->zuoRiKaiPanZhangFu) || (1 < it->continueDay)))
+						|| zuoRiyiZiBanTFlag)
+					{
+						if (zuoRiyiZiBanTFlag || ((zuoRiChengJiaoJinEMin * TENTHOUSAND) < it->zuoRiZongJinE))
+						{
+							setZuoRiJingJiaZhangFuColor(wsMySheet, excelHeaderSymbol, i);
+						}
+					}*/
+					setSpecificColors(it, wsMySheet, excelHeaderSymbol, i, flag_guXinZhengShu);
+
 					++it;
 					i++;
 					continue;
 				}
 
-				if (false == yiZiBanJudge(analyProty))// 非一字开盘
+				if (false == yiZiBanFlag)// 非一字开盘
 				{
-					if (analyProty.dianDanJinE < dianDanThreshold)
+					if ((analyProty.dianDanJinE < dianDanThreshold) ||
+					    (analyProty.zhangTingBan > zhangTingBanThreshold)
+						)
 					{
+						if (zuoRiYiZiBanJudge(*it))
+						{
+							setZuoRiYiZiFangLiangJinYiZiColor(it, wsMySheet, excelHeaderSymbol, i);
+						}
 						setContinueDayBackColor(wsMySheet, excelHeaderSymbol, analyProty.continueDay, i);
 						setZuoRiZhangFuColor(wsMySheet, excelHeaderSymbol, it->zuoRiZhangFu, i);
+						setJingJiaZhangFuColor(wsMySheet, excelHeaderSymbol, it->zhangFu, it->continueDay, i);
+
+						/*if ((analyProty.zongJinE > 970.0 * TENTHOUSAND))
+						{
+							//setJingJiaJinEBackColor(wsMySheet, excelHeaderSymbol, i);
+						}
+						if (0 == analyProty.limitOpenCount)
+						{
+							setLimitOpenCountBackColor(wsMySheet, excelHeaderSymbol, i);
+						}
+						//昨日非一字或T字的
+						if (!zuoRiyiZiBanTFlag)
+						{
+							setZuoRiChengJiaoJinEColor(wsMySheet, excelHeaderSymbol, it->zuoRiZongJinE, i);
+						}
+						if (
+							((zhangFuMargin < (it->zhangFu - it->zuoRiKaiPanZhangFu)) && (it->zhangFu >= kaiPanZfMax)
+								&& ((zuoRiKaiPanZfMax > it->zuoRiKaiPanZhangFu) || (1 < it->continueDay)))
+							|| zuoRiyiZiBanTFlag)
+						{
+							if (zuoRiyiZiBanTFlag || ((zuoRiChengJiaoJinEMin * TENTHOUSAND) < it->zuoRiZongJinE))
+							{
+								setZuoRiJingJiaZhangFuColor(wsMySheet, excelHeaderSymbol, i);
+							}
+						}*/
+						setSpecificColors(it, wsMySheet, excelHeaderSymbol, i, flag_guXinZhengShu);
+
 						++it;
 						i++;
 						continue;
@@ -581,8 +940,8 @@ void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec)
 					//&& (analyProty.liuRuBiZuoRiChengJiaoIdx < 3000)
 					&& (analyProty.continueDay > 0)
 					&& (
-					((analyProty.zijinIdx < MAX_ZIJIN_IDX) && (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1))
-						|| (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.003))
+					((analyProty.zijinIdx < MAX_ZIJIN_IDX) && (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.001))
+						|| (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + zongLiuRuThreshold_for_yizi))
 					&& (analyProty.zongJinE > (998.0 * TENTHOUSAND))
 					//&& (analyProty.zhangFu > analyProty.zuoRiKaiPanZhangFu)
 					//&& (analyProty.dianDanJinE > dianDanThreshold)
@@ -598,32 +957,107 @@ void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec)
 							//&& (analyProty.zuoRiLiangBi > (0.5))
 							)
 						{
-							setBackColor(wsMySheet, excelHeaderSymbol, i, 20);
-							if (true == yiZiBanJudge(analyProty))
+							if (((danRiJingJiaThreshould * TENTHOUSAND) < analyProty.zongJinE) && 
+								(10 > analyProty.limitOpenCount) && 
+								(zuoRiLimitUpMoney < analyProty.limitUpMoney) &&
+								(jingJiaChaThreshould < (analyProty.zhangFu - analyProty.zuoRiKaiPanZhangFu)) &&
+							    (1 == analyProty.banKuaiFirstFlag) &&
+								((analyProty.preJingJiaZongJinE < analyProty.zongJinE) || (jingJiaJinEThreshould < analyProty.zongJinE))
+								)
+							{
+								setBackColor(wsMySheet, excelHeaderSymbol, i, 20);
+							}
+							if (true == yiZiBanFlag)
 							{
 								setYiZiBanBackColor(wsMySheet, excelHeaderSymbol, i); //红色
+								setZuoRiYiZiFangLiangJinYiZiColor(it, wsMySheet, excelHeaderSymbol, i);
+								if ((analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + zongLiuRuThreshold_for_yizi)
+									//&& ((analyProty.guXingPingFen > 30.0) && (0 == flag_guXinZhengShu) || (analyProty.guXingPingFen < 2712) && (1 == flag_guXinZhengShu))
+									&& (jingJiaChaThreshould < (analyProty.zhangFu - analyProty.zuoRiKaiPanZhangFu))
+									)
+								{
+									char column = 'F';
+									setBackColor(wsMySheet, column, i, 20);
+								}
 							}
 							setContinueDayBackColor(wsMySheet, excelHeaderSymbol, analyProty.continueDay, i);
 						}
 					}
 					else
 					{
-						setBackColor(wsMySheet, excelHeaderSymbol, i, 20);
-						if (true == yiZiBanJudge(analyProty))
+						if (((danRiJingJiaThreshould * TENTHOUSAND) < analyProty.zongJinE) &&
+							(10 > analyProty.limitOpenCount) &&
+							(zuoRiLimitUpMoney < analyProty.limitUpMoney) &&
+							(1 == analyProty.banKuaiFirstFlag) &&
+							((analyProty.preJingJiaZongJinE < analyProty.zongJinE) || (jingJiaJinEThreshould < analyProty.zongJinE))
+							)
+						{
+							setBackColor(wsMySheet, excelHeaderSymbol, i, 20);
+						}
+						if (true == yiZiBanFlag)
 						{
 							setYiZiBanBackColor(wsMySheet, excelHeaderSymbol, i); //红色
+							setZuoRiYiZiFangLiangJinYiZiColor(it, wsMySheet, excelHeaderSymbol, i);
+							if ((analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + zongLiuRuThreshold_for_yizi) 
+								//&& ((analyProty.guXingPingFen > 30.0) && (0 == flag_guXinZhengShu) || (analyProty.guXingPingFen < 2712) && (1 == flag_guXinZhengShu))
+								)
+							{
+								char column = 'F';
+								setBackColor(wsMySheet, column, i, 20);
+							}
 						}
 						setContinueDayBackColor(wsMySheet, excelHeaderSymbol, analyProty.continueDay, i);
 					}
 				}
+				else
+				{
+					if (zuoRiYiZiBanJudge(*it))
+					{
+						setZuoRiYiZiFangLiangJinYiZiColor(it, wsMySheet, excelHeaderSymbol, i);
+					}
+				}
+			}
+			else
+			{
+				if (zuoRiYiZiBanJudge(*it))
+				{
+					setZuoRiYiZiFangLiangJinYiZiColor(it, wsMySheet, excelHeaderSymbol, i);
+				}
 			}
 		}
+
+		/*if ((analyProty.zongJinE > 970.0 * TENTHOUSAND))
+		{
+			//setJingJiaJinEBackColor(wsMySheet, excelHeaderSymbol, i);
+		}
+		if (0 == analyProty.limitOpenCount)
+		{
+			setLimitOpenCountBackColor(wsMySheet, excelHeaderSymbol, i);
+		}
+		//昨日非一字或T字的
+		if (!zuoRiyiZiBanTFlag)
+		{
+			setZuoRiChengJiaoJinEColor(wsMySheet, excelHeaderSymbol, it->zuoRiZongJinE, i);
+		}
+		if (
+			((zhangFuMargin < (it->zhangFu - it->zuoRiKaiPanZhangFu)) && (it->zhangFu >= kaiPanZfMax)
+				&& ((zuoRiKaiPanZfMax > it->zuoRiKaiPanZhangFu) || (1 < it->continueDay)))
+			|| zuoRiyiZiBanTFlag)
+		{
+			if (zuoRiyiZiBanTFlag || ((zuoRiChengJiaoJinEMin * TENTHOUSAND) < it->zuoRiZongJinE))
+			{
+				setZuoRiJingJiaZhangFuColor(wsMySheet, excelHeaderSymbol, i);
+			}
+		}*/
+		setSpecificColors(it, wsMySheet, excelHeaderSymbol, i, flag_guXinZhengShu);
+
 		setZuoRiZhangFuColor(wsMySheet, excelHeaderSymbol, it->zuoRiZhangFu, i);
+		setJingJiaZhangFuColor(wsMySheet, excelHeaderSymbol, it->zhangFu, it->continueDay, i);
 		++it;
 		i++;
 	}
 }
-
+/*
 void ExcelRwC::excelWriteRowC(string sheetName, vector<PROPERTY_t> &propertyVec, kaiPanSummary_t &summary)
 {
 	CApplication	ExcelApp;
@@ -685,13 +1119,14 @@ void ExcelRwC::excelWriteRowC(string sheetName, vector<PROPERTY_t> &propertyVec,
 		lpDisp = wsMySheets.Add(covOptional, covOptional, COleVariant((long)1), covOptional);
 		wsMySheet.AttachDispatch(lpDisp);
 		wsMySheet.put_Name(strSheetName);		//创建工作表名	
-	} 	
+	} 	*/
 
 	//system("pause");
 	/************************************************************************/	
 	/* 添加单元格数据之方法二                                                                     */	
 	/************************************************************************/	
 	//设置单元格的范围为全部区域	
+	/*
 	lpDisp = wsMySheet.get_Cells();
 	rgMyRge.AttachDispatch(lpDisp);
 	//插入标题	
@@ -760,6 +1195,7 @@ void ExcelRwC::excelWriteRowC(string sheetName, vector<PROPERTY_t> &propertyVec,
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(tempJingJiaLiangBi));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->weiBi));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant((LONG)(it->zhangTingBan)));
+		*/
 		/*{
 			CRange0	colorRge;
 			CFont0  ft;    // 要插入excel类库里面的Font类，下面类似  
@@ -771,6 +1207,7 @@ void ExcelRwC::excelWriteRowC(string sheetName, vector<PROPERTY_t> &propertyVec,
 			ft.ReleaseDispatch();
 			colorRge.ReleaseDispatch();
 		}*/
+		/*
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant((LONG)(it->dianDanJinE)));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant((LONG)(it->zuoRiZongJinE / TENTHOUSAND)));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant((LONG)(it->limitUpMoney / TENTHOUSAND)));
@@ -780,7 +1217,7 @@ void ExcelRwC::excelWriteRowC(string sheetName, vector<PROPERTY_t> &propertyVec,
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->lastLimitTime));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->suoShuHangYe));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->huanShou));
-		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->liangBi));
+		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->zongLiuRuBiLiuTong));
 
 		if(1)
 		{
@@ -799,6 +1236,7 @@ void ExcelRwC::excelWriteRowC(string sheetName, vector<PROPERTY_t> &propertyVec,
 				}
 			}
 			//股性太差的，显示黑色
+			if(0)
 			{
 				if (analyProty.guXingPingFen < 49.0)
 				{
@@ -865,7 +1303,7 @@ void ExcelRwC::excelWriteRowC(string sheetName, vector<PROPERTY_t> &propertyVec,
 					&& (analyProty.continueDay > 0)
 					&& (
 					((analyProty.zijinIdx < MAX_ZIJIN_IDX) && (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1))
-						|| (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.003))
+						|| (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + zongLiuRuThreshold_for_yizi))
 					&& (analyProty.zongJinE > (998.0 * TENTHOUSAND))
 					//&& (analyProty.zhangFu > analyProty.zuoRiKaiPanZhangFu)
 					//&& (analyProty.dianDanJinE > dianDanThreshold)
@@ -904,7 +1342,7 @@ void ExcelRwC::excelWriteRowC(string sheetName, vector<PROPERTY_t> &propertyVec,
 		setZuoRiZhangFuColor(wsMySheet, headerSymbol, it->zuoRiZhangFu, i);
 		++it;
 		i++;
-	}
+	}*/
 	/*/
 	//////////////////////////////////////////////图表操作//////////////////////////////////////////	
 	//图表chart	
@@ -955,6 +1393,7 @@ void ExcelRwC::excelWriteRowC(string sheetName, vector<PROPERTY_t> &propertyVec,
 	//////////////////////////////////////////////////////////////////////////////////////////// 	
 	/*根据文件的后缀名选择保存文件的格式*/	
 	//CString strSaveAsName = _T("C:\\new.xlsx");
+	/*
 	ExcelApp.put_DisplayAlerts(FALSE);
 	ExcelApp.put_AlertBeforeOverwriting(FALSE); // 不弹出对话框询问是否保存
 	CString strSaveAsName = _T(ZTFPfileName.c_str());
@@ -975,6 +1414,6 @@ void ExcelRwC::excelWriteRowC(string sheetName, vector<PROPERTY_t> &propertyVec,
 	wbMyBook.ReleaseDispatch();
 	wbsMyBooks.ReleaseDispatch();
 	ExcelApp.ReleaseDispatch();
-}
+}*/
 
 }

@@ -4,6 +4,7 @@
 #include <set>
 #include <cstdio>
 #include "dataStructure.h"
+#include "shareDef.h"
 
 namespace ZHANGTING
 {
@@ -22,7 +23,7 @@ struct zhangTing_t
     float limitVsDeal;
     float limitVsCirculate;
     float limitUpMoney;
-    char  limitReason[50];
+    char  limitReason[LIMIT_REASON_SIZE];
     float guXingPingFen;
     float limitShareNumber;
     float startPrice;
@@ -56,4 +57,6 @@ struct continueDay_t
 void getZhangTingCode(std::vector<zhangTing_t> &zhangTingVec, std::vector<analyseCode_t> &codeVec);
 
 bool readZhangTingFile(char *fileName, std::vector<zhangTing_t> &zhangtingVec);
+
+bool readZhangTingFile_THS(char *fileName, std::vector<zhangTing_t> &zhangTingVec);
 }

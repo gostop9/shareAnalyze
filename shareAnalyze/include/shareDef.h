@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdio>
+#include <cstring>
+#include <string>
 
 namespace SHAREDEF
 {
@@ -32,38 +34,48 @@ namespace SHAREDEF
 
 	const std::string ztProportionFileName = "D:/share/ztProportion.txt";
 
-	const std::string zxgTdxFileName = "D:/new_jyplug/T0002/blocknew/ZXG.blk";
-	const std::string tjxgTdxFileName = "D:/new_jyplug/T0002/blocknew/TJXG.blk";
-	const std::string bkjeTdxFileName = "D:/new_jyplug/T0002/blocknew/BKJE.blk";
-	const std::string zpjjTdxFileName = "D:/new_jyplug/T0002/blocknew/ZPJJ.blk";
-	const std::string wbgkTdxFileName = "D:/new_jyplug/T0002/blocknew/WBGK.blk";
-	const std::string cybzpjjTdxFileName = "D:/new_jyplug/T0002/blocknew/CYBZPJJ.blk";
+	const std::string zxgTdxFileName = "F:/new_tdx/T0002/blocknew/ZXG.blk";
+	const std::string tjxgTdxFileName = "F:/new_tdx/T0002/blocknew/TJXG.blk";
+	const std::string bkjeTdxFileName = "F:/new_tdx/T0002/blocknew/BKJE.blk";
+	const std::string zpjjTdxFileName = "F:/new_tdx/T0002/blocknew/ZPJJ.blk";
+	const std::string wbgkTdxFileName = "F:/new_tdx/T0002/blocknew/WBGK.blk";
+	const std::string cybzpjjTdxFileName = "F:/new_tdx/T0002/blocknew/CYBZPJJ.blk";
+	const std::string ztpremeetTdxFileName = "F:/new_tdx/T0002/blocknew/ZTPREMEET.blk";
 
-	const std::string zxgTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/ZXG.blk";
-	const std::string tjxgTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/TJXG.blk";
-	const std::string bkjeTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/BKJE.blk";
-	const std::string zpjjTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/ZPJJ.blk";
-	const std::string wbgkTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/WBGK.blk";
-	const std::string cybzpjjTdxFileName_multi = "D:/Doc/Stock/CYHX/T0002/blocknew/CYBZPJJ.blk";
+	const std::string zxgTdxFileName_multi = "D:/zd_cjzq/T0002/blocknew/ZXG.blk";
+	const std::string tjxgTdxFileName_multi = "D:/zd_cjzq/T0002/blocknew/TJXG.blk";
+	const std::string bkjeTdxFileName_multi = "D:/zd_cjzq/T0002/blocknew/BKJE.blk";
+	const std::string zpjjTdxFileName_multi = "D:/zd_cjzq/T0002/blocknew/ZPJJ.blk";
+	const std::string wbgkTdxFileName_multi = "D:/zd_cjzq/T0002/blocknew/WBGK.blk";
+	const std::string cybzpjjTdxFileName_multi = "D:/zd_cjzq/T0002/blocknew/CYBZPJJ.blk";
 
-	const std::string zxgTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/ZXG.blk";
-	const std::string tjxgTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/TJXG.blk";
-	const std::string bkjeTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/BKJE.blk";
-	const std::string zpjjTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/ZPJJ.blk";
-	const std::string wbgkTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/WBGK.blk";
-	const std::string cybzpjjTdxFileName_hongta = "D:/new_hongt_v6/T0002/blocknew/CYBZPJJ.blk";
+	const std::string zxgTdxFileName_hongta = "D:/Doc/Stock/TDX_KXG/T0002/blocknew/ZXG.blk";
+	const std::string tjxgTdxFileName_hongta = "D:/Doc/Stock/TDX_KXG/T0002/blocknew/TJXG.blk";
+	const std::string bkjeTdxFileName_hongta = "D:/Doc/Stock/TDX_KXG/T0002/blocknew/BKJE.blk";
+	const std::string zpjjTdxFileName_hongta = "D:/Doc/Stock/TDX_KXG/T0002/blocknew/ZPJJ.blk";
+	const std::string wbgkTdxFileName_hongta = "D:/Doc/Stock/TDX_KXG/T0002/blocknew/WBGK.blk";
+	const std::string cybzpjjTdxFileName_hongta = "D:/Doc/Stock/TDX_KXG/T0002/blocknew/CYBZPJJ.blk";
 
-	const float kaiPanZfMax = 1.2;
+	const float kaiPanZfMax = 7.99; //5.99; // 1.2, //3.99
 	const float kaiPanZfMin = -6.9;
 	const float zhangFuRoundMin = 0.0019;
-	const int MAX_ZIJIN_IDX = 37;
+	const int MAX_ZIJIN_IDX = 57; //37
 
 	const int CHAR_LEN = (30);
 	static char nonChar[CHAR_LEN];
 
-	const float weiBiThreshold = -78.0;
-	const float dianDanThreshold = 580.0;
+	const float weiBiThreshold = -68.0; // -78.0;
+	const float dianDanThreshold = 1000.0; //520.0;//580.0
+	const float zhangTingBanThreshold = -1000.0;
 	const float zongLiuRuThreshold0 = 0.001754;//0.001754;
-	const float zongLiuRuThreshold1 = 0.001754;//0.002794;
+	const float zongLiuRuThreshold1 = 0.002417;//0.002794;
+	const float zongLiuRuThreshold_for_yizi = 0.0024;//0.002794;
+	const float danRiJingJiaThreshould = 2999.99; //2999.99
+	const float jingJiaJinEThreshould = 9999.0 * TENTHOUSAND; //9707.0
+	const float zuoRiLimitUpMoney = 800.0 * TENTHOUSAND;
+	const float jingJiaChaThreshould = 2.39;
+	const float zuoRiKaiPanZfMax = 4.0;
+	const float kaiPanZfBigDealThreshould = 4.0;
+	const int LIMIT_REASON_SIZE = 250;
 	//const std::string ZTFPfileName = "D:/share/ZTFP.xlsx";
 }
