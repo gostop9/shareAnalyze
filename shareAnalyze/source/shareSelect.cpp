@@ -377,6 +377,18 @@ void shareParaFuse(vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &
                 property.shiRiPaiMing = zhuliIter->shiRiPaiMing;
                 property.shiRiZhangFu = zhuliIter->shiRiZhangFu;
 
+
+                            //property.weiBi = zhangfuIter->weiBi;
+
+
+                            
+
+							
+
+											// 自由流通市值只有6位code码
+													//property.guXingPingFen = gubenIter->guXingPingFen;
+
+
                 //保存需要分析的item信息
                 /*for (int analyIdx = 0; analyIdx < analyVec.size(); analyIdx++)
                 {

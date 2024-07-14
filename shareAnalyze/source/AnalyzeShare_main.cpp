@@ -1055,6 +1055,7 @@ void main()
 			//加入昨日涨停，今日竞价符合预期
 			resultZxgSet = ztPreMeetSetBlock;
 
+
 			//加入一字开盘的股票到自选股
 			{
 				vector<PROPERTY_t> yiZiBanTodayPropertyAnalyVec;
