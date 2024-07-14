@@ -26,7 +26,11 @@ namespace SHAREDEF
 
 	const float TENTHOUSAND = 10000.0; //“万”为单位
 
-	const int MAX_SHARE_NUM = 4000;
+	const float ONE_HUNDRED = 100.0; //“百”为单位
+
+	const float ONE_MILLION = 1000000; //“百万”为单位
+
+	const int MAX_SHARE_NUM = 6000;
 
 	const std::string codeResult = "D:/share/shareAnalyze/codeResult.txt";
 
@@ -59,23 +63,32 @@ namespace SHAREDEF
 	const float kaiPanZfMax = 7.99; //5.99; // 1.2, //3.99
 	const float kaiPanZfMin = -6.9;
 	const float zhangFuRoundMin = 0.0019;
-	const int MAX_ZIJIN_IDX = 57; //37
+	const int MAX_ZIJIN_IDX = 257;//57; //37
+	const float zuoRiKaiPanZfMinCeil = 8.99;
 
 	const int CHAR_LEN = (30);
 	static char nonChar[CHAR_LEN];
 
-	const float weiBiThreshold = -68.0; // -78.0;
-	const float dianDanThreshold = 1000.0; //520.0;//580.0
-	const float zhangTingBanThreshold = -1000.0;
+	const float weiBiThreshold = -79.0; //-68.0; // -78.0;
+	const float dianDanThreshold = 1450.0; //1500.0; //520.0;//580.0
+	const float dianDanBigThreshold = 7000.0;
+	const float yiZiBanDianDanBigThreshold = 1400.0;
+	const float zhangTingBanThreshold = -700; //-1000.0;
 	const float zongLiuRuThreshold0 = 0.001754;//0.001754;
 	const float zongLiuRuThreshold1 = 0.002417;//0.002794;
 	const float zongLiuRuThreshold_for_yizi = 0.0024;//0.002794;
 	const float danRiJingJiaThreshould = 2999.99; //2999.99
-	const float jingJiaJinEThreshould = 9999.0 * TENTHOUSAND; //9707.0
-	const float zuoRiLimitUpMoney = 800.0 * TENTHOUSAND;
-	const float jingJiaChaThreshould = 2.39;
+	const float jingJiaJinEChaThreshould = 1000.0;
+	const float jingJiaJinEThreshould = 9099.0 * TENTHOUSAND; //9707.0  9999.0
+	const float zuoRiLimitUpMoney = 1000.0 * TENTHOUSAND;
+	const float jinRiJingJiaLimitUpMoney = 100.0;
+	const float jinRiJingJiaLimitUpMoneyWithLiuTong = 100.0;
+	const float jingJiaChaThreshould = -8.39;//2.39;
+	const float zhenFuChaThreshould = 5.8;
 	const float zuoRiKaiPanZfMax = 4.0;
-	const float kaiPanZfBigDealThreshould = 4.0;
+	const float kaiPanZfBigDealThreshould = -2;//0.5;
 	const int LIMIT_REASON_SIZE = 250;
+	const int limitOpenThreshould = 20;
+	const int lastLimitTimeThreshould = 155555;//144444;
 	//const std::string ZTFPfileName = "D:/share/ZTFP.xlsx";
 }

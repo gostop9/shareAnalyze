@@ -26,8 +26,8 @@ using namespace SHAREDEF;
 
 typedef long long int64;
 
-const int TOTAL_NUMBER = (4000);
-const int TOTAL_SHARE_NUMBERS = (4000);
+const int TOTAL_NUMBER = (MAX_SHARE_NUM);
+const int TOTAL_SHARE_NUMBERS = (MAX_SHARE_NUM);
 
 extern float huanShouMax;
 extern float liangBiMin;

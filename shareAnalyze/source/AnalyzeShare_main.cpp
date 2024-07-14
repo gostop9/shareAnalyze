@@ -42,6 +42,7 @@ char configFileName[] = "D:/share/config.txt";
 char resultFileName[30] = "D:/share/result.txt";
 char preFileName[] = "D:/share/searchPre.txt";
 char buyFileName[] = "D:/share/buyShare.txt";
+char zhangTingConfigFileName[] = "D:/share/zhangTingConfig.txt";
 
 ExcelRwC excelReadWrite;
 
@@ -113,6 +114,7 @@ float liangBiMin = 1.2F;
 float liangBiMax = 6.0F;
 float zhuLiJingLiangMin = 0.08F;
 float daDanJingEBMin = 0.08F;
+float vectorSize = 500;
 
 void main()
 {
@@ -122,35 +124,35 @@ void main()
 
 	//结果code保存
 	std::vector<std::string> resultSet;
-	resultSet.reserve(100);
+	resultSet.reserve(vectorSize);
 
 	//板块排序code保存
 	std::vector<std::string> resultSetBlock;
-	resultSetBlock.reserve(300);
+	resultSetBlock.reserve(vectorSize);
 
 	//创业板排序code保存
 	std::vector<std::string> chuangyebanSetBlock;
-	chuangyebanSetBlock.reserve(300);
+	chuangyebanSetBlock.reserve(vectorSize);
 
 	//昨日涨停今日竞价符合标准 code保存
 	std::vector<std::string> ztPreMeetSetBlock;
-	ztPreMeetSetBlock.reserve(300);
+	ztPreMeetSetBlock.reserve(vectorSize);
 	std::vector<PROPERTY_t> resultVecZtPreMeet;
-	resultVecZtPreMeet.reserve(300);
+	resultVecZtPreMeet.reserve(vectorSize);
 
 	//未板高开股
 	std::vector<std::string> resultSetWbgk;
-	resultSetWbgk.reserve(300);
+	resultSetWbgk.reserve(vectorSize);
 	std::vector<PROPERTY_t> resultVecWbgk;
-	resultVecWbgk.reserve(300);
+	resultVecWbgk.reserve(vectorSize);
 
 	//用于excel显示
 	vector<PROPERTY_t> propertyAnalyVecBlock;
-	propertyAnalyVecBlock.reserve(300);
+	propertyAnalyVecBlock.reserve(vectorSize);
 
 	// 保存板块排名第一的股票
 	std::vector<PROPERTY_t> proBanKuaiFirstVec;
-	proBanKuaiFirstVec.reserve(100);
+	proBanKuaiFirstVec.reserve(vectorSize);
 
 	// cfg file
 	FILE *cfgFp;
@@ -162,8 +164,12 @@ void main()
 	}
 	char guBenFileName[100];
 	char ddeFileName[100], zijinName[100], zhuliFileName[100], zhangfuFileName[100], zhangtingFileName[100], zhangtingFileNameToday[100];
+	char zhangtingFileName2Pre[100];
+	char zhangtingFileName3Pre[100];
 	char date[20], path[100];
 	char dataPre[20];
+	char data2Pre[20];
+	char data3Pre[20];
 	char dataPreJingJiaFileName[100];
 	memset(date, 0, sizeof(date));
 	memset(path, 0, sizeof(path));
@@ -209,6 +215,8 @@ void main()
 
 	cpyLen = strVec[strIdx].length() - 1; // -1 去掉换行符
 	strncpy(dataPre, strVec[strIdx++].c_str(), cpyLen);
+	strncpy(data2Pre, strVec[strIdx++].c_str(), cpyLen);
+	strncpy(data3Pre, strVec[strIdx++].c_str(), cpyLen);
 
 	//提取需要分析的名称
 	int analyseNum = itemNum - strIdx;
@@ -216,6 +224,10 @@ void main()
 	analyseVec.reserve(analyseNum);
 	vector<analyseCode_t> limitTodayVec;
 	limitTodayVec.reserve(analyseNum);
+	vector<analyseCode_t> limit2PreVec;
+	limit2PreVec.reserve(analyseNum);
+	vector<analyseCode_t> limit3PreVec;
+	limit3PreVec.reserve(analyseNum);
 	for (int i = strIdx; i < itemNum; i++)
 	{
 		char tempBuf[10];
@@ -274,6 +286,12 @@ void main()
 	//前一日涨停数据
 	vector<zhangTing_t> zhangTingVecPre;
 	zhangTingVecPre.clear();
+	//前3日涨停数据
+	vector<zhangTing_t> zhangTingVec2Pre;
+	zhangTingVec2Pre.clear();
+	//前3日涨停数据
+	vector<zhangTing_t> zhangTingVec3Pre;
+	zhangTingVec3Pre.clear();
 	//今日涨停数据
 	vector<zhangTing_t> zhangTingVecToday;
 	zhangTingVecToday.clear();
@@ -300,6 +318,18 @@ void main()
 		strncat(zhangtingFileNameToday, date, 8);
 		strcat(zhangtingFileNameToday, ".txt");
 
+		memset(zhangtingFileName2Pre, 0, sizeof(zhangtingFileName2Pre));
+		strcpy(zhangtingFileName2Pre, path);
+		strcat(zhangtingFileName2Pre, "zhangting_");
+		strncat(zhangtingFileName2Pre, data2Pre, 8);
+		strcat(zhangtingFileName2Pre, ".txt");
+
+		memset(zhangtingFileName3Pre, 0, sizeof(zhangtingFileName3Pre));
+		strcpy(zhangtingFileName3Pre, path);
+		strcat(zhangtingFileName3Pre, "zhangting_");
+		strncat(zhangtingFileName3Pre, data3Pre, 8);
+		strcat(zhangtingFileName3Pre, ".txt");
+
 		//vector<DDE_t> dde;
 		//readDdeFile(ddeFileName, dde[0]);
 		//vector<ZIJIN_t> zijin;
@@ -324,6 +354,14 @@ void main()
 			//提取今日涨停code
 			readZhangTingFile(zhangtingFileNameToday, zhangTingVecToday);
 			getZhangTingCode(zhangTingVecToday, limitTodayVec);
+
+			//提取前2日涨停code
+			readZhangTingFile(zhangtingFileName2Pre, zhangTingVec2Pre);
+			getZhangTingCode(zhangTingVec2Pre, limit2PreVec);
+
+			//提取前3日涨停code
+			readZhangTingFile(zhangtingFileName3Pre, zhangTingVec3Pre);
+			getZhangTingCode(zhangTingVec3Pre, limit3PreVec);
 		}
 		/*else
 		{
@@ -575,29 +613,139 @@ void main()
 			{
 				PROPERTY_t analyProty = propertyAnalyVecBlock[analyIdx];
 				string indCode = analyProty.code;
-				for (int ztPreIdx = 0; ztPreIdx < zhangTingVecPre.size(); ztPreIdx++)
+				// N字板判断，三天前涨停
+				bool zhangTing3PreFlag = false;
+				// 前交易日一字板判断
+				for (int zt3PreIdx = 0; zt3PreIdx < zhangTingVec3Pre.size(); zt3PreIdx++)
 				{
+					string zt3Code = zhangTingVec3Pre[zt3PreIdx].code;
+					string::size_type index;
+					index = indCode.find(zt3Code);
+					if (index != string::npos)
+					{
+						zhangTing3PreFlag = true;
+						break;
+					}
+				}
+				if (zhangTing3PreFlag && (analyProty.continueDay == 1)) // 反包N型板
+				{
+					continue;
+				}
+
+				if (analyProty.continueDay >= 3)
+				{
+					// 前交易日涨停判断
+					bool zhangTingYiZiPreFlag = false;
+					for (int ztPreIdx = 0; ztPreIdx < zhangTingVecPre.size(); ztPreIdx++)
+					{
+						string ztCode = zhangTingVecPre[ztPreIdx].code;
+						string::size_type index;
+						index = indCode.find(ztCode);
+						if (index != string::npos)
+						{
+							zhangTingYiZiPreFlag = zhangTingYiZiBanJudge(zhangTingVecPre[ztPreIdx]);
+							break;
+						}
+					}
+					bool zhangTingYiZi2PreFlag = false;
+					for (int ztPreIdx = 0; ztPreIdx < zhangTingVec2Pre.size(); ztPreIdx++)
+					{
+						string zt2Code = zhangTingVec2Pre[ztPreIdx].code;
+						string::size_type index;
+						index = indCode.find(zt2Code);
+						if (index != string::npos)
+						{
+							zhangTingYiZi2PreFlag = zhangTingYiZiBanJudge(zhangTingVec2Pre[ztPreIdx]);
+							break;
+						}
+					}
+					bool zhangTingYiZi3PreFlag = false;
+					for (int ztPreIdx = 0; ztPreIdx < zhangTingVec3Pre.size(); ztPreIdx++)
+					{
+						string zt3Code = zhangTingVec3Pre[ztPreIdx].code;
+						string::size_type index;
+						index = indCode.find(zt3Code);
+						if (index != string::npos)
+						{
+							zhangTingYiZi3PreFlag = zhangTingYiZiBanJudge(zhangTingVec3Pre[ztPreIdx]);
+							break;
+						}
+					}
+					if (zhangTingYiZiPreFlag && zhangTingYiZi2PreFlag && zhangTingYiZi3PreFlag)
+					{
+						continue;
+					}
+				}
+
+				for (int ztPreIdx = 0; ztPreIdx < zhangTingVecPre.size(); ztPreIdx++)
+				{					
+					bool zuoRiyiZiBanTFlag = zuoRiYiZiBanTbanJudge(analyProty);
+					bool jinRiYiZiBanFlag = yiZiBanJudge(analyProty);
 					string ztCode = zhangTingVecPre[ztPreIdx].code;
 					string::size_type index;
 					index = indCode.find(ztCode);
-					if(index != string::npos)
-					//if (!strcmp(zhangTingVecPre[ztPreIdx].code, indCode.c_str()))
+					if ((index != string::npos)
+						&& (((analyProty.zuoRiZhenFu - analyProty.zuoRiZhangFu) < zhenFuChaThreshould) || (analyProty.continueDay == 1)) // 昨日连板最低点-5左右
+						)
+						//if (!strcmp(zhangTingVecPre[ztPreIdx].code, indCode.c_str()))
 					{
 						if ((((danRiJingJiaThreshould * TENTHOUSAND) < analyProty.zongJinE) &&
-							(10 > analyProty.limitOpenCount) &&
+							(limitOpenThreshould > analyProty.limitOpenCount) &&
 							(zuoRiLimitUpMoney < analyProty.limitUpMoney) &&
-							(-2.1 < (analyProty.zhangFu - analyProty.zuoRiKaiPanZhangFu)) &&
+							//(jingJiaChaThreshould < (analyProty.zhangFu - analyProty.zuoRiKaiPanZhangFu)) &&
 							//(1 == analyProty.banKuaiFirstFlag) &&
-							((analyProty.zuoRiKaiPanZhangFu < zuoRiKaiPanZfMax) || (analyProty.continueDay > 1)) &&
-							(analyProty.preJingJiaZongJinE < analyProty.zongJinE) &&
+							(analyProty.weiBi > weiBiThreshold) &&
+							(!(zuoRiyiZiBanTFlag && (analyProty.continueDay == 1))) && // 一进二首板非一字或T字
+							(atoi(analyProty.lastLimitTime) < lastLimitTimeThreshould) &&
+							//((analyProty.zuoRiKaiPanZhangFu < zuoRiKaiPanZfMax) || (analyProty.continueDay > 1)) &&
+							((analyProty.zuoRiKaiPanZhangFu < zuoRiKaiPanZfMax) || (analyProty.zuoRiKaiPanZhangFu > zuoRiKaiPanZfMinCeil) || (analyProty.continueDay > 1)) &&
+							(analyProty.preJingJiaZongJinE - jingJiaJinEChaThreshould * TENTHOUSAND < analyProty.zongJinE) &&
 							((analyProty.dianDanJinE > dianDanThreshold) && (analyProty.zhangTingBan < zhangTingBanThreshold)))
 							||
+							// 大成交
 							((jingJiaJinEThreshould < analyProty.zongJinE) &&
 								((analyProty.dianDanJinE > dianDanThreshold) && (analyProty.zhangTingBan < zhangTingBanThreshold)) &&
-								(analyProty.preJingJiaZongJinE < analyProty.zongJinE) &&
-								(analyProty.zhangFu > kaiPanZfBigDealThreshould) //&&
+								//(analyProty.preJingJiaZongJinE < analyProty.zongJinE) &&
+								(analyProty.zhangFu > kaiPanZfBigDealThreshould) &&
+								(analyProty.weiBi > weiBiThreshold) &&
+								(!(zuoRiyiZiBanTFlag && (analyProty.continueDay == 1))) && // 一进二首板非一字或T字
+								((analyProty.zhangFu > analyProty.zuoRiKaiPanZhangFu)
+									|| (jinRiYiZiBanFlag)
+									|| (analyProty.dianDanJinE > dianDanBigThreshold)
+									|| (analyProty.zongJinE > analyProty.preJingJiaZongJinE)
+									|| (analyProty.zhangFu > kaiPanZfMax))
 								//(analyProty.zuoRiKaiPanZhangFu < zuoRiKaiPanZfMax)
 								)
+
+							||
+							// 竞价垫单较多
+							(((danRiJingJiaThreshould * TENTHOUSAND) < analyProty.zongJinE) &&
+								(analyProty.zhangFu > analyProty.zuoRiKaiPanZhangFu) &&
+								(analyProty.dianDanJinE > dianDanBigThreshold) &&
+								(!(zuoRiyiZiBanTFlag && (analyProty.continueDay == 1))) && // 一进二首板非一字或T字
+								(analyProty.zhangTingBan * TENTHOUSAND * ONE_HUNDRED > jingJiaJinEThreshould)
+								)
+
+							||
+							// 竞价垫单较多,大成交，一字板
+							((jingJiaJinEThreshould < analyProty.zongJinE) &&
+								(!(zuoRiyiZiBanTFlag && (analyProty.continueDay == 1))) && // 一进二首板非一字或T字
+								(jinRiYiZiBanFlag &&
+									//(analyProty.zhangFu > analyProty.zuoRiKaiPanZhangFu) &&
+									((!zuoRiyiZiBanTFlag) ||
+										(analyProty.continueDay > 2) ||
+										(((analyProty.zhangTingBan > jinRiJingJiaLimitUpMoney) || (analyProty.zhangTingBan * DIVIDE / analyProty.ziYouLiuTongShiZhi) > 1.0) &&
+											(analyProty.continueDay > 1))) &&
+									(analyProty.dianDanJinE > yiZiBanDianDanBigThreshold))
+								)
+
+							||
+							// 一字板，竞价成交额比封单额接近，可能开板
+							(jinRiYiZiBanFlag &&
+								(analyProty.zhangTingBan > 1.0) && // 封单大于100万
+								(analyProty.dianDanJinE > dianDanThreshold) &&
+								((analyProty.zuoRiKaiPanZhangFu < zuoRiKaiPanZfMax) || (analyProty.zuoRiKaiPanZhangFu > zuoRiKaiPanZfMinCeil) || (analyProty.continueDay > 1)) &&
+								(analyProty.zongJinE > analyProty.zhangTingBan * ONE_MILLION * 0.9))
 							)
 						{
 							// 重复code不添加
@@ -612,12 +760,26 @@ void main()
 							}
 							if (0 == repeatFlat)
 							{
-								ztPreMeetSetBlock.push_back(indCode);
+								//ztPreMeetSetBlock.push_back(indCode);
 								resultVecZtPreMeet.push_back(analyProty);
 							}
 						}
 						break;
 					}
+				}
+			}
+			{
+				// sort for zhangFuIndex
+				struct zhangFuIndex {
+					bool operator() (const PROPERTY_t& a, const PROPERTY_t& b) { return (a.zhangFu > b.zhangFu); }
+				} cmpMethod_zhangFuIndex;
+				std::sort(resultVecZtPreMeet.begin(), resultVecZtPreMeet.end(), cmpMethod_zhangFuIndex);
+
+				for (int analyIdx = 0; analyIdx < resultVecZtPreMeet.size(); analyIdx++)
+				{
+					PROPERTY_t analyProty = resultVecZtPreMeet[analyIdx];
+					string indCode = analyProty.code;
+					ztPreMeetSetBlock.push_back(indCode);
 				}
 			}
 
@@ -1049,11 +1211,24 @@ void main()
 			tdxBlockModify(tjxgTdxFileName_hongta, resultSet);*/
 
 			std::vector<std::string> resultZxgSet;
-			resultZxgSet.reserve(200);
+			resultZxgSet.reserve(500);
 			resultZxgSet.clear();
 
+			//加入第一个持仓股到自选股前
+			int analySize = independentAnalyVec.size();
+			if (analySize > 0)
+			{
+				string indCode = independentAnalyVec[0].code;
+				resultZxgSet.push_back(indCode);
+			}
+
 			//加入昨日涨停，今日竞价符合预期
-			resultZxgSet = ztPreMeetSetBlock;
+			analySize = ztPreMeetSetBlock.size();
+			for (int analyIdx = 0; analyIdx < analySize; analyIdx++)
+			{
+				resultZxgSet.push_back(ztPreMeetSetBlock[analyIdx]);
+			}
+			//resultZxgSet = ztPreMeetSetBlock;
 
 			//加入一字开盘的股票到自选股
 			{
@@ -1074,7 +1249,7 @@ void main()
 			}
 
 			//加入持仓股到自选股前
-			int analySize = independentAnalyVec.size();
+			analySize = independentAnalyVec.size();
 			for (int analyIdx = 0; analyIdx < analySize; analyIdx++)
 			{
 				string indCode = independentAnalyVec[analyIdx].code;

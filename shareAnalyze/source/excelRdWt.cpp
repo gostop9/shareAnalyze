@@ -464,7 +464,7 @@ void ExcelRwC::setSpecificColors(vector<PROPERTY_t>::iterator it, CWorksheet &ws
 	float zuoRiKaiPanZfMax = 3.3;
 	float zuoRiChengJiaoJinEMin = 5000.0;
 
-	if ((!yiZiBanFlag) && (analyProty.zongJinE > 9707.0 * TENTHOUSAND))
+	if ((!yiZiBanFlag) && (analyProty.zongJinE > jingJiaJinEThreshould))
 	{
 		setJingJiaJinEBackColor(wsMySheet, excelHeaderSymbol, row);
 	}
@@ -546,6 +546,7 @@ char ExcelRwC::excelWriteHeaderC(CRange0 &rgMyRge)
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("行业"));
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("换手"));
 	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("量比"));
+	rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("竞价比流通"));
 
 	alphabet += eColumn;
 
@@ -721,6 +722,8 @@ void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec, int flag_guXinZh
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->suoShuHangYe));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant((LONG)it->zijinIdx));
 		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(it->zongLiuRuBiLiuTong * 100.0));
+		float jingJiaBiLiutong = (it->zongJinE * TENTHOUSAND) / (it->ziYouLiuTongShiZhi);
+		rgMyRge.put_Item(COleVariant((LONG)(i)), COleVariant((LONG)(j++)), COleVariant(jingJiaBiLiutong));
 
 		bool yiZiBanFlag = yiZiBanJudge(analyProty);
 		if (1)
@@ -942,7 +945,7 @@ void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec, int flag_guXinZh
 					&& (
 					((analyProty.zijinIdx < MAX_ZIJIN_IDX) && (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.001))
 						|| (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + zongLiuRuThreshold_for_yizi))
-					&& (analyProty.zongJinE > (998.0 * TENTHOUSAND))
+					&& (analyProty.zongJinE > (danRiJingJiaThreshould * TENTHOUSAND))
 					//&& (analyProty.zhangFu > analyProty.zuoRiKaiPanZhangFu)
 					//&& (analyProty.dianDanJinE > dianDanThreshold)
 					)
@@ -958,7 +961,7 @@ void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec, int flag_guXinZh
 							)
 						{
 							if (((danRiJingJiaThreshould * TENTHOUSAND) < analyProty.zongJinE) && 
-								(10 > analyProty.limitOpenCount) && 
+								(limitOpenThreshould > analyProty.limitOpenCount) &&
 								(zuoRiLimitUpMoney < analyProty.limitUpMoney) &&
 								(jingJiaChaThreshould < (analyProty.zhangFu - analyProty.zuoRiKaiPanZhangFu)) &&
 							    (1 == analyProty.banKuaiFirstFlag) &&
@@ -986,7 +989,7 @@ void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec, int flag_guXinZh
 					else
 					{
 						if (((danRiJingJiaThreshould * TENTHOUSAND) < analyProty.zongJinE) &&
-							(10 > analyProty.limitOpenCount) &&
+							(limitOpenThreshould > analyProty.limitOpenCount) &&
 							(zuoRiLimitUpMoney < analyProty.limitUpMoney) &&
 							(1 == analyProty.banKuaiFirstFlag) &&
 							((analyProty.preJingJiaZongJinE < analyProty.zongJinE) || (jingJiaJinEThreshould < analyProty.zongJinE))

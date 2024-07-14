@@ -65,7 +65,7 @@ void autoShareBuy(FILE *buyFp, std::vector<PROPERTY_t> &propertyAnalyVec, PROPER
             && (buyProty.zhangFu > 1.0)
 			&& (buyProty.zhuLiJingLiang > -0.95)
             && (buyProty.zuoRiHuanShou < 21.0)
-            && (buyProty.zongJinE > (999.0 * TENTHOUSAND))
+            && (buyProty.zongJinE > (danRiJingJiaThreshould * TENTHOUSAND))
             && (buyProty.zuoRiZongJinE < (70000.0 * TENTHOUSAND))
             )
         {
@@ -437,7 +437,7 @@ void selectFirstShare(
 						|| (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.003)
 						|| (analyProty.zijinIdx < 10))
 					//&& (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.003)
-					&& (analyProty.zongJinE > (998.0 * TENTHOUSAND))
+					&& (analyProty.zongJinE > (danRiJingJiaThreshould * TENTHOUSAND))
 					&& (analyProty.guXingPingFen > gxpfThreshold)
 					//&& ((analyProty.zongLiuRuBiZuoRiZongJinE > zhuLiJingLiangThreshold-0.0038) || (analyProty.zongLiuRuBiLiuTong > zongLiuRuThreshold1 + 0.004))
 					)
@@ -488,7 +488,7 @@ void selectFirstShare(
 			if (1
 				&& (analyProty.weiBi > weiBiThreshold)
 				&& (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
-				&& (analyProty.zongJinE > (970.0 * TENTHOUSAND))
+				&& (analyProty.zongJinE > (danRiJingJiaThreshould * TENTHOUSAND))
 				//&& (analyProty.dianDanJinE > dianDanThreshold)
 				&& (analyProty.guXingPingFen > gxpfThreshold - 5.1)
 				)

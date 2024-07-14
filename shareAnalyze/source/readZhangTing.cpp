@@ -12,6 +12,20 @@ using namespace SHAREDEF;
 
 namespace ZHANGTING
 {
+bool zhangTingYiZiBanJudge(zhangTing_t& zhangTingItem)
+{
+	bool flag = false;
+	if (
+		((abs(zhangTingItem.startPrice - zhangTingItem.startPrice) < FLT_MIN)
+			&& (abs(zhangTingItem.maxPrice - zhangTingItem.minPrice) < FLT_MIN)
+			&& (zhangTingItem.zhenFu < FLT_MIN))
+		)
+	{
+		flag = true;
+	}
+	return flag;
+}
+
 void getZhangTingCode(std::vector<zhangTing_t> &zhangTingVec, std::vector<analyseCode_t> &codeVec)
 {
 	//codeVec.clear();

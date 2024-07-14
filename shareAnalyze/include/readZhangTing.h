@@ -54,6 +54,8 @@ struct continueDay_t
 	bool operator() (const zhangTing_t &a, const zhangTing_t &b) { return ((a.continueDay) > (b.continueDay)); }
 };
 
+bool zhangTingYiZiBanJudge(zhangTing_t& zhangTingItem);
+
 void getZhangTingCode(std::vector<zhangTing_t> &zhangTingVec, std::vector<analyseCode_t> &codeVec);
 
 bool readZhangTingFile(char *fileName, std::vector<zhangTing_t> &zhangtingVec);
