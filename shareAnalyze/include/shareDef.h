@@ -78,6 +78,7 @@ namespace SHAREDEF
 	const float zongLiuRuThreshold1 = 0.002417;//0.002794;
 	const float zongLiuRuThreshold_for_yizi = 0.0024;//0.002794;
 	const float danRiJingJiaThreshould = 2999.99; //2999.99
+
 	const float jingJiaJinEChaThreshould = 1000.0;
 	const float jingJiaJinEThreshould = 9099.0 * TENTHOUSAND; //9707.0  9999.0
 	const float zuoRiLimitUpMoney = 1000.0 * TENTHOUSAND;
@@ -85,10 +86,13 @@ namespace SHAREDEF
 	const float jinRiJingJiaLimitUpMoneyWithLiuTong = 100.0;
 	const float jingJiaChaThreshould = -8.39;//2.39;
 	const float zhenFuChaThreshould = 5.8;
+
 	const float zuoRiKaiPanZfMax = 4.0;
 	const float kaiPanZfBigDealThreshould = -2;//0.5;
 	const int LIMIT_REASON_SIZE = 250;
+
 	const int limitOpenThreshould = 20;
 	const int lastLimitTimeThreshould = 155555;//144444;
+
 	//const std::string ZTFPfileName = "D:/share/ZTFP.xlsx";
 }
