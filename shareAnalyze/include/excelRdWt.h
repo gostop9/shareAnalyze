@@ -24,7 +24,7 @@ namespace EXCELREADWRITE
 class ExcelRwC
 {
 public:
-	ExcelRwC();
+	ExcelRwC(int ztfpFlag);
 	~ExcelRwC();
 
     void excelWriteHeader(BasicExcelWorksheet* sheet);    
