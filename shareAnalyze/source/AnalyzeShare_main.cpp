@@ -45,15 +45,15 @@ char buyFileName[] = "D:/share/buyShare.txt";
 char zhangTingConfigFileName[] = "D:/share/zhangTingConfig.txt";
 
 
-bool compZiJin(const ZIJIN_t &a, const ZIJIN_t &b) {
-	     return a.jingLiuRu > b.jingLiuRu;
+bool compZiJin(const ZIJIN_t& a, const ZIJIN_t& b) {
+	return a.jingLiuRu > b.jingLiuRu;
 }
 
-bool compZiJinFuseJingLiuRu(const PROPERTY_t &a, const PROPERTY_t &b) {
+bool compZiJinFuseJingLiuRu(const PROPERTY_t& a, const PROPERTY_t& b) {
 	return a.zhongDanLiuRuBiLiuTong > b.zhongDanLiuRuBiLiuTong;
 }
 
-bool compZiJinFuseDaDanJingE(const PROPERTY_t &a, const PROPERTY_t &b) {
+bool compZiJinFuseDaDanJingE(const PROPERTY_t& a, const PROPERTY_t& b) {
 	return a.zhuLiJingE > b.zhuLiJingE;
 }
 /*
@@ -154,7 +154,7 @@ void main()
 	proBanKuaiFirstVec.reserve(vectorSize);
 
 	// cfg file
-	FILE *cfgFp;
+	FILE* cfgFp;
 	cfgFp = fopen(configFileName, "rt");
 	if (NULL == cfgFp)
 	{
@@ -246,7 +246,7 @@ void main()
 	fclose(cfgFp);
 
 	//result file
-	FILE *rstFp;
+	FILE* rstFp;
 	string strFileName = resultFileName;
 	string subName = strFileName.substr(9, 9);
 	int ztfpFlag = 0;
@@ -357,7 +357,7 @@ void main()
 			readZhangfuFile(zhangfuFileName, zhangfu[0]);
 			readZhangfuFile(dataPreJingJiaFileName, preJingJiazhangfu);
 		}
-		
+
 		//if (20210831 > cnt_int)
 		{
 			//提取昨日涨停code
@@ -396,7 +396,7 @@ void main()
 	//用于zhuLiJingLiangMin，不用每次进行修改
 	if ((fileIndex > 1) && (fileIndex < 5))
 	{
-		zhuLiJingLiangMin = float(fileIndex)/ float(10.0);
+		zhuLiJingLiangMin = float(fileIndex) / float(10.0);
 	}
 
 	kaiPanSummary_t summary;
@@ -471,11 +471,11 @@ void main()
 		//根据实际流通计算其他参数
 		calculateOtherPara(rstFp, propertyV[vecIndex], propertyAnalyVecPre, zhangTingVecPre);
 
-		vector<PROPERTY_t> &propertyAnalyVecForSort = propertyV[vecIndex];
+		vector<PROPERTY_t>& propertyAnalyVecForSort = propertyV[vecIndex];
 		// sort for zijinChuIdx
 		{
 			struct zongLiuChuBiLiuTong_t {
-				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zongLiuChuBiLiuTong > b.zongLiuChuBiLiuTong); }
+				bool operator() (const PROPERTY_t& a, const PROPERTY_t& b) { return (a.zongLiuChuBiLiuTong > b.zongLiuChuBiLiuTong); }
 			} zongLiuChuBiLiuTong_c;
 
 			std::sort(propertyAnalyVecForSort.begin(), propertyAnalyVecForSort.end(), zongLiuChuBiLiuTong_c);
@@ -491,7 +491,7 @@ void main()
 		// sort for liuRuBiZuoRiChengJiaoIdx
 		{
 			struct myclass {
-				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zongLiuRuBiZuoRiZongJinE > b.zongLiuRuBiZuoRiZongJinE); }
+				bool operator() (const PROPERTY_t& a, const PROPERTY_t& b) { return (a.zongLiuRuBiZuoRiZongJinE > b.zongLiuRuBiZuoRiZongJinE); }
 			} liuRuBiZuoRiChengJiao;
 			//propertyVecDaDanBubbleSort(propertyAnalyVecForSort);
 			std::sort(propertyAnalyVecForSort.begin(), propertyAnalyVecForSort.end(), liuRuBiZuoRiChengJiao);
@@ -506,7 +506,7 @@ void main()
 		// sort for zijinIndex
 		{
 			struct myclass {
-				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zongLiuRuBiLiuTong > b.zongLiuRuBiLiuTong); }
+				bool operator() (const PROPERTY_t& a, const PROPERTY_t& b) { return (a.zongLiuRuBiLiuTong > b.zongLiuRuBiLiuTong); }
 			} neiWaiPanBiLiuTongGu;
 
 			std::sort(propertyAnalyVecForSort.begin(), propertyAnalyVecForSort.end(), neiWaiPanBiLiuTongGu);
@@ -526,7 +526,7 @@ void main()
 		strftime(tmp, sizeof(tmp), "%H%M%S", localtime(&timep));
 		int localTime = atoi(tmp);
 		struct myclass {//zhongXiaoDanJinBiLiuTong jingLiuRuBiLiuTong
-			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhuLiJingLiang < b.zhuLiJingLiang); }
+			bool operator() (const PROPERTY_t& a, const PROPERTY_t& b) { return (a.zhuLiJingLiang < b.zhuLiJingLiang); }
 			//bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.jingLiuRuBiLiuTong < b.jingLiuRuBiLiuTong); }
 			//bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.chengJiaoBiLiuTong > b.chengJiaoBiLiuTong); }
 			//bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhongXiaoDanJinBiLiuTong > b.zhongXiaoDanJinBiLiuTong); }
@@ -535,10 +535,10 @@ void main()
 		} cmpMethod;
 
 		struct jingJia {
-			bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.jingJiaLiangBi > b.jingJiaLiangBi); }
+			bool operator() (const PROPERTY_t& a, const PROPERTY_t& b) { return (a.jingJiaLiangBi > b.jingJiaLiangBi); }
 		} cmpMethodJingJia;
 
-		vector<PROPERTY_t> &propertyAnalyVecSort = propertyV[vecIndex];
+		vector<PROPERTY_t>& propertyAnalyVecSort = propertyV[vecIndex];
 		//if ((localTime < 92500) && (localTime > 91500)) //  befor time 9:25
 		if (0 == fileIndex)
 		{
@@ -573,7 +573,7 @@ void main()
 		vector<string> newShareCodeVec;
 		PROPERTY_t programBuyProty;
 		int programFindFlag = 0;
-		FILE *buyFp;
+		FILE* buyFp;
 		buyFp = fopen(buyFileName, "at+");
 		if (NULL == buyFp)
 		{
@@ -601,7 +601,7 @@ void main()
 			limitupInfo.getLimitUpReason(propertyAnalyVec, ztrVec, newShareCodeVec);
 
 			//加入持仓股
-			resultSetBlock.clear();			
+			resultSetBlock.clear();
 			int analySize = independentAnalyVec.size();
 			for (int analyIdx = 0; analyIdx < analySize; analyIdx++)
 			{
@@ -623,7 +623,7 @@ void main()
 
 			// 用于去重
 			int vectorSize = propertyAnalyVecBlock.size();
-			vector<PROPERTY_t> propertyAnalyVecBlockDupRemove;			
+			vector<PROPERTY_t> propertyAnalyVecBlockDupRemove;
 			propertyAnalyVecBlockDupRemove.reserve(vectorSize);
 			propertyAnalyVecBlockDupRemove.clear();
 
@@ -710,8 +710,8 @@ void main()
 				}*/
 
 				for (int ztPreIdx = 0; ztPreIdx < zhangTingVecPre.size(); ztPreIdx++)
-				{					
-					bool zuoRiyiZiBanTFlag = zuoRiYiZiBanTbanJudge(analyProty);				
+				{
+					bool zuoRiyiZiBanTFlag = zuoRiYiZiBanTbanJudge(analyProty);
 					string ztCode = zhangTingVecPre[ztPreIdx].code;
 					string::size_type index;
 					index = indCode.find(ztCode);
@@ -872,7 +872,7 @@ void main()
 			fprintf(rstFp, "\n%s 昨日涨停开盘统计----------------------------------------------------------\n", outFile);
 			vector<PROPERTY_t> propertyAnalyVecTongJi = propertyAnalyVec;
 			struct fengBanJinE {
-				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.zhangTingBan > b.zhangTingBan); }
+				bool operator() (const PROPERTY_t& a, const PROPERTY_t& b) { return (a.zhangTingBan > b.zhangTingBan); }
 			} cmpMethodFengBanJinE;
 			stable_sort(propertyAnalyVecTongJi.begin(), propertyAnalyVecTongJi.end(), cmpMethodFengBanJinE);
 			int num = propertyAnalyVecTongJi.size();
@@ -890,7 +890,7 @@ void main()
 			int   conZhangCount = 0;
 			for (int i = 0; i < num; i++)
 			{
-				PROPERTY_t &analyProty = propertyAnalyVecTongJi[i];
+				PROPERTY_t& analyProty = propertyAnalyVecTongJi[i];
 				if (analyProty.continueDay > 1
 					&& (0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
 					&& (0 != strcmp(analyProty.limitReason, NEW_SHARE_ON.c_str()))
@@ -964,7 +964,7 @@ void main()
 				}
 			}*/
 			//shareSelectFinal(rstFp, propertyVecJingLiuRu[vecIndex]);
-			
+
 			fprintf(rstFp, "总流入排序-----------------\n");
 			resultSet.clear();
 			resultSetWbgk.clear();
@@ -1044,14 +1044,14 @@ void main()
 			//内外盘差比流通
 			fprintf(rstFp, "\n%s 内外盘差比流通----------------------------------------------------------\n", outFile);
 			struct neiWaiPanBiLiuTongGu {
-				bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return (a.neiWaiPanBiLiuTongGu > b.neiWaiPanBiLiuTongGu); }
+				bool operator() (const PROPERTY_t& a, const PROPERTY_t& b) { return (a.neiWaiPanBiLiuTongGu > b.neiWaiPanBiLiuTongGu); }
 			} compNeiWaiPanBiLiuTongGu;
 			std::sort(propertyVecJingLiuRu[vecIndex].begin(), propertyVecJingLiuRu[vecIndex].end(), compNeiWaiPanBiLiuTongGu);
 			int codeCount = 0;
 			int num = propertyVecJingLiuRu[vecIndex].size();
 			for (int i = 0; i < num; i++)
 			{
-				PROPERTY_t &analyProty = propertyVecJingLiuRu[vecIndex][i];
+				PROPERTY_t& analyProty = propertyVecJingLiuRu[vecIndex][i];
 				if (
 					(analyProty.zhangFu > 0)
 					&& (analyProty.zijinIdx < 30)
@@ -1081,12 +1081,12 @@ void main()
 			{
 				sortByFirstLimitTimeGaodu(propertyAnalyVecJingJia);
 			}
-			
+
 			int num = propertyAnalyVecJingJia.size();
 			int countOne = 0;
 			for (int i = 0; i < num; i++)
 			{
-				PROPERTY_t &analyProty = propertyAnalyVecJingJia[i];
+				PROPERTY_t& analyProty = propertyAnalyVecJingJia[i];
 				//不同梯队打印换行符
 				if ((i > 1) && (propertyAnalyVecJingJia[i - 1].continueDay != propertyAnalyVecJingJia[i].continueDay))
 				{
@@ -1098,7 +1098,7 @@ void main()
 				{
 					shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 				}
-				if(1 == analyProty.continueDay)
+				if (1 == analyProty.continueDay)
 				{
 					countOne++;
 				}
@@ -1113,7 +1113,7 @@ void main()
 		{
 			fprintf(rstFp, "持仓股------------------------------------------------------------------------------------------------------------------------\n");
 			int analySize = independentAnalyVec.size();
-			for (int analyIdx = 0; analyIdx < analySize; analyIdx++)				
+			for (int analyIdx = 0; analyIdx < analySize; analyIdx++)
 			{
 				vector<PROPERTY_t>::iterator proIter = propertyAnalyVec.begin();
 				while (proIter != propertyAnalyVec.end())
@@ -1134,7 +1134,7 @@ void main()
 		int count = 0;
 		for (int i = 0; i < analyNum; i++)
 		{
-			PROPERTY_t &analyProty = propertyAnalyVec[i];
+			PROPERTY_t& analyProty = propertyAnalyVec[i];
 			//shareSelectPrint(rstFp, analyProty, propertyAnalyVecPre);
 			if (
 				(0 != strcmp(analyProty.limitReason, NEW_SHARE.c_str()))
@@ -1144,9 +1144,9 @@ void main()
 				//&& (analyProty.daDanJinBiLiuTong < 0)
 				//&& (analyProty.jingJiaLiangBi > 9.90)
 				&& (
-				(analyProty.zijinIdx <= 1500)
+					(analyProty.zijinIdx <= 1500)
 					|| (
-					(analyProty.zijinIdx > 1500) 
+						(analyProty.zijinIdx > 1500)
 						&& (analyProty.weiBi > WEIBI_MAX)
 						)
 					)
@@ -1285,17 +1285,17 @@ void main()
 			//加入一字开盘的股票到自选股
 			{
 				vector<PROPERTY_t> yiZiBanTodayPropertyAnalyVec;
-				vector<PROPERTY_t> &propertyAnalyVecSort = propertyV[0];
+				vector<PROPERTY_t>& propertyAnalyVecSort = propertyV[0];
 				getYiZiBanToday(propertyAnalyVecSort, yiZiBanTodayPropertyAnalyVec);
 				// sort for zhangTingBanIndex
 				struct zhangTingBanIndex {
-					bool operator() (const PROPERTY_t &a, const PROPERTY_t &b) { return ((a.zhangTingBan / a.ziYouLiuTongShiZhi) > (b.zhangTingBan / b.ziYouLiuTongShiZhi)); }
+					bool operator() (const PROPERTY_t& a, const PROPERTY_t& b) { return ((a.zhangTingBan / a.ziYouLiuTongShiZhi) > (b.zhangTingBan / b.ziYouLiuTongShiZhi)); }
 				} cmpMethod_zhangTingBanIndex;
 				std::sort(yiZiBanTodayPropertyAnalyVec.begin(), yiZiBanTodayPropertyAnalyVec.end(), cmpMethod_zhangTingBanIndex);
 				int analyNum = yiZiBanTodayPropertyAnalyVec.size();
 				for (int i = 0; i < analyNum; i++)
 				{
-					PROPERTY_t &analyProty = yiZiBanTodayPropertyAnalyVec[i];
+					PROPERTY_t& analyProty = yiZiBanTodayPropertyAnalyVec[i];
 					resultZxgSet.push_back(analyProty.code);
 				}
 			}
@@ -1325,8 +1325,8 @@ void main()
 			tdxBlockModify(zpjjTdxFileName, resultSetBlock);
 			tdxBlockModify(zpjjTdxFileName_multi, resultSetBlock);
 			tdxBlockModify(zpjjTdxFileName_hongta, resultSetBlock);
-			
-		    //修改创业板早盘竞价
+
+			//修改创业板早盘竞价
 			tdxBlockModify(cybzpjjTdxFileName, chuangyebanSetBlock);
 			tdxBlockModify(cybzpjjTdxFileName_multi, chuangyebanSetBlock);
 			tdxBlockModify(cybzpjjTdxFileName_hongta, chuangyebanSetBlock);
@@ -1338,11 +1338,11 @@ void main()
 
 			//修改昨日涨停，今日竞价符合预期
 			tdxBlockModify(ztpremeetTdxFileName, ztPreMeetSetBlock);
-		}		
+		}
 	}
 
 	time_t rawtime;
-	struct tm *ptminfo;
+	struct tm* ptminfo;
 	time(&rawtime);
 	ptminfo = localtime(&rawtime);
 	float time_hour_min = (float)ptminfo->tm_hour + (float)ptminfo->tm_min / 100.0;
