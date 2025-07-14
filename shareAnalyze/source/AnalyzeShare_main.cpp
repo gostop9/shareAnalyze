@@ -44,7 +44,6 @@ char preFileName[] = "D:/share/searchPre.txt";
 char buyFileName[] = "D:/share/buyShare.txt";
 char zhangTingConfigFileName[] = "D:/share/zhangTingConfig.txt";
 
-ExcelRwC excelReadWrite;
 
 bool compZiJin(const ZIJIN_t &a, const ZIJIN_t &b) {
 	     return a.jingLiuRu > b.jingLiuRu;
@@ -230,7 +229,7 @@ void main()
 	limit3PreVec.reserve(analyseNum);
 	for (int i = strIdx; i < itemNum; i++)
 	{
-		char tempBuf[10];
+		char tempBuf[20];
 		memset(tempBuf, 0, sizeof(tempBuf));
 		int cpyLen = strVec[strIdx].length() - 1; // -1 去掉换行符
 		strncpy(tempBuf, strVec[strIdx++].c_str(), cpyLen);
@@ -248,12 +247,26 @@ void main()
 
 	//result file
 	FILE *rstFp;
-	rstFp = fopen(resultFileName, "at+");
+	string strFileName = resultFileName;
+	string subName = strFileName.substr(9, 9);
+	int ztfpFlag = 0;
+	if (0 != strcmp(subName.c_str(), "result_zt"))
+	{
+		rstFp = fopen(resultFileName, "at+");
+	}
+	else
+	{
+		// 连续分析时如果保存文件会很大
+		rstFp = fopen(resultFileName, "w");
+		ztfpFlag = 1;
+	}
 	if (NULL == rstFp)
 	{
 		printf("Open result file failed!\n");
 		return;
 	}
+
+	ExcelRwC excelReadWrite(ztfpFlag);
 
 	// out file name
 	char outFile[20], outIdx[20];
@@ -608,10 +621,29 @@ void main()
 				}
 			}
 
-			// 提取昨日涨停,今日竞价符合预期股票
-			for (int analyIdx = 0; analyIdx < propertyAnalyVecBlock.size(); analyIdx++)
+			// 用于去重
+			int vectorSize = propertyAnalyVecBlock.size();
+			vector<PROPERTY_t> propertyAnalyVecBlockDupRemove;			
+			propertyAnalyVecBlockDupRemove.reserve(vectorSize);
+			propertyAnalyVecBlockDupRemove.clear();
+
+			PROPERTY_t analyProtyExist = propertyAnalyVecBlock[0];
+			propertyAnalyVecBlockDupRemove.push_back(analyProtyExist);
+			for (int analyIdx = 1; analyIdx < vectorSize; analyIdx++)
 			{
 				PROPERTY_t analyProty = propertyAnalyVecBlock[analyIdx];
+				if (strcmp(analyProty.code, analyProtyExist.code))
+				{
+					propertyAnalyVecBlockDupRemove.push_back(analyProty);
+				}
+				analyProtyExist = analyProty;
+			}
+
+			// 提取昨日涨停,今日竞价符合预期股票
+			for (int analyIdx = 0; analyIdx < propertyAnalyVecBlockDupRemove.size(); analyIdx++)
+			{
+				PROPERTY_t analyProty = propertyAnalyVecBlockDupRemove[analyIdx];
+				bool jinRiYiZiBanFlag = yiZiBanJudge(analyProty);
 				string indCode = analyProty.code;
 				// N字板判断，三天前涨停
 				bool zhangTing3PreFlag = false;
@@ -627,12 +659,12 @@ void main()
 						break;
 					}
 				}
-				if (zhangTing3PreFlag && (analyProty.continueDay == 1)) // 反包N型板
+				if (zhangTing3PreFlag && (analyProty.continueDay == 1) && (!jinRiYiZiBanFlag)) // 反包N型板
 				{
 					continue;
 				}
 
-				if (analyProty.continueDay >= 3)
+				/*if (analyProty.continueDay >= 3)
 				{
 					// 前交易日涨停判断
 					bool zhangTingYiZiPreFlag = false;
@@ -675,12 +707,11 @@ void main()
 					{
 						continue;
 					}
-				}
+				}*/
 
 				for (int ztPreIdx = 0; ztPreIdx < zhangTingVecPre.size(); ztPreIdx++)
 				{					
-					bool zuoRiyiZiBanTFlag = zuoRiYiZiBanTbanJudge(analyProty);
-					bool jinRiYiZiBanFlag = yiZiBanJudge(analyProty);
+					bool zuoRiyiZiBanTFlag = zuoRiYiZiBanTbanJudge(analyProty);				
 					string ztCode = zhangTingVecPre[ztPreIdx].code;
 					string::size_type index;
 					index = indCode.find(ztCode);
@@ -723,32 +754,49 @@ void main()
 								(analyProty.zhangFu > analyProty.zuoRiKaiPanZhangFu) &&
 								(analyProty.dianDanJinE > dianDanBigThreshold) &&
 								(!(zuoRiyiZiBanTFlag && (analyProty.continueDay == 1))) && // 一进二首板非一字或T字
-								(analyProty.zhangTingBan * TENTHOUSAND * ONE_HUNDRED > jingJiaJinEThreshould)
+								(jingJiaJinEThreshould < analyProty.zongJinE)
+								//(analyProty.zhangTingBan * TENTHOUSAND * ONE_HUNDRED > jingJiaJinEThreshould)
 								)
 
 							||
 							// 竞价垫单较多,大成交，一字板
 							((jingJiaJinEThreshould < analyProty.zongJinE) &&
-								(!(zuoRiyiZiBanTFlag && (analyProty.continueDay == 1))) && // 一进二首板非一字或T字
+								//(analyProty.zhangTingBan > yiZiBanLimitUpMoneyThreshold) &&
+								((analyProty.zhangTingBan * DIVIDE / analyProty.ziYouLiuTongShiZhi > 0.9) || (analyProty.continueDay > 1)) && // 一进二一字板，封单/流通大于门限
+								(!((analyProty.zongJinE / (analyProty.zhangTingBan * ONE_MILLION) > 5.0) && (analyProty.continueDay > 3))) && // 四板以上竞价爆量剔除
+								//(!(zuoRiyiZiBanTFlag && (analyProty.continueDay == 1))) && // 一进二首板非一字或T字
 								(jinRiYiZiBanFlag &&
 									//(analyProty.zhangFu > analyProty.zuoRiKaiPanZhangFu) &&
 									((!zuoRiyiZiBanTFlag) ||
 										(analyProty.continueDay > 2) ||
-										(((analyProty.zhangTingBan > jinRiJingJiaLimitUpMoney) || (analyProty.zhangTingBan * DIVIDE / analyProty.ziYouLiuTongShiZhi) > 1.0) &&
+										(((analyProty.zhangTingBan > jinRiJingJiaLimitUpMoney) || (analyProty.zhangTingBan * DIVIDE / analyProty.ziYouLiuTongShiZhi) > zhangTingBanBiLiuTongThreshould) &&
 											(analyProty.continueDay > 1))) &&
 									(analyProty.dianDanJinE > yiZiBanDianDanBigThreshold))
 								)
 
 							||
 							// 一字板，竞价成交额比封单额接近，可能开板
+							// 一字板，竞价成交额比封单额接近，可能开板
 							(jinRiYiZiBanFlag &&
-								(analyProty.zhangTingBan > 1.0) && // 封单大于100万
+								//(analyProty.zhangTingBan > yiZiBanLimitUpMoneyThreshold) &&
+								(analyProty.zhangTingBan > zhangTingBanMinThreshold) &&
+								(!((analyProty.zongJinE / (analyProty.zhangTingBan * ONE_MILLION) > 5.0) && (analyProty.continueDay > 3))) && // 四板以上竞价爆量剔除
+								(analyProty.dianDanJinE > dianDanThreshold) &&
+								(((analyProty.zongJinE > (analyProty.zhangTingBan * ONE_MILLION) * 0.3) && (analyProty.zhangTingBan > zhangTingBanMaxThreshold) && (analyProty.continueDay != 2))
+									|| ((10000.0 * TENTHOUSAND < analyProty.zongJinE) && (18500.0 * TENTHOUSAND > analyProty.zongJinE) && (analyProty.continueDay == 1))
+									|| ((jingJiaJinEThreshould < analyProty.zongJinE) && (analyProty.continueDay > 1))
+									|| ((10000.0 * TENTHOUSAND < analyProty.zongJinE) && (45.0 < analyProty.zhangTingBan) && (analyProty.continueDay == 1))))
+							/*(jinRiYiZiBanFlag &&
+								//(analyProty.zhangTingBan > yiZiBanLimitUpMoneyThreshold) &&
+								(analyProty.zhangTingBan > 2.0) &&
+								((analyProty.zhangTingBan * DIVIDE / analyProty.ziYouLiuTongShiZhi > 0.9) || (analyProty.continueDay > 1)) && // 一进二一字板，封单/流通大于门限
 								(analyProty.dianDanJinE > dianDanThreshold) &&
 								((analyProty.zuoRiKaiPanZhangFu < zuoRiKaiPanZfMax) || (analyProty.zuoRiKaiPanZhangFu > zuoRiKaiPanZfMinCeil) || (analyProty.continueDay > 1)) &&
-								(analyProty.zongJinE > analyProty.zhangTingBan * ONE_MILLION * 0.9))
+								(jingJiaJinEThreshould < analyProty.zongJinE) &&
+								(analyProty.zongJinE > analyProty.zhangTingBan * ONE_MILLION * 0.33)) // 0.33 0.5*/
 							)
 						{
-							// 重复code不添加
+							// 重复code不添加0.
 							int repeatFlat = 0;
 							for (int ztResultIdx = 0; ztResultIdx < resultVecZtPreMeet.size(); ztResultIdx++)
 							{
@@ -957,6 +1005,10 @@ void main()
 		{
 			excelReadWrite.excelRowIndex;
 			excelReadWrite.writeExcelSheet(resultVecWbgk, flag_guXinZhengShu);
+
+			//插入标题
+			excelReadWrite.excelRowIndex++;
+			char excelHeaderSymbol = excelReadWrite.excelWriteHeaderC(excelReadWrite.rgMyRge);
 
 			// 显示昨日涨停，今日竞价符合预期股票
 			excelReadWrite.excelRowIndex++;
@@ -1258,7 +1310,7 @@ void main()
 			resultZxgSet.insert(resultZxgSet.end(), resultSetBlock.begin(), resultSetBlock.end());
 
 			//tdxBlockAppend(zxgTdxFileName, resultSetBlock);
-			tdxBlockAppend(zxgTdxFileName, resultZxgSet);
+			tdxBlockModify(zxgTdxFileName, resultZxgSet);
 			tdxBlockModify(tjxgTdxFileName, resultSetBlock);
 
 			//tdxBlockAppend(zxgTdxFileName_multi, resultSetBlock);

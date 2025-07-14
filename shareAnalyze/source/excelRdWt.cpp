@@ -85,16 +85,24 @@ std::string ANSIToUTF8(const std::string & str)
 	return UnicodeToUTF8(ANSIToUnicode(str));
 }
 
-ExcelRwC::ExcelRwC()
+ExcelRwC::ExcelRwC(int ztfpFlag)
 {
-	if (CoInitialize(NULL) != 0 )
+	if (CoInitialize(NULL) != 0)
 	{
 		printf("初始化失败");
 		exit(1);
 	}
 
 	excelRowIndex = 1;
-	ZTFPfileName = "ZTFP.xlsx";
+
+	if (ztfpFlag == 0)
+	{
+		ZTFPfileName = "ZTFP.xlsx";
+	}
+	else
+	{
+		ZTFPfileName = "ZTFPZT.xlsx";
+	}
 }
 
 ExcelRwC::~ExcelRwC()
@@ -493,6 +501,25 @@ void ExcelRwC::setSpecificColors(vector<PROPERTY_t>::iterator it, CWorksheet &ws
 		char column = 'X';
 		setCellBackColor(wsMySheet, excelHeaderSymbol, column, row, 46);
 	}
+	if (((analyProty.guXingPingFen > 89.0) && (0 == flag_guXinZhengShu)) ||
+		((analyProty.guXingPingFen < 1000.0) && (1 == flag_guXinZhengShu)))
+	{
+		char column = 'I';
+		setCellBackColor(wsMySheet, excelHeaderSymbol, column, row, 46);
+	}
+
+	if (analyProty.weiBi > -35.0)
+	{
+		char column = 'N';
+		setCellBackColor(wsMySheet, excelHeaderSymbol, column, row, 46);
+	}
+
+	if (analyProty.dianDanJinE > 8000.0)
+	{
+		char column = 'P';
+		setCellBackColor(wsMySheet, excelHeaderSymbol, column, row, 26);//粉紫色
+	}
+
 	//昨日非一字或T字的
 	if (!zuoRiyiZiBanTFlag)
 	{
@@ -513,7 +540,7 @@ void ExcelRwC::setSpecificColors(vector<PROPERTY_t>::iterator it, CWorksheet &ws
 
 char ExcelRwC::excelWriteHeaderC(CRange0 &rgMyRge)
 {
-	int eRow = 1;
+	int eRow = excelRowIndex;
 	int eColumn = 1;
 	char alphabet = 'A';
 	//rgMyRge.put_Item(COleVariant((LONG)eRow), COleVariant((LONG)(eColumn++)), COleVariant("股票标记"));

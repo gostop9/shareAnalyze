@@ -61,7 +61,7 @@ namespace SHAREDEF
 	const std::string cybzpjjTdxFileName_hongta = "D:/Doc/Stock/TDX_KXG/T0002/blocknew/CYBZPJJ.blk";
 
 	const float kaiPanZfMax = 7.99; //5.99; // 1.2, //3.99
-	const float kaiPanZfMin = -6.9;
+	const float kaiPanZfMin = -5.99; // 4;
 	const float zhangFuRoundMin = 0.0019;
 	const int MAX_ZIJIN_IDX = 257;//57; //37
 	const float zuoRiKaiPanZfMinCeil = 8.99;
@@ -70,9 +70,12 @@ namespace SHAREDEF
 	static char nonChar[CHAR_LEN];
 
 	const float weiBiThreshold = -79.0; //-68.0; // -78.0;
-	const float dianDanThreshold = 1450.0; //1500.0; //520.0;//580.0
-	const float dianDanBigThreshold = 7000.0;
+	const float dianDanThreshold = 1400; //1450.0; //1500.0; //520.0;//580.0
+	const float dianDanBigThreshold = 7200.0;
 	const float yiZiBanDianDanBigThreshold = 1400.0;
+	const float yiZiBanLimitUpMoneyThreshold = 44.0;
+	const float zhangTingBanMinThreshold = 4.0;
+	const float zhangTingBanMaxThreshold = 180.0;
 	const float zhangTingBanThreshold = -700; //-1000.0;
 	const float zongLiuRuThreshold0 = 0.001754;//0.001754;
 	const float zongLiuRuThreshold1 = 0.002417;//0.002794;
@@ -87,9 +90,12 @@ namespace SHAREDEF
 	const float jingJiaChaThreshould = -8.39;//2.39;
 	const float zhenFuChaThreshould = 5.8;
 
-	const float zuoRiKaiPanZfMax = 4.0;
+	const float zhangTingBanBiLiuTongThreshould = 0.9;
+
+	const float zuoRiKaiPanZfMax = 7.0;
 	const float kaiPanZfBigDealThreshould = -2;//0.5;
-	const int LIMIT_REASON_SIZE = 250;
+
+	const int LIMIT_REASON_SIZE = 550;
 
 	const int limitOpenThreshould = 20;
 	const int lastLimitTimeThreshould = 155555;//144444;
