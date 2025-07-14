@@ -223,6 +223,7 @@ namespace GETLIMITUPINFO
 				zuoRiSanHuShuLiangIndex = p.zuoRiSanHuShuLiangIndex;
 				sanHuShuLiangIndex = p.sanHuShuLiangIndex;
 				banKuaiFirstFlag = p.banKuaiFirstFlag;
+				maxJingJiaDealFlag = p.maxJingJiaDealFlag;
 				totalIndex = p.totalIndex;
 			}
 		/*public:

@@ -487,6 +487,7 @@ struct PROPERTY_t
 	int   zuoRiSanHuShuLiangIndex;
 	int   sanHuShuLiangIndex;
 	int   banKuaiFirstFlag;
+	bool  maxJingJiaDealFlag;
 	int   totalIndex;
 
 	//构造函数初始化
@@ -582,6 +583,7 @@ struct PROPERTY_t
 		zuoRiSanHuShuLiangIndex = 0;
 		sanHuShuLiangIndex = 0;
 		banKuaiFirstFlag = 0;
+		maxJingJiaDealFlag = false;
 		totalIndex = 0;
 		//memset(this, 0, sizeof(PROPERTY_t));
 		//或者是下面的格式 

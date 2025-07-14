@@ -520,6 +520,12 @@ void ExcelRwC::setSpecificColors(vector<PROPERTY_t>::iterator it, CWorksheet &ws
 		setCellBackColor(wsMySheet, excelHeaderSymbol, column, row, 26);//粉紫色
 	}
 
+	if (analyProty.maxJingJiaDealFlag)
+	{
+		char column = 'K';
+		setCellBackColor(wsMySheet, excelHeaderSymbol, column, row, 46);//暗红色
+	}
+
 	//昨日非一字或T字的
 	if (!zuoRiyiZiBanTFlag)
 	{
@@ -1022,7 +1028,11 @@ void ExcelRwC::writeExcelSheet(vector<PROPERTY_t> &propertyVec, int flag_guXinZh
 							((analyProty.preJingJiaZongJinE < analyProty.zongJinE) || (jingJiaJinEThreshould < analyProty.zongJinE))
 							)
 						{
-							setBackColor(wsMySheet, excelHeaderSymbol, i, 20);
+							//bool zuoRiyiZiBan_Flag = zuoRiYiZiBanJudge(analyProty);
+							//if (!zuoRiyiZiBan_Flag) //青色昨日非涨停
+							{
+								setBackColor(wsMySheet, excelHeaderSymbol, i, 20);
+							}
 						}
 						if (true == yiZiBanFlag)
 						{

@@ -65,30 +65,40 @@ namespace SHAREDEF
 	const float zhangFuRoundMin = 0.0019;
 	const int MAX_ZIJIN_IDX = 257;//57; //37
 	const float zuoRiKaiPanZfMinCeil = 8.99;
+	const float shouBan34ZfMax = 8.99;
 
 	const int CHAR_LEN = (30);
 	static char nonChar[CHAR_LEN];
 
 	const float weiBiThreshold = -79.0; //-68.0; // -78.0;
+	const float weiBiMaxThreshold = 11.28;
+	const float weiBiMaxThresholdBigDeal = 40.0;
+	const float weiBiMaxThresholdBigDealMax = 68.0;
 	const float dianDanThreshold = 1400; //1450.0; //1500.0; //520.0;//580.0
 	const float dianDanBigThreshold = 7200.0;
+	const float dianDanBigThreshold_2YiziTo3 = 6000.0;
 	const float yiZiBanDianDanBigThreshold = 1400.0;
 	const float yiZiBanLimitUpMoneyThreshold = 44.0;
-	const float zhangTingBanMinThreshold = 4.0;
+	const float zhangTingBanMinThreshold = 8.0;
 	const float zhangTingBanMaxThreshold = 180.0;
 	const float zhangTingBanThreshold = -700; //-1000.0;
 	const float zongLiuRuThreshold0 = 0.001754;//0.001754;
 	const float zongLiuRuThreshold1 = 0.002417;//0.002794;
 	const float zongLiuRuThreshold_for_yizi = 0.0024;//0.002794;
 	const float danRiJingJiaThreshould = 2999.99; //2999.99
+	const float danRiJingJiaRatio = 0.00166;
 
 	const float jingJiaJinEChaThreshould = 1000.0;
+	const float jingJiaJinEChaRatio = 0.8;
 	const float jingJiaJinEThreshould = 9099.0 * TENTHOUSAND; //9707.0  9999.0
 	const float zuoRiLimitUpMoney = 1000.0 * TENTHOUSAND;
 	const float jinRiJingJiaLimitUpMoney = 100.0;
 	const float jinRiJingJiaLimitUpMoneyWithLiuTong = 100.0;
 	const float jingJiaChaThreshould = -8.39;//2.39;
-	const float zhenFuChaThreshould = 5.8;
+	const float zhenFuChaThreshould = 5.8;//5.0; //5.8;
+
+	const float shouBanZhangFuMin = 3.0;
+	const float shouBanZhangFuMax = 4.0;
 
 	const float zhangTingBanBiLiuTongThreshould = 0.9;
 

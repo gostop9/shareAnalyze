@@ -449,6 +449,15 @@ void shareParaFuse(vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &
 					property.shiYingJing = zhangfuIter->shiYingJing;
 					property.shiYingTTM = zhangfuIter->shiYingTTM;
 
+					if (zijinIter->zhangFu > zhangfuIter->zhangFu)
+					{
+						property.zhangFu = zhangfuIter->zhangFu;
+					}
+					if (zijinIter->zongJinE > zhangfuIter->zongJinE)
+					{
+						property.zongJinE = zhangfuIter->zongJinE;
+					}
+
 					if (0 < preJingJiazhangfu.size())
 					{
 						vector<ZHANGFU_t>::iterator prezhangfuIter = preJingJiazhangfu.begin();
