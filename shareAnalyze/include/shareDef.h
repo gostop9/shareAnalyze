@@ -28,7 +28,7 @@ namespace SHAREDEF
 
 	const float ONE_HUNDRED = 100.0; //“百”为单位
 
-	const float ONE_MILLION = 1000000; //“百万”为单位
+	const float ONE_MILLION = 1000000.0; //“百万”为单位
 
 	const int MAX_SHARE_NUM = 6000;
 
@@ -61,26 +61,31 @@ namespace SHAREDEF
 	const std::string cybzpjjTdxFileName_hongta = "D:/Doc/Stock/TDX_KXG/T0002/blocknew/CYBZPJJ.blk";
 
 	const float kaiPanZfMax = 7.99; //5.99; // 1.2, //3.99
+	const float kaiPanZfMaxLimit = 9.9;
 	const float kaiPanZfMin = -5.99; // 4;
 	const float zhangFuRoundMin = 0.0019;
 	const int MAX_ZIJIN_IDX = 257;//57; //37
-	const float zuoRiKaiPanZfMinCeil = 8.99;
-	const float shouBan34ZfMax = 8.99;
+	const float zuoRiKaiPanZfMinCeil = 8.98;
+	const float shouBan34ZfMax = 8.98;
 
 	const int CHAR_LEN = (30);
 	static char nonChar[CHAR_LEN];
 
 	const float weiBiThreshold = -79.0; //-68.0; // -78.0;
 	const float weiBiMaxThreshold = 11.28;
-	const float weiBiMaxThresholdBigDeal = 40.0;
+	const float weiBiMaxThresholdBigDeal = 37.0;//40.0;
 	const float weiBiMaxThresholdBigDealMax = 68.0;
-	const float dianDanThreshold = 1400; //1450.0; //1500.0; //520.0;//580.0
+	const float weiBiMaxThresholdUpperLimit = 88.0;//80.0;
+	const float dianDanThreshold = 1400;//1400; //1450.0; //1500.0; //520.0;//580.0
+	const float gaoWeiBidianDanThreshold = 4999.0;//2400;
 	const float dianDanBigThreshold = 7200.0;
 	const float dianDanBigThreshold_2YiziTo3 = 6000.0;
-	const float yiZiBanDianDanBigThreshold = 1400.0;
+	const float yiZiBanDianDanBigThreshold = 1400;//1400.0;
 	const float yiZiBanLimitUpMoneyThreshold = 44.0;
 	const float zhangTingBanMinThreshold = 8.0;
+	const float continueZhangTingBanMinThreshold = 28.0;
 	const float zhangTingBanMaxThreshold = 180.0;
+	const float yiZiBan_bigFengDan = 122.0;
 	const float zhangTingBanThreshold = -700; //-1000.0;
 	const float zongLiuRuThreshold0 = 0.001754;//0.001754;
 	const float zongLiuRuThreshold1 = 0.002417;//0.002794;
@@ -91,7 +96,7 @@ namespace SHAREDEF
 	const float jingJiaJinEChaThreshould = 1000.0;
 	const float jingJiaJinEChaRatio = 0.8;
 	const float jingJiaJinEThreshould = 9099.0 * TENTHOUSAND; //9707.0  9999.0
-	const float zuoRiLimitUpMoney = 1000.0 * TENTHOUSAND;
+	const float zuoRiLimitUpMoney = 800.0 * TENTHOUSAND;
 	const float jinRiJingJiaLimitUpMoney = 100.0;
 	const float jinRiJingJiaLimitUpMoneyWithLiuTong = 100.0;
 	const float jingJiaChaThreshould = -8.39;//2.39;
