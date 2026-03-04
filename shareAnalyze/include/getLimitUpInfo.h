@@ -168,6 +168,10 @@ namespace GETLIMITUPINFO
 				zongLiuRuBiZuoRiZongJinE = p.zongLiuRuBiZuoRiZongJinE;
 				zuoRiKaiPanZhangFu = p.zuoRiKaiPanZhangFu;
 				preZuoShou = p.preZuoShou;
+
+				pre2XianJia = p.pre2XianJia;
+				pre2KaiPan = p.pre2KaiPan;
+
 				limitVsDealJingJia = p.limitVsDealJingJia;
 				limitVsCirculateJingJia = p.limitVsCirculateJingJia;
 

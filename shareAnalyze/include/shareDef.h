@@ -94,7 +94,7 @@ namespace SHAREDEF
 	const float danRiJingJiaRatio = 0.00166;
 
 	const float jingJiaJinEChaThreshould = 1000.0;
-	const float jingJiaJinEChaRatio = 0.8;
+	const float jingJiaJinEChaRatio = 0.78;
 	const float jingJiaJinEThreshould = 9099.0 * TENTHOUSAND; //9707.0  9999.0
 	const float zuoRiLimitUpMoney = 800.0 * TENTHOUSAND;
 	const float jinRiJingJiaLimitUpMoney = 100.0;

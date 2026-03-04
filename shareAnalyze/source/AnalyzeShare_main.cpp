@@ -174,10 +174,13 @@ void main()
 	char data2Pre[20];
 	char data3Pre[20];
 	char dataPreJingJiaFileName[100];
+	char dataPre2JingJiaFileName[100];
 	memset(date, 0, sizeof(date));
 	memset(path, 0, sizeof(path));
 	memset(dataPre, 0, sizeof(dataPre));
+	memset(data2Pre, 0, sizeof(data2Pre));
 	memset(dataPreJingJiaFileName, 0, sizeof(dataPreJingJiaFileName));
+	memset(dataPre2JingJiaFileName, 0, sizeof(dataPre2JingJiaFileName));
 	int fileIndex, ddeSelectCount, zijinSelectCount, zhuliSelectCount;
 
 	int itemNum = 0;
@@ -288,6 +291,7 @@ void main()
 	vector<vector<ZIJIN_t>> zijinJingLiuRu;
 	vector<vector<PROPERTY_t>> propertyVecJingLiuRu;
 	vector<ZHANGFU_t> preJingJiazhangfu;
+	vector<ZHANGFU_t> pre2JingJiazhangfu;
 
 	int fileSize = (fileIndex > 1) ? fileIndex : 1;
 	dde.resize(fileSize);
@@ -303,7 +307,7 @@ void main()
 	//前一日涨停数据
 	vector<zhangTing_t> zhangTingVecPre;
 	zhangTingVecPre.clear();
-	//前3日涨停数据
+	//前2日涨停数据
 	vector<zhangTing_t> zhangTingVec2Pre;
 	zhangTingVec2Pre.clear();
 	//前3日涨停数据
@@ -326,6 +330,12 @@ void main()
 			dataPreJingJiaFileName,
 			path,
 			dataPre);
+
+		//增加前2日竞价文件读取，比较连板股的竞价金额
+		strcpy(dataPre2JingJiaFileName, path);
+		strcat(dataPre2JingJiaFileName, "zhangfu_");
+		strcat(dataPre2JingJiaFileName, data2Pre);
+		strcat(dataPre2JingJiaFileName, ".txt");
 
 		readGuBenFile(guBenFileName, guBenVec);
 
@@ -360,6 +370,7 @@ void main()
 			//vector<ZHANGFU_t> zhangfu;
 			readZhangfuFile(zhangfuFileName, zhangfu[0]);
 			readZhangfuFile(dataPreJingJiaFileName, preJingJiazhangfu);
+			readZhangfuFile(dataPre2JingJiaFileName, pre2JingJiazhangfu);
 		}
 
 		//if (20210831 > cnt_int)
@@ -474,6 +485,40 @@ void main()
 
 		//根据实际流通计算其他参数
 		calculateOtherPara(rstFp, propertyV[vecIndex], propertyAnalyVecPre, zhangTingVecPre);
+
+		// 提取前2交易日的开盘价和收盘价
+		if (0 < pre2JingJiazhangfu.size())
+		{
+			vector<PROPERTY_t>::iterator proIter = propertyV[vecIndex].begin();
+			while (proIter != propertyV[vecIndex].end())
+			{
+				vector<ZHANGFU_t>::iterator zfIter = pre2JingJiazhangfu.begin();
+				while (zfIter != pre2JingJiazhangfu.end())
+				{
+					char codeTemp[10];
+					memset(codeTemp, 0, sizeof(codeTemp));
+
+					if (6 == strlen(zfIter->code))
+					{
+						char* pCode = proIter->code;
+						strncpy(codeTemp, &pCode[2], 6);
+					}
+					else
+					{
+						strcpy(codeTemp, proIter->code);
+					}
+
+					if (0 == strcmp(codeTemp, zfIter->code))
+					{
+						proIter->pre2XianJia = zfIter->xianJia;
+						proIter->pre2KaiPan = zfIter->kaiPan;
+						break;
+					}
+					++zfIter;
+				}
+				++proIter;
+			}
+		}
 
 		vector<PROPERTY_t>& propertyAnalyVecForSort = propertyV[vecIndex];
 		// sort for zijinChuIdx
@@ -653,6 +698,7 @@ void main()
 				string indCode = analyProty.code;
 				// N字板判断，三天前涨停
 				bool zhangTing3PreFlag = false;
+				zhangTing_t zhangTing3Pre;
 				// 前交易日一字板判断
 				for (int zt3PreIdx = 0; zt3PreIdx < zhangTingVec3Pre.size(); zt3PreIdx++)
 				{
@@ -662,6 +708,7 @@ void main()
 					if (index != string::npos)
 					{
 						zhangTing3PreFlag = true;
+						zhangTing3Pre = zhangTingVec3Pre[zt3PreIdx];
 						break;
 					}
 				}
@@ -674,7 +721,12 @@ void main()
 					|| ((fanBao_notYiZi_flag && (analyProty.zuoRiKaiPanZhangFu > 9.99)))
 					) // 反包N型板
 				{
-					continue;
+					// 2pre 收涨
+					//if (zhangTing3Pre.maxPrice * 1.1 > analyProty.zuoRiZuiGao)
+					if (analyProty.pre2XianJia < analyProty.pre2KaiPan)
+					{
+						continue;
+					}
 				}
 
 				if ((analyProty.zongJinE > 100000 * TENTHOUSAND) && (analyProty.dianDanJinE < 30000)) // 海格通信，湖南黄金，天风证券
@@ -785,7 +837,7 @@ void main()
 				bool zuoRiJinRi_yiZi_fangliang_or_weibi = (!zuoRiJinRi_yiZi_fangliang) || (analyProty.dianDanJinE > 4500.0);
 				bool dianDanBig_2YiziTo3_flag = (zuoRiyiZiBan_Flag && (analyProty.continueDay == 2) && (analyProty.dianDanJinE < dianDanBigThreshold_2YiziTo3));// 二进三，二板非一字或垫单大
 				bool notYizi_bigWeibi_flag = ((analyProty.zhangTingBan < zhangTingBanThreshold) || (analyProty.weiBi > weiBiMaxThresholdUpperLimit)) && (!jinRiYiZiBanFlag);
-				bool zhangTingJia_bigWeibi = ((analyProty.zhangFu > kaiPanZfMaxLimit) && (analyProty.weiBi > weiBiMaxThreshold) && (analyProty.dianDanJinE > gaoWeiBidianDanThreshold) && (analyProty.zongJinE < analyProty.dianDanJinE * TENTHOUSAND * 6.0));
+				bool zhangTingJia_bigWeibi = ((analyProty.zhangFu > kaiPanZfMaxLimit) && (analyProty.weiBi > weiBiMaxThreshold) && (analyProty.dianDanJinE > gaoWeiBidianDanThreshold + analyProty.continueDay * 100.0) && (analyProty.zongJinE < analyProty.dianDanJinE * TENTHOUSAND * 6.0));
 
 				// 非一字板，23板，昨日开盘涨幅[8,9]
 				bool notYizi_23_8pre = (!jinRiYiZiBanFlag) && (analyProty.continueDay < 3) && (analyProty.zuoRiKaiPanZhangFu > 8.0) && (analyProty.zuoRiKaiPanZhangFu < 8.99);
@@ -798,7 +850,29 @@ void main()
 				{
 					continue;
 				}
+				// 昨日一字板，成交大于涨停封单，今日继续一字板
+				//if (zuoRiyiZiBan_Flag && jinRiYiZiBanFlag && (analyProty.zuoRiZongJinE > analyProty.limitUpMoney) && (analyProty.continueDay == 2) && (analyProty.dianDanJinE < 4500.0))
+				if (zuoRiyiZiBan_Flag && jinRiYiZiBanFlag && (analyProty.zuoRiZongJinE > analyProty.limitUpMoney) && (analyProty.continueDay == 2) && (analyProty.zuoRiZongJinE > 280.0 * ONE_MILLION))
+				{
+					continue;
+				}
+				// 昨日一字板，成交大于涨停封单
+				if (zuoRiyiZiBan_Flag && (analyProty.zuoRiZongJinE > analyProty.limitUpMoney) && (analyProty.zuoRiZongJinE > 280.0 * ONE_MILLION) && (analyProty.dianDanJinE < 10000.0))
+				{
+					continue;
+				}
+
+				// 昨日T字板，振幅小于10，不能下水
+				if (zuoRiyiZiBanTFlag && (analyProty.zuoRiZhenFu > 10.5))
+				{
+					continue;
+				}
 				if (zuoRiLimitUpMoney > analyProty.limitUpMoney)
+				{
+					continue;
+				}
+				// 昨日竞价金额大于50万
+				if (10.0 * TENTHOUSAND > analyProty.preJingJiaZongJinE)
 				{
 					continue;
 				}
@@ -895,7 +969,7 @@ void main()
 							(atoi(analyProty.lastLimitTime) < lastLimitTimeThreshould) &&
 							//((analyProty.zuoRiKaiPanZhangFu < zuoRiKaiPanZfMax) || (analyProty.continueDay > 1)) &&
 							((analyProty.zuoRiKaiPanZhangFu < zuoRiKaiPanZfMax) || (analyProty.zuoRiKaiPanZhangFu > zuoRiKaiPanZfMinCeil) || (analyProty.continueDay > 1)) &&
-							((analyProty.preJingJiaZongJinE - jingJiaJinEChaThreshould * TENTHOUSAND < analyProty.zongJinE) || (jingJiaJinEChaRatio < analyProty.zongJinE / analyProty.ziYouLiuTongShiZhi)) &&
+							((analyProty.preJingJiaZongJinE - jingJiaJinEChaThreshould * TENTHOUSAND < analyProty.zongJinE) || ((jingJiaJinEChaRatio < analyProty.zongJinE / analyProty.preJingJiaZongJinE) && (analyProty.zongJinE > 5000.0 * TENTHOUSAND))) &&
 							((analyProty.dianDanJinE > notYiZi_dianDan_per_day) && notYizi_bigWeibi_flag))
 						{
 							normal_sel_flag = true;

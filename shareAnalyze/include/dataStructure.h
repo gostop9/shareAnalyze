@@ -431,6 +431,9 @@ struct PROPERTY_t
 	float zuoRiZongJinE;
 	float preZuoShou;
 
+	float pre2XianJia;
+	float pre2KaiPan;
+
 	float zongLiuRuBiZuoRiZongJinE;
 	float zuoRiKaiPanZhangFu;
 
@@ -532,6 +535,9 @@ struct PROPERTY_t
 		zongLiuRuBiZuoRiZongJinE = -100.0;
 		zuoRiKaiPanZhangFu = -15.0;
 		preZuoShou = 0.0;
+
+		pre2XianJia = 0.0;
+		pre2KaiPan = 0.0;
 
 		limitVsDealJingJia = 0.0;
 		limitVsCirculateJingJia = 0.0;
