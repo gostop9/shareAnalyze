@@ -1116,7 +1116,7 @@ bool readZhangfuFile(char *fileName, vector<ZHANGFU_t> &zhangfuVec)
 		string str = lineDateBuf;
 		vector<string> strVec;
 		strVec.reserve(50);
-		stringSplitMultiSymbol(str, "\t", strVec);
+		stringSplitMultiSymbolZhangfu(str, "\t", strVec);
 		/*for (const auto &i : strVec)
 		{
 		cout << i << endl;

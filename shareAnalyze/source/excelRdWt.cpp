@@ -583,6 +583,9 @@ char ExcelRwC::excelWriteHeaderC(CRange0 &rgMyRge)
 
 	alphabet += eColumn;
 
+	char column = 'P';
+	setCellBackColor(wsMySheet, excelHeaderSymbol, column, eRow, 46);//°µºìÉ«
+
 	return alphabet-2;
 }
 
