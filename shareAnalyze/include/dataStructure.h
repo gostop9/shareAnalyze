@@ -37,8 +37,8 @@ extern float daDanJingEBMin;
 
 struct DDE_t
 {
-    char  code[10];
-    char  name[12];
+    char  code[CODE_LEN];
+    char  name[NAME_LEN];
     float zhuLiJingLiang;
     float sanHuShuLiang;
     float zhuLiJinE;
@@ -55,8 +55,8 @@ struct DDE_t
 
 struct ZIJIN_t
 {
-    char  code[10];
-    char  name[12];
+    char  code[CODE_LEN];
+    char  name[NAME_LEN];
     float liuTongShiZhi;
 	float ziYouLiuTongShiZhi;//20180901 add，不用读取标签文件	
     float huanShou;
@@ -105,8 +105,8 @@ struct ZIJIN_t
 /*
 struct ZIJIN_t
 {
-    char  code[10];
-    char  name[10];
+    char  code[CODE_LEN];
+    char  name[NAME_LEN];
     float liuTongShiZhi;
     float huanShou;
     float zhangFu;
@@ -142,8 +142,8 @@ struct ZIJIN_t
 
 struct ZHULI_t
 {
-    char  code[10];
-    char  name[12];
+    char  code[CODE_LEN];
+    char  name[NAME_LEN];
     float liuTongShiZhi;
     float xianJia;
     float jinRiZengCangZhanBi;
@@ -176,8 +176,8 @@ struct ZHULI_t
 
 struct ZHANGFU_t
 {
-    char  code[10];
-    char  name[12];
+    char  code[CODE_LEN];
+    char  name[NAME_LEN];
     float liuTongShiZhi;
 	float huanShou;
 	float xianJia;
@@ -249,8 +249,8 @@ struct PROPERTY_t
 {
 	//DDE
 	int   ddeIdx;
-	char  code[10];
-	char  name[12];
+	char  code[CODE_LEN];
+	char  name[NAME_LEN];
 	float zhuLiJingLiang;
 	float sanHuShuLiang;
 	float zhuLiJinE;
@@ -600,8 +600,8 @@ struct PROPERTY_t
 /*
 struct DDE_t
 {
-    char  code[10];
-    char  name[10];
+    char  code[CODE_LEN];
+    char  name[NAME_LEN];
     float zhuLiJingLiang;
     float sanHuShuLiang;
     float zhuLiJinE;
@@ -618,8 +618,8 @@ struct DDE_t
 
 struct ZIJIN_t
 {
-    char  code[10];
-    char  name[10];
+    char  code[CODE_LEN];
+    char  name[NAME_LEN];
     int64 liuTongShiZhi;
     float huanShou;
     float zhangFu;
@@ -645,8 +645,8 @@ struct ZIJIN_t
 
 struct ZHULI_t
 {
-    char  code[10];
-    char  name[10];
+    char  code[CODE_LEN];
+    char  name[NAME_LEN];
     int64 liuTongShiZhi;
     float xianJia;
     float jinRiZengCangZhanBi;
@@ -678,13 +678,13 @@ struct ZHULI_t
 
 struct analyseCode_t
 {
-	char  code[10];
+	char  code[CODE_LEN];
 };
 
 struct guBen_t
 {
-	char  code[10];
-	char  name[20];
+	char  code[CODE_LEN];
+	char  name[NAME_LEN];
 	//float ziYouLiuTongShiZhi;
 	float ziYouLiuTongGu;
 	float guXingPingFen;

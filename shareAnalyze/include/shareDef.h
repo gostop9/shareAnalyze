@@ -17,6 +17,9 @@ namespace SHAREDEF
 
 	const float BI_LIUTONG = 100000.0;
 
+	const int CODE_LEN = 20;
+	const int NAME_LEN = 20;
+
 	const std::string NEW_SHARE = "新股";
 	const std::string NEW_SHARE_ON = "新股上市";
 	const std::string PRE_NEW_SHARE = "次新";

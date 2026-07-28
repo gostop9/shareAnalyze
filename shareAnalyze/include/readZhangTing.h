@@ -10,7 +10,7 @@ namespace ZHANGTING
 {
 struct zhangTing_t
 {
-    char  code[10];
+    char  code[CODE_LEN];
     char  name[10];
 	int   indexLvsC;
     float liangBi;

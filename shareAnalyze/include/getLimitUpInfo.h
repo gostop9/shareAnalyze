@@ -20,7 +20,7 @@ namespace GETLIMITUPINFO
 				ddeIdx = p.ddeIdx;
 				strcpy(code, p.code);
 				strcpy(name, p.name);
-				//code[10] = code[10];
+				//code[CODE_LEN] = code[CODE_LEN];
 				//name[10] = name[10];
 				zhuLiJingLiang = p.zhuLiJingLiang;
 				sanHuShuLiang = p.sanHuShuLiang;

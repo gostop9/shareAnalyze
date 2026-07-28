@@ -841,6 +841,8 @@ void main()
 				bool zhangTingJia_bigWeibi = ((analyProty.zhangFu > kaiPanZfMaxLimit) && (analyProty.weiBi > weiBiMaxThreshold) && (analyProty.dianDanJinE > gaoWeiBidianDanThreshold + analyProty.continueDay * 100.0) && (analyProty.zongJinE < analyProty.dianDanJinE * TENTHOUSAND * 6.0));
 
 				bool zuoRiYiZi_bigDeal_bigDianDan = zuoRiyiZiBan_Flag && (18000.0 * TENTHOUSAND < analyProty.zongJinE) && (analyProty.dianDanJinE > dianDanBigThreshold) && (analyProty.zhangFu > 4.5);
+
+				bool zuoRiyiZiBanT_bigDeal_bigDianDan = zuoRiyiZiBanTFlag && (bigDeal_and_Diandan) && (analyProty.zhangFu > 5.0);
 				//bool bigDeal_and_Diandan = (analyProty.dianDanJinE > dianDanBigThreshold) && (jingJiaJinEThreshould < analyProty.zongJinE) && (analyProty.weiBi < weiBiMaxThresholdBigDeal);
 				bool zuoRiYiZi_fangLiang_bigLimit = 30000.0 * TENTHOUSAND;
 
@@ -995,7 +997,7 @@ void main()
 							//(analyProty.preJingJiaZongJinE < analyProty.zongJinE) &&
 							(analyProty.zhangFu > kaiPanZfBigDealThreshould) &&
 							(analyProty.weiBi > weiBiThreshold) &&
-							((!shouBan_gaoKai_flag) || zuoRiYiZi_bigDeal_bigDianDan) &&
+							((!shouBan_gaoKai_flag) || zuoRiYiZi_bigDeal_bigDianDan || zuoRiyiZiBanT_bigDeal_bigDianDan) &&
 							((analyProty.weiBi < weiBiMaxThresholdBigDeal) || (analyProty.weiBi > weiBiMaxThresholdUpperLimit) || zhangTingJia_bigWeibi || (jinRiYiZiBanFlag) || ((analyProty.dianDanJinE > dianDanBigThreshold) && (analyProty.weiBi < weiBiMaxThresholdBigDealMax))) &&
 							(!(zuoRiyiZiBanTFlag && (analyProty.continueDay == 1)) || bigDeal_and_Diandan) && // 一进二首板非一字或T字
 							(!((analyProty.zuoRiKaiPanZhangFu > shouBanZhangFuMin) && (analyProty.zuoRiKaiPanZhangFu < shouBanZhangFuMax) && (analyProty.zhangFu < shouBan34ZfMax) && (analyProty.continueDay == 1)) || bigDeal_and_Diandan) && // 一进二，前一日开盘涨幅区间排除[3,4]，涨幅小于8.99
@@ -1147,6 +1149,10 @@ void main()
 							|| (analyProty.zhangFu > 4.99) 
 							|| ((analyProty.zhangFu > 3.99) && (analyProty.ziYouLiuTongShiZhi > 100 * DIVIDE))))
 					{
+						if ((analyProty.zongJinE > 100000 * TENTHOUSAND) && (analyProty.dianDanJinE < 30000)) // 海格通信，湖南黄金，天风证券
+						{
+							continue;
+						}
 						jingJiaBigMeetVector.push_back(analyProty);
 					}
 				}
