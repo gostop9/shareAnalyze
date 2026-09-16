@@ -85,7 +85,7 @@ namespace SHAREDEF
 	const float dianDanBigThreshold_2YiziTo3 = 6000.0;
 	const float yiZiBanDianDanBigThreshold = 1400;//1400.0;
 	const float yiZiBanLimitUpMoneyThreshold = 44.0;
-	const float zhangTingBanMinThreshold = 8.0;
+	const float zhangTingBanMinThreshold = 7.99;//8.0;
 	const float continueZhangTingBanMinThreshold = 28.0;
 	const float zhangTingBanMaxThreshold = 180.0;
 	const float yiZiBan_bigFengDan = 122.0;
@@ -103,7 +103,7 @@ namespace SHAREDEF
 	const float jinRiJingJiaLimitUpMoney = 100.0;
 	const float jinRiJingJiaLimitUpMoneyWithLiuTong = 100.0;
 	const float jingJiaChaThreshould = -8.39;//2.39;
-	const float zhenFuChaThreshould = 5.8;//5.0; //5.8;
+	const float zhenFuChaThreshould = 4.64;//5.0; //5.8;
 
 	const float shouBanZhangFuMin = 3.0;
 	const float shouBanZhangFuMax = 4.0;

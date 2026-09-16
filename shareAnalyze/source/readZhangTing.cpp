@@ -16,9 +16,23 @@ bool zhangTingYiZiBanJudge(zhangTing_t& zhangTingItem)
 {
 	bool flag = false;
 	if (
-		((abs(zhangTingItem.startPrice - zhangTingItem.startPrice) < FLT_MIN)
+		((abs(zhangTingItem.startPrice - zhangTingItem.endPrice) < FLT_MIN)
 			&& (abs(zhangTingItem.maxPrice - zhangTingItem.minPrice) < FLT_MIN)
 			&& (zhangTingItem.zhenFu < FLT_MIN))
+		)
+	{
+		flag = true;
+	}
+	return flag;
+}
+
+bool zhangTingYiZiBanTbanJudge(zhangTing_t& zhangTingItem)
+{
+	bool flag = false;
+	if (
+		((abs(zhangTingItem.startPrice - zhangTingItem.endPrice) < FLT_MIN)
+			&& (abs(zhangTingItem.maxPrice - zhangTingItem.minPrice) > 0.0)
+			&& (zhangTingItem.zhenFu > 0.0))
 		)
 	{
 		flag = true;

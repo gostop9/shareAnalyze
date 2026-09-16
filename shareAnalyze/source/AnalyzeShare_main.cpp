@@ -786,6 +786,7 @@ void main()
 				{
 					// 前交易日涨停判断
 					bool zhangTingYiZiPreFlag = false;
+					bool zhangTingYiZiTPreFlag = false;
 					for (int ztPreIdx = 0; ztPreIdx < zhangTingVecPre.size(); ztPreIdx++)
 					{
 						string ztCode = zhangTingVecPre[ztPreIdx].code;
@@ -794,10 +795,12 @@ void main()
 						if (index != string::npos)
 						{
 							zhangTingYiZiPreFlag = zhangTingYiZiBanJudge(zhangTingVecPre[ztPreIdx]);
+							zhangTingYiZiTPreFlag = zhangTingYiZiBanTbanJudge(zhangTingVecPre[ztPreIdx]);
 							break;
 						}
 					}
 					bool zhangTingYiZi2PreFlag = false;
+					bool zhangTingYiZiT2PreFlag = false;
 					for (int ztPreIdx = 0; ztPreIdx < zhangTingVec2Pre.size(); ztPreIdx++)
 					{
 						string zt2Code = zhangTingVec2Pre[ztPreIdx].code;
@@ -806,6 +809,7 @@ void main()
 						if (index != string::npos)
 						{
 							zhangTingYiZi2PreFlag = zhangTingYiZiBanJudge(zhangTingVec2Pre[ztPreIdx]);
+							zhangTingYiZiT2PreFlag = zhangTingYiZiBanTbanJudge(zhangTingVec2Pre[ztPreIdx]);
 							break;
 						}
 					}
@@ -831,12 +835,26 @@ void main()
 					{
 						continue;
 					}
+					//if ((analyProty.zuoRiKaiPanZhangFu > 8.9) && zhangTingYiZi2PreFlag && jinRiYiZiBanFlag && (analyProty.continueDay >= 3) && (analyProty.dianDanJinE < 5900.0) && (analyProty.zhangTingBan < 50.0))
+					{
+						//continue; // 新赛股份
+					}
+					// 安徽建工
+					if ((analyProty.zuoRiKaiPanZhangFu > 6.0) && (analyProty.pre2KaiPan > (analyProty.pre2XianJia / (1.1*0.94))) && (!zhangTingYiZiTPreFlag) && (!zhangTingYiZiT2PreFlag) && (analyProty.dianDanJinE < 5900.0))
+					{
+						continue;
+					}
 				}
 				
 				bool jingJiaJinE_flag = ((danRiJingJiaThreshould * TENTHOUSAND) < analyProty.zongJinE) && (analyProty.zongJinE / analyProty.ziYouLiuTongShiZhi > danRiJingJiaRatio);
 				bool zuoRiJinRi_yiZi_fangliang = zuoRiyiZiBan_Flag && jinRiYiZiBanFlag && (analyProty.continueDay > 1) && (zhangTingBanMaxThreshold * ONE_MILLION < analyProty.zongJinE) && ((analyProty.zhangTingBan < jinRiJingJiaLimitUpMoney));
 				bool zuoRiJinRi_yiZi_fangliang_or_weibi = (!zuoRiJinRi_yiZi_fangliang) || (analyProty.dianDanJinE > 4500.0);
 				bool dianDanBig_2YiziTo3_flag = (zuoRiyiZiBan_Flag && (analyProty.continueDay == 2) && (analyProty.dianDanJinE < dianDanBigThreshold_2YiziTo3));// 二进三，二板非一字或垫单大
+				bool erDayu5_sanXiaoyu9_2To3_flag = ((analyProty.continueDay == 2) &&
+					((analyProty.zuoRiKaiPanZhangFu > 5.0) && (analyProty.zuoRiKaiPanZhangFu < 9.0)) &&
+					(analyProty.zongLiuRuBiLiuTong < zongLiuRuThreshold1 + 0.0035) &&
+					(analyProty.zhangFu < 9.0) && (analyProty.zhangFu > 7.0) && (jingJiaJinEThreshould > analyProty.zongJinE) && (analyProty.dianDanJinE < dianDanBigThreshold)
+					);// 二进三，二板大于5，三板小于9，垫单和成交不达标, 
 				bool notYizi_bigWeibi_flag = ((analyProty.zhangTingBan < zhangTingBanThreshold) || (analyProty.weiBi > weiBiMaxThresholdUpperLimit)) && (!jinRiYiZiBanFlag);
 				bool zhangTingJia_bigWeibi = ((analyProty.zhangFu > kaiPanZfMaxLimit) && (analyProty.weiBi > weiBiMaxThreshold) && (analyProty.dianDanJinE > gaoWeiBidianDanThreshold + analyProty.continueDay * 100.0) && (analyProty.zongJinE < analyProty.dianDanJinE * TENTHOUSAND * 6.0));
 
@@ -948,6 +966,14 @@ void main()
 						continue;
 					}
 				}
+				// 昨日一字，成交大于7亿
+				if (zuoRiyiZiBan_Flag)
+				{
+					if ((700.0 * ONE_MILLION < analyProty.zuoRiZongJinE) && (analyProty.continueDay == 1)) // 山子高科
+					{
+						continue;
+					}
+				}
 
 				for (int ztPreIdx = 0; ztPreIdx < zhangTingVecPre.size(); ztPreIdx++)
 				{
@@ -966,8 +992,17 @@ void main()
 						bool yiziMayOpen_sel_flag = false;
 						bool yiziFengChengBi_sel_flag = false;
 
+						// 金龙羽20260916
+						bool shouBanGaoKai_noBig_flag = (!zuoRiyiZiBanTFlag) && (analyProty.continueDay == 1) && (analyProty.zuoRiKaiPanZhangFu > 6.0) && (analyProty.zuoRiKaiPanZhangFu < 9.0) && (analyProty.dianDanJinE < 4000.0) && (jingJiaJinEThreshould > analyProty.zongJinE);
+						// 中视传媒
+						bool zuoRiGaoKai_fanLv_flag = (!zuoRiyiZiBanTFlag) && (analyProty.zuoRiZhenFu > 11.0) && (analyProty.zuoRiKaiPanZhangFu > 7.9) && (analyProty.dianDanJinE < 4000.0) && (jingJiaJinEThreshould > analyProty.zongJinE);
+						// 云煤能源
+						bool zuoRiGaoKai9_jinRi9_flag = (!zuoRiyiZiBanTFlag) && (!jinRiYiZiBanFlag) && (analyProty.zhangFu > 9.0) && (analyProty.zuoRiKaiPanZhangFu > 9.0) && (analyProty.zuoRiKaiPanZhangFu > analyProty.zhangFu) && (analyProty.dianDanJinE < 4000.0) && (jingJiaJinEThreshould > analyProty.zongJinE);
 
 						if ((jingJiaJinE_flag) &&
+							(!shouBanGaoKai_noBig_flag) &&
+							(!zuoRiGaoKai_fanLv_flag) &&
+							(!zuoRiGaoKai9_jinRi9_flag) &&
 							(limitOpenThreshould > analyProty.limitOpenCount) &&
 							(zuoRiLimitUpMoney < analyProty.limitUpMoney) &&
 							(!shouBan_gaoKai_flag) &&
@@ -982,6 +1017,7 @@ void main()
 							(!(zuoRiyiZiBan_Flag && (analyProty.continueDay == 3))) && // 三进四首板非一字
 							(!((analyProty.zuoRiKaiPanZhangFu > shouBanZhangFuMin) && (analyProty.zuoRiKaiPanZhangFu < shouBanZhangFuMax) && (analyProty.zhangFu < shouBan34ZfMax) && (analyProty.continueDay == 1))) && // 一进二，前一日开盘涨幅区间排除[3,4]，涨幅小于8.99
 							(!dianDanBig_2YiziTo3_flag) && // 二进三，二板非一字
+							(!erDayu5_sanXiaoyu9_2To3_flag) &&
 							(atoi(analyProty.lastLimitTime) < lastLimitTimeThreshould) &&
 							//((analyProty.zuoRiKaiPanZhangFu < zuoRiKaiPanZfMax) || (analyProty.continueDay > 1)) &&
 							((analyProty.zuoRiKaiPanZhangFu < zuoRiKaiPanZfMax) || (analyProty.zuoRiKaiPanZhangFu > zuoRiKaiPanZfMinCeil) || (analyProty.continueDay > 1)) &&
@@ -1149,9 +1185,18 @@ void main()
 							|| (analyProty.zhangFu > 4.99) 
 							|| ((analyProty.zhangFu > 3.99) && (analyProty.ziYouLiuTongShiZhi > 100 * DIVIDE))))
 					{
-						if ((analyProty.zongJinE > 100000 * TENTHOUSAND) && (analyProty.dianDanJinE < 30000)) // 海格通信，湖南黄金，天风证券
+						if ((analyProty.zongJinE > 100000 * TENTHOUSAND) && (analyProty.dianDanJinE < 30000) && (analyProty.continueDay >= 1)) // 海格通信，湖南黄金，天风证券
 						{
 							continue;
+						}
+						// 昨日一字，成交小于7亿
+						bool zuoRiyiZiBan_Flag = zuoRiYiZiBanJudge(analyProty);
+						if (zuoRiyiZiBan_Flag)
+						{
+							if ((700.0 * ONE_MILLION < analyProty.zuoRiZongJinE) && (analyProty.continueDay == 1)) // 山子高科
+							{
+								continue;
+							}
 						}
 						jingJiaBigMeetVector.push_back(analyProty);
 					}
