@@ -103,7 +103,7 @@ namespace SHAREDEF
 	const float jinRiJingJiaLimitUpMoney = 100.0;
 	const float jinRiJingJiaLimitUpMoneyWithLiuTong = 100.0;
 	const float jingJiaChaThreshould = -8.39;//2.39;
-	const float zhenFuChaThreshould = 4.64;//5.0; //5.8;
+	const float zhenFuChaThreshould = 5.8;//4.64;//5.0; //5.8;
 
 	const float shouBanZhangFuMin = 3.0;
 	const float shouBanZhangFuMax = 4.0;

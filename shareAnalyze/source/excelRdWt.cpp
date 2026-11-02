@@ -654,18 +654,37 @@ void ExcelRwC::createExcelSheet(string sheetName)
 	excelRowIndex = 2;
 }
 
-void ExcelRwC::closeExcelSheet()
+void ExcelRwC::closeExcelSheet(int lineNumToShow)
 {
+	// 4. 构造目标单元格的地址 (例如: "A" + 最后一行行号)
+	// 为了简单，我们直接定位到 A 列的最后一行
+	CString strCellAddress;
+	strCellAddress.Format(_T("A%ld"), lineNumToShow);
+
+	// 5. 获取目标单元格的 Range 对象并选中它
+	CRange0 targetRange = wsMySheet.get_Range(COleVariant(strCellAddress), COleVariant(strCellAddress));
+	targetRange.Select(); // 关键步骤：选中单元格，Excel 视图会自动滚动到此处
+
+	// 6. 释放临时 Range 对象资源
+	targetRange.ReleaseDispatch();
+
+
 	//////////////////////////////////////////////////////////////////////////////////////////// 	
 	/*根据文件的后缀名选择保存文件的格式*/
 	//CString strSaveAsName = _T("C:\\new.xlsx");
 	ExcelApp.put_DisplayAlerts(FALSE);
+	ExcelApp.put_Visible(FALSE);
 	ExcelApp.put_AlertBeforeOverwriting(FALSE); // 不弹出对话框询问是否保存
 	CString strSaveAsName = _T(ZTFPfileName.c_str());
 	//wbMyBook.SaveCopyAs(COleVariant(_T(strSaveAsName.GetString())));
+
+	// 替代方案：使用 Excel 4.0 宏函数
+	/*CString strMacro;
+	strMacro.Format(_T("APPLICATION.GOTO(REFERENCE:\"R%ldC1\", SCROLL:TRUE)"), lineNumToShow);
+	ExcelApp.ExecuteExcel4Macro((strMacro));*/
+
 	wbMyBook.Save();
 	wbMyBook.put_Saved(TRUE);
-	ExcelApp.put_Visible(FALSE);
 	//system("pause");
 	ExcelApp.Quit();
 

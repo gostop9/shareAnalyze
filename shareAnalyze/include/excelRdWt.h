@@ -46,7 +46,7 @@ public:
 	void setSpecificColors(vector<PROPERTY_t>::iterator it, CWorksheet &wsMySheet, char &excelHeaderSymbol, int &row, int flag_guXinZhengShu);
 	char excelWriteHeaderC(CRange0 &rgMyRge);
 	void createExcelSheet(string sheetName);
-	void closeExcelSheet();
+	void closeExcelSheet(int lineNumToShow);
 	void writeExcelSheet(vector<PROPERTY_t> &propertyVec, int flag_guXinZhengShu);
 	void excelWriteRowC(string sheetName, std::vector<PROPERTY_t> &propertyVec, kaiPanSummary_t &summary);
 

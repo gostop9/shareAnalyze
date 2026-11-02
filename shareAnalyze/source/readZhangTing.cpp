@@ -30,9 +30,8 @@ bool zhangTingYiZiBanTbanJudge(zhangTing_t& zhangTingItem)
 {
 	bool flag = false;
 	if (
-		((abs(zhangTingItem.startPrice - zhangTingItem.endPrice) < FLT_MIN)
-			&& (abs(zhangTingItem.maxPrice - zhangTingItem.minPrice) > 0.0)
-			&& (zhangTingItem.zhenFu > 0.0))
+		((abs(zhangTingItem.startPrice - zhangTingItem.endPrice) < 0.01)
+			&& (zhangTingItem.zhenFu < 10.5))
 		)
 	{
 		flag = true;
