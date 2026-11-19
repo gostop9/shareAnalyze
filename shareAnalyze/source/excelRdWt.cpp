@@ -659,7 +659,7 @@ void ExcelRwC::closeExcelSheet(int lineNumToShow)
 	// 4. 构造目标单元格的地址 (例如: "A" + 最后一行行号)
 	// 为了简单，我们直接定位到 A 列的最后一行
 	CString strCellAddress;
-	strCellAddress.Format(_T("A%ld"), lineNumToShow);
+	strCellAddress.Format(_T("A%ld"), lineNumToShow + 30);
 
 	// 5. 获取目标单元格的 Range 对象并选中它
 	CRange0 targetRange = wsMySheet.get_Range(COleVariant(strCellAddress), COleVariant(strCellAddress));

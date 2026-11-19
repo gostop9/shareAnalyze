@@ -530,6 +530,7 @@ void main()
 					{
 						proIter->pre2XianJia = zfIter->xianJia;
 						proIter->pre2KaiPan = zfIter->kaiPan;
+						proIter->pre2ZhangFu = zfIter->zhangFu;
 						break;
 					}
 					++zfIter;
@@ -714,6 +715,16 @@ void main()
 				bool bigDeal_and_Diandan = (analyProty.dianDanJinE > dianDanBigThreshold) && (jingJiaJinEThreshould < analyProty.zongJinE) && (analyProty.weiBi < weiBiMaxThresholdBigDeal);
 				bool erban8_2to3 = (analyProty.continueDay == 2) && ((analyProty.zuoRiKaiPanZhangFu < 8.99) && (analyProty.zuoRiKaiPanZhangFu > 7.99)) && (!jinRiYiZiBanFlag);
 				string indCode = analyProty.code;
+
+				if (std::strstr(analyProty.suoShuHangYe, "服装") != nullptr)
+				{
+					std::cout << "Found 服装, " << analyProty.name << std::endl;
+					if ((analyProty.dianDanJinE < 2400.0) && (analyProty.zhangFu < 9.0)) // 龙头股份20231218
+					{
+						continue;
+					}
+				}
+
 				// N字板判断，三天前涨停
 				bool zhangTing3PreFlag = false;
 				zhangTing_t zhangTing3Pre;
@@ -744,7 +755,7 @@ void main()
 				{
 					// 2pre 收涨
 					//if (zhangTing3Pre.maxPrice * 1.1 > analyProty.zuoRiZuiGao)
-					if ((analyProty.pre2XianJia < analyProty.pre2KaiPan) || (zuoRiyiZiBanTFlag) || (analyProty.zuoRiZhangFu < 0.0))
+					if ((analyProty.pre2XianJia < analyProty.pre2KaiPan) || (zuoRiyiZiBanTFlag) || (analyProty.pre2ZhangFu < 0.01) || (analyProty.zuoRiKaiPanZhangFu < -4.0))
 					{
 						continue;
 					}
@@ -883,6 +894,25 @@ void main()
 					{
 						continue; // 昆药集团
 					}
+					if (zhangTingYiZiPreFlag && zhangTingYiZi2PreFlag && (!jinRiYiZiBanFlag) && (analyProty.continueDay == 2) && (28000.0 * TENTHOUSAND < analyProty.zongJinE) && (analyProty.dianDanJinE < 5900.0))
+					{
+						std::cout << "连续两个一字,  %s\n" << analyProty.name << std::endl;
+						fprintf(rstFp, "连续两个一字， %s\n", analyProty.name);
+						continue; // 东风股份20241113
+					}
+					// 华东重机20261119
+					if (zhangTingYiZiPreFlag && zhangTingYiZi2PreFlag && (analyProty.continueDay > 3) && (40000.0 * TENTHOUSAND < analyProty.zongJinE) && (analyProty.zongJinE / analyProty.ziYouLiuTongShiZhi > 0.05) && (analyProty.dianDanJinE < 20000.0))
+					{
+						std::cout << "连续两个一字, 大成交  %s\n" << analyProty.name << std::endl;
+						fprintf(rstFp, "连续两个一字，大成交  %s\n", analyProty.name);
+						continue;
+					}
+					if (zhangTingYiZiPreFlag && zhangTingYiZi2PreFlag && (jinRiYiZiBanFlag) && (analyProty.continueDay == 2) && (60000.0 * TENTHOUSAND < analyProty.zongJinE) && (analyProty.zhangTingBan < 240.0))
+					{
+						std::cout << "连续三个一字，大成交,  %s\n" << analyProty.name << std::endl;
+						fprintf(rstFp, "连续三个一字，大成交， %s\n", analyProty.name);
+						continue; // 东华软件20241113
+					}
 					if (zhangTingYiZiPreFlag && zhangTingYiZi2PreFlag && (analyProty.continueDay >= 3) && 
 						((analyProty.dianDanJinE < 1800.0) || (analyProty.weiBi < -72.0) || (analyProty.zhangFu < 5.0)))
 					{
@@ -892,6 +922,13 @@ void main()
 						((analyProty.dianDanJinE < 1800.0) || (analyProty.weiBi < -61.0) || (analyProty.zhangFu < 5.0)))
 					{
 						continue; // 东贝集团 东方精工
+					}
+
+					if (zhangTingYiZiPreFlag && zhangTingYiZi2PreFlag && (analyProty.continueDay >= 2) && (analyProty.zhangTingBan < 240.0) &&
+						((analyProty.dianDanJinE < dianDanBigThreshold) && (analyProty.zongJinE / analyProty.ziYouLiuTongShiZhi > 0.06)) && (analyProty.zongJinE > 35000.0 * TENTHOUSAND)
+						)
+					{
+						continue; // 阳光照明20261103 永悦科技20240320
 					}
 
 					if (zhangTingYiZiPreFlag && zhangTingYiZi2PreFlag && zhangTingYiZi3PreFlag && (analyProty.continueDay >= 3) &&
@@ -917,6 +954,43 @@ void main()
 						continue;
 					}
 
+					// 大豪科技2030830
+					if ((analyProty.zuoRiKaiPanZhangFu > 5.0) && (analyProty.pre2KaiPan > (analyProty.pre2XianJia / (1.1 * 0.955))) && (analyProty.continueDay == 2) &&
+						(!zhangTingYiZiTPreFlag) && (!zhangTingYiZiT2PreFlag) && (analyProty.dianDanJinE < 3000.0))
+					{
+						std::cout << "二板连续两个高开, " << analyProty.name << std::endl;
+						fprintf(rstFp, "二板连续两个高开， %s\n", analyProty.name);
+						continue;
+					}
+
+					// 广百股份20261117
+					if ((analyProty.zuoRiKaiPanZhangFu > 9.0) && (analyProty.zhangFu > 9.0) && (analyProty.continueDay > 2) &&
+						(!zhangTingYiZiTPreFlag) && (!zhangTingYiZi2PreFlag) && (analyProty.dianDanJinE < 3500.0))
+					{
+						std::cout << "三板连续两个高开,昨日竞价大于9, 今日竞价大于9, %s\n" << analyProty.name << std::endl;
+						fprintf(rstFp, "三板连续两个高开， %s\n", analyProty.name);
+						continue;
+					}
+
+					// 泰尔股份20241011
+					if (zhangTingYiZiPreFlag && jinRiYiZiBanFlag && (analyProty.continueDay == 2) &&
+						(analyProty.dianDanJinE < 1000.0)) // yiZiBanDianDanBigThreshold
+					{
+						std::cout << "二板，昨日一字，今日一字, " << analyProty.name << std::endl;
+						fprintf(rstFp, "二板，昨日一字，今日一字， %s\n", analyProty.name);
+						continue;
+					}
+
+					// 税友股份20240703
+					if (zhangTing4PreFlag && (zhangTingYiZi4Pre_continueDay >= 2) && (!zhangTing3PreFlag) && (analyProty.continueDay >= 2) &&
+						zhangTingYiZiPreFlag && (analyProty.limitUpMoney < 17000.0 * TENTHOUSAND) && //&& (analyProty.preJingJiaZongJinE > jingJiaJinEThreshould)
+						(analyProty.zongJinE > jingJiaJinEThreshould) && jinRiYiZiBanFlag && (analyProty.zhangTingBan < 240.0))
+					{
+						std::cout << "二板，昨日一字竞价放量封单一般，今日一字继续放量, 且封单较小" << analyProty.name << std::endl;
+						fprintf(rstFp, "二板，昨日一字竞价放量封单一般，今日一字继续放量, 且封单较小， %s\n", analyProty.name);
+						continue;
+					}
+
 					// 协鑫能科  && zhenFu_pre < 4.0  巨轮智能20241205
 					if ((kaiPanZhangFu_pre > 8.0 && (!zhangTingYiZiPreFlag)) && zhangTingYiZi2PreFlag && (analyProty.continueDay >= 4) && 
 						(!jinRiYiZiBanFlag) && (analyProty.zhangFu > 8.0) && (20000.0 * TENTHOUSAND < analyProty.zongJinE) && (analyProty.dianDanJinE < 13000.0))
@@ -924,9 +998,9 @@ void main()
 						continue;
 					}
 
-					// 天洋新材20260605
+					// 天洋新材20260605  西安饮食20221216
 					if ((!zhangTingYiZiPreFlag) && zhangTingYiZi2PreFlag && (analyProty.continueDay >= 3) &&
-						(!jinRiYiZiBanFlag) && (analyProty.zhangFu > 6.0) && (analyProty.dianDanJinE < 4000.0))
+						(!jinRiYiZiBanFlag) && (analyProty.zhangFu > 6.0) && (analyProty.dianDanJinE < 3800.0))
 					{
 						continue;
 					}
@@ -938,12 +1012,22 @@ void main()
 						continue;
 					}
 
-					// 博瑞传播20220105
-					/*if ((kaiPanZhangFu_pre > 8.0 && (!zhangTingYiZiPreFlag)) && zhangTingYiZi2PreFlag && (analyProty.continueDay >= 2) &&
-						(!jinRiYiZiBanFlag) && (analyProty.zhangFu > 6.0) && (analyProty.dianDanJinE < dianDanBigThreshold))
+					// 惠程科技20230217
+					if ((!zhangTingYiZiPreFlag) && (!zhangTingYiZi2PreFlag) && (analyProty.continueDay == 2) &&
+						(analyProty.zhangFu < 9.0) && (analyProty.zhangFu > 6.0) && (analyProty.dianDanJinE < 2000.0) && (5.0 < analyProty.zongJinE / analyProty.limitUpMoney) && (2000.0 * TENTHOUSAND > analyProty.limitUpMoney))
 					{
 						continue;
-					}*/
+					}
+
+					// 百花医药20260806
+					if ((kaiPanZhangFu_pre > 8.0 && (!zhangTingYiZiPreFlag)) && zhangTingYiZi2PreFlag && (analyProty.continueDay == 2) &&
+						(!jinRiYiZiBanFlag) && (analyProty.zhangFu > 6.0) && 
+						((analyProty.dianDanJinE < 3000.0) || ((analyProty.zongLiuRuBiLiuTong < 0.01) && (analyProty.dianDanJinE < dianDanBigThreshold)))
+						//((analyProty.dianDanJinE < 4200.0) || ((analyProty.dianDanJinE < 3000.0) && (analyProty.zongLiuRuBiLiuTong < 0.008)))
+						)
+					{
+						continue; // 风语筑20260211 上海石化20260605  4200.0
+					}
 
 					// 杭电股份20260204  恒润股份20231026 博瑞传播20220105
 					// 涨停后T板，封单小于2亿
@@ -967,12 +1051,39 @@ void main()
 						continue;
 					}
 
-					// 南天信息20240923
+					// 南天信息20240923  星网锐捷20260707
 					if (zhangTing4PreFlag && (zhangTingYiZi4Pre_continueDay >= 2) && (!zhangTing3PreFlag) && (analyProty.continueDay >= 2) &&
 						(!jinRiYiZiBanFlag) && (analyProty.zhangFu < 9.0) && (!dianDanBig_chengJiaoBig_flag))
 					{
 						continue;
 					}
+
+					// 潞化科技20260316  三佳科技20260527  山河智能20250724
+					if (zhangTingYiZiTPreFlag && (analyProty.zuoRiKaiPanZhangTing < 970.0 * TENTHOUSAND) && (analyProty.continueDay < 4) &&
+						(!jinRiYiZiBanFlag) && (analyProty.zhangFu < 8.8) && (analyProty.zhangFu > 7.0) && (analyProty.dianDanJinE < 2600.0))
+					{
+						continue; //杭电股份20260204 2640  贝肯能源20220907 zhangFu < 9.0)  天地在线
+					}
+
+					// 积成电子20240515
+					if (zhangTingYiZiTPreFlag && (analyProty.zuoRiKaiPanZhangTing < 10.0 * TENTHOUSAND) && (analyProty.continueDay > 3) &&
+						(!jinRiYiZiBanFlag) && (analyProty.zhangFu < 8.8) && (analyProty.zhangFu > 7.0) && (analyProty.dianDanJinE < 3600.0))
+					{
+						continue;
+					}
+
+					// 积成电子20240515  摩恩电气20251111 东方时尚20240322
+					//if ((!zhangTingYiZiPreFlag) && (analyProty.continueDay > 3) && (analyProty.zhangFu < 8.0) && (analyProty.zhangFu > 7.0) && (!dianDanBig_chengJiaoBig_flag) && (analyProty.zongLiuRuBiLiuTong < 0.003) && (analyProty.weiBi < -30.0))
+					if ((!zhangTingYiZiPreFlag) && (analyProty.continueDay > 3) && (analyProty.zhangFu < 8.0) && (analyProty.zhangFu > 7.0) && 
+						((jingJiaJinEThreshould > analyProty.zongJinE) || (analyProty.dianDanJinE < 3000.0) || (analyProty.weiBi < -30.0))
+						)
+					{
+						std::cout << "四板，开盘涨幅低于8，且大于7" << analyProty.name << std::endl;
+						fprintf(rstFp, "四板，开盘涨幅低于8，且大于7， %s\n", analyProty.name);
+						continue;
+					}
+
+					//property.zuoRiKaiPanZhangTing
 				}
 
 				// bool dianDanBig_chengJiaoBig_flag = (jingJiaJinEThreshould < analyProty.zongJinE) && (analyProty.dianDanJinE > dianDanBigThreshold);
@@ -980,7 +1091,7 @@ void main()
 				
 				// 首板昨日开盘小于-4
 				if ((analyProty.zuoRiKaiPanZhangFu < -4.0) && (analyProty.continueDay == 1) &&
-					(!jinRiYiZiBanFlag) && (!dianDanBig_chengJiaoBig_flag)
+					(!jinRiYiZiBanFlag) && (!dianDanBig_chengJiaoBig_flag) && (analyProty.zhangFu < 8.0)
 					)
 				{
 					continue;
@@ -999,6 +1110,16 @@ void main()
 					(analyProty.limitUpMoney < 6000.0 * TENTHOUSAND) && (1.0 < analyProty.zongJinE / analyProty.limitUpMoney) && (analyProty.continueDay == 1) && (analyProty.guXingPingFen < 26.0) && (!jinRiYiZiBanFlag) && (analyProty.dianDanJinE < 1900.0)
 					)
 				{
+					continue;
+				}
+
+				// 天洋新材20261112
+				if (
+					(analyProty.continueDay == 1) && (analyProty.zhangFu > 7.0) && (analyProty.zhangFu < 8.6) && (analyProty.dianDanJinE < 3900.0) && (analyProty.zongLiuRuBiLiuTong > 0.0045)
+					)
+				{
+					std::cout << "首板抢竞价，开盘涨幅低于9，且垫单较小" << analyProty.name << std::endl;
+					fprintf(rstFp, "首板抢竞价，开盘涨幅低于9，且垫单较小， %s\n", analyProty.name);
 					continue;
 				}
 
@@ -1085,7 +1206,7 @@ void main()
 					notYiZi_dianDan_per_day = 0.0;
 					break;
 				case 2:
-					notYiZi_dianDan_per_day = 297.0;
+					notYiZi_dianDan_per_day = 297.0; //中视传媒20230510
 					break;
 				case 3:
 					notYiZi_dianDan_per_day = 450.0;
@@ -1142,7 +1263,7 @@ void main()
 				{
 					continue; // 圣龙股份  科森科技20240905
 				}
-				if((analyProty.continueDay >= 7) && jinRiYiZiBanFlag && (analyProty.zhangTingBan < 5.99)) //合富中国
+				if((analyProty.continueDay >= 7) && jinRiYiZiBanFlag && (analyProty.zhangTingBan < 59.9)) //合富中国
 				{
 					continue;
 				}
@@ -1161,9 +1282,10 @@ void main()
 					string::size_type index;
 					index = indCode.find(ztCode);
 					if ((index != string::npos)
-						&& (((analyProty.zuoRiZhenFu - analyProty.zuoRiZhangFu) < zhenFuChaThreshould)
-							|| (analyProty.continueDay == 1) //|| (analyProty.zuoRiKaiPanZhangFu < 4.5)
-							|| ((analyProty.dianDanJinE > dianDanBigThreshold) && (jingJiaJinEThreshould < analyProty.zongJinE))) // 昨日连板最低点-5左右
+						&& (((analyProty.zuoRiZhenFu - analyProty.zuoRiZhangFu) < zhenFuChaThreshould) || // 昨日连板最低点-5左右
+							(((analyProty.continueDay == 1) //|| (analyProty.zuoRiKaiPanZhangFu < 4.5)
+								|| ((analyProty.dianDanJinE > dianDanBigThreshold) && (jingJiaJinEThreshould < analyProty.zongJinE)))) 
+							&& ((analyProty.zuoRiZhenFu - analyProty.zuoRiZhangFu) < 9.0)) 
 						)
 						//if (!strcmp(zhangTingVecPre[ztPreIdx].code, indCode.c_str()))
 					{
@@ -1176,10 +1298,10 @@ void main()
 
 						// 金龙羽20260916
 						bool shouBanGaoKai_noBig_flag = (!zuoRiyiZiBanTFlag) && (analyProty.continueDay == 1) && (analyProty.zuoRiKaiPanZhangFu > 6.0) && (analyProty.zuoRiKaiPanZhangFu < 9.0) && (analyProty.dianDanJinE < 4000.0) && (jingJiaJinEThreshould > analyProty.zongJinE);
-						// 中视传媒
+						// 中视传媒20260915
 						bool zuoRiGaoKai_fanLv_flag = (!zuoRiyiZiBanTFlag) && ((analyProty.zuoRiZhenFu - analyProty.zuoRiZhangFu) > 1.0) && (analyProty.zuoRiKaiPanZhangFu > 7.9) && (analyProty.dianDanJinE < 4000.0) && (jingJiaJinEThreshould > analyProty.zongJinE);
-						// 云煤能源
-						bool zuoRiGaoKai9_jinRi9_flag = (!zuoRiyiZiBanTFlag) && (!jinRiYiZiBanFlag) && (analyProty.zhangFu > 9.0) && (analyProty.zuoRiKaiPanZhangFu > 9.0) && (analyProty.zuoRiKaiPanZhangFu > analyProty.zhangFu) && (analyProty.dianDanJinE < 4000.0) && (jingJiaJinEThreshould > analyProty.zongJinE);
+						// 云煤能源 20260911  正丹股份20240412
+						bool zuoRiGaoKai9_jinRi9_flag = (!zuoRiyiZiBanTFlag) && (!jinRiYiZiBanFlag) && (analyProty.zhangFu > 9.0) && (analyProty.zhangFu < 10.9) && (analyProty.zuoRiKaiPanZhangFu > 9.0) && (analyProty.zuoRiKaiPanZhangFu > analyProty.zhangFu) && (analyProty.dianDanJinE < 4000.0) && (jingJiaJinEThreshould > analyProty.zongJinE);
 
 						//  一进二，前一日开盘涨幅区间排除[3,4]，涨幅小于8.99
 						bool yi2er_34_flag = (analyProty.zuoRiKaiPanZhangFu > shouBanZhangFuMin) && (analyProty.zuoRiKaiPanZhangFu < shouBanZhangFuMax) && (analyProty.continueDay == 1);
@@ -1198,7 +1320,7 @@ void main()
 							(analyProty.weiBi > weiBiThreshold) &&
 							//(!erban8_2to3) &&
 							((analyProty.weiBi < weiBiMaxThreshold) || (analyProty.weiBi > weiBiMaxThresholdUpperLimit) || (jinRiYiZiBanFlag) || zhangTingJia_bigWeibi || 
-								((analyProty.zuoRiZhangFu > 15.0) && (analyProty.zhangFu > 9.9))) && //瑞纳智能20240627
+								((analyProty.zuoRiZhangFu > 15.0) && (analyProty.zhangFu > 9.9) && (analyProty.continueDay == 1))) && //瑞纳智能20240627
 
 							(!(zuoRiyiZiBanTFlag && (analyProty.continueDay == 1))) && // 一进二首板非一字或T字
 							(!(zuoRiyiZiBan_Flag && (analyProty.continueDay == 3))) && // 三进四首板非一字
@@ -1217,7 +1339,8 @@ void main()
 
 						// 23板，昨日一字，大成交，大垫单
 						bool dianDanBig_dealBig_2YiziTo3_flag = (zuoRiyiZiBan_Flag && (analyProty.continueDay == 2) && (analyProty.zhangFu > 5.0) &&
-							(analyProty.zongJinE / analyProty.ziYouLiuTongShiZhi < 0.05) && // 荣联科技20230912
+							((analyProty.zongJinE / analyProty.ziYouLiuTongShiZhi < 0.05) || 
+								((analyProty.zhangFu > 9.0) && (analyProty.zongLiuRuBiLiuTong > 0.008))) && // 荣联科技20230912 冰山冷热20261015
 							(analyProty.dianDanJinE > 4000.0) && (23000.0 * TENTHOUSAND < analyProty.zongJinE) && (32000.0 * TENTHOUSAND > analyProty.zongJinE) && (190.0 * ONE_MILLION > analyProty.zuoRiZongJinE)); // 华贸物流
 						// 大成交
 						if ((jingJiaJinEThreshould < analyProty.zongJinE) &&
@@ -1343,8 +1466,8 @@ void main()
 						bool yizi_bigChengJiao_bigZhangTing_flag = false;
 						if(jinRiYiZiBanFlag &&
 							(analyProty.dianDanJinE > -200.0) &&
-							(analyProty.zongJinE > 8000.0 * TENTHOUSAND) && (analyProty.zongJinE < 19000.0 * TENTHOUSAND) &&
-							(analyProty.zhangTingBan > 200.0) &&
+							(analyProty.zongJinE > 8500.0 * TENTHOUSAND) && (analyProty.zongJinE < 19000.0 * TENTHOUSAND) &&
+							(analyProty.zhangTingBan > 220.0) &&
 							(analyProty.zhangTingBan < 450.0) &&
 							((analyProty.zhangTingBan * ONE_MILLION) / analyProty.zongJinE < 5.8)&&
 							(((analyProty.continueDay == 1) && (analyProty.zuoRiKaiPanZhangFu < 5.9)) ||
@@ -1355,13 +1478,29 @@ void main()
 							yizi_bigChengJiao_bigZhangTing_flag = true;
 						}
 
+						bool yizi_erBan_bigLiuRu_flag = false;
+						if (jinRiYiZiBanFlag &&
+							(analyProty.dianDanJinE > 890.0) &&
+							(analyProty.zongJinE < 6000.0 * TENTHOUSAND) && (analyProty.zongJinE > 3900.0 * TENTHOUSAND) &&
+							(analyProty.zhangTingBan > 95.0) &&
+							(analyProty.zhangTingBan < 130.0) &&
+							((analyProty.zhangTingBan * ONE_MILLION) / analyProty.zongJinE < 5.8) &&
+							(analyProty.continueDay == 1) && (analyProty.zuoRiKaiPanZhangFu < 3.0) && (analyProty.zongLiuRuBiLiuTong > 0.0058)
+							)
+						{
+							// 北纬科技20261112 好当家20261113
+							yizi_erBan_bigLiuRu_flag = true;
+						}
+
 						if(normal_sel_flag ||
 							bigDeal_sel_flag ||
 							bigDiandan_sel_flag ||
 							yiziBigdeal_sel_flag ||
 							yiziMayOpen_sel_flag || 
 							yiziFengChengBi_sel_flag ||
-							yizi_bigChengJiao_bigZhangTing_flag)
+							yizi_bigChengJiao_bigZhangTing_flag ||
+							yizi_erBan_bigLiuRu_flag
+							)
 						{
 							// 重复code不添加0.
 							int repeatFlat = 0;
@@ -1397,6 +1536,10 @@ void main()
 							|| ((analyProty.zhangFu > 3.99) && (analyProty.ziYouLiuTongShiZhi > 100 * DIVIDE))))
 					{
 						if ((analyProty.zongJinE > 100000 * TENTHOUSAND) && (analyProty.dianDanJinE < 30000) && (analyProty.continueDay >= 1)) // 海格通信，湖南黄金，天风证券
+						{
+							continue;
+						}
+						if (((analyProty.zuoRiZhenFu - analyProty.zuoRiZhangFu) > 9.0) && (analyProty.continueDay == 1))
 						{
 							continue;
 						}
@@ -1632,7 +1775,8 @@ void main()
 			// 标记符合条件中竞价最大成交个股
 			float max_deal_jingjia = 0;
 			int maxDeal_index = 0;
-			for (int analyIdx = 0; analyIdx < resultVecZtPreMeet.size(); analyIdx++)
+			int maxDeal_size = resultVecZtPreMeet.size();
+			for (int analyIdx = 0; analyIdx < maxDeal_size; analyIdx++)
 			{
 				PROPERTY_t analyProty = resultVecZtPreMeet[analyIdx];
 				bool jinRiYiZiBanFlag = yiZiBanJudge(analyProty);
@@ -1642,7 +1786,10 @@ void main()
 					max_deal_jingjia = analyProty.zongJinE;
 				}
 			}
-			resultVecZtPreMeet[maxDeal_index].maxJingJiaDealFlag = true;
+			if (maxDeal_size > 0)
+			{
+				resultVecZtPreMeet[maxDeal_index].maxJingJiaDealFlag = true;
+			}
 
 			// 显示昨日涨停，今日竞价符合预期股票
 			excelReadWrite.excelRowIndex++;

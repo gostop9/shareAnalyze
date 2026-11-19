@@ -415,7 +415,8 @@ namespace GETLIMITUPINFO
 				*/
 				//fprintf(fp, "| %5.2f : %d  %s: \n", zhangFuAvg, ztrTemp.zfAvgOder, ztrTemp.reason.c_str());
 
-				fprintf(fp, "|%-16s: , 涨幅：%6.2f， 板块总成交金额：%6.2f亿\n", ztrTemp.reason.c_str(), ztrTemp.zhangFuZong, (ztrTemp.zongJinEXZong / (DIVIDE)));
+				// 20261116注释掉
+				//fprintf(fp, "|%-16s: , 涨幅：%6.2f， 板块总成交金额：%6.2f亿\n", ztrTemp.reason.c_str(), ztrTemp.zhangFuZong, (ztrTemp.zongJinEXZong / (DIVIDE)));
 
 				for (int j = 0; j < maxDisplay; j++)
 				{

@@ -471,6 +471,10 @@ void shareParaFuse(vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &
 							if (0 == strcmp(zijinIter->code, prezhangfuIter->code))
 							{
 								property.preJingJiaZongJinE = prezhangfuIter->zongJinE;
+								if (prezhangfuIter->weiBi > 99.99)
+								{
+									property.zuoRiKaiPanZhangTing = prezhangfuIter->buyLiang * prezhangfuIter->xianJia;
+								}
 
 								if (0 < gubenVec.size())
 								{
@@ -624,6 +628,11 @@ void shareParaFuse(vector<DDE_t> &dde, vector<ZIJIN_t> &zijin, vector<ZHULI_t> &
 						if (0 == strcmp(zijinIter->code, prezhangfuIter->code))
 						{
 							property.preJingJiaZongJinE = prezhangfuIter->zongJinE;
+
+							if (prezhangfuIter->weiBi > 99.99)
+							{
+								property.zuoRiKaiPanZhangTing = prezhangfuIter->buyLiang * prezhangfuIter->xianJia;
+							}
 
 							if (0 < gubenVec.size())
 							{
@@ -1009,6 +1018,7 @@ int shareFuseSelect(int &fileIndex, PROPERTY_t &property, vector<vector<PROPERTY
 
 void shareSelectPrint(FILE *fp, PROPERTY_t &property, vector<PROPERTY_t> &propertyPre)
 {
+	return;
 	float daDanJinBiLiuTong = property.daDanJinBiLiuTong * BI_LIUTONG;
 	float zhongDanJinBiLiuTong = property.zhongDanJinBiLiuTong * BI_LIUTONG;
 	float zhongXiaoDanJinBiLiuTong = property.zhongXiaoDanJinBiLiuTong * BI_LIUTONG;
@@ -1330,6 +1340,8 @@ void calculateOtherPara(FILE *fp, vector<PROPERTY_t> &propertyVec, vector<PROPER
 				if (!isfinite(proIter->zongLiuRuBiZuoRiZongJinE)) { proIter->zongLiuRuBiZuoRiZongJinE = -100.0; }
 				//proIter->zongLiuRuBiZuoRiZongJinE = proIter->zhuLiJingLiang;
 				proIter->zuoRiKaiPanZhangFu = (proPreIter->kaiPan - proPreIter->zuoShou) * 100.0 / proPreIter->zuoShou;
+				proIter->zuoRiKaiPanZhangTing = proPreIter->zuoRiKaiPanZhangTing;
+
 				proIter->preZuoShou = proPreIter->zuoShou;
 
 				float zuoRiLiuTongShiZhi = proIter->ziYouLiuTongGu * proIter->zuoShou;
